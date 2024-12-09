@@ -1,7 +1,7 @@
 //This will just be a class definition file for the player info and the opponent info
 import Card from "./Card";
 
-interface PlayerInfo {
+export default interface PlayerInfo {
 	hand: Card[];
 	trumpCard: Card;
 	playerBet: number;
@@ -13,7 +13,7 @@ interface PlayerInfo {
 	opponents: OpponentInfo[];
 }
 
-interface OpponentInfo {
+export interface OpponentInfo {
 	bet: number;
 	wonTricks: Card[][];
 	score: number;
@@ -21,6 +21,3 @@ interface OpponentInfo {
 	cardsInHand: number;
 	playedCard: Card;
 }
-
-
-export { PlayerInfo, OpponentInfo };

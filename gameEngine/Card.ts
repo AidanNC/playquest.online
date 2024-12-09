@@ -2,7 +2,8 @@ type Suit = "C" | "H" | "D" | "S";
 const SUITS: Suit[] = ["C", "H", "D", "S"];
 type Value = 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14;
 const VALUES: Value[] = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
-export { Suit, SUITS, Value, VALUES };
+export type { Suit, Value };
+export { SUITS, VALUES };
 
 class Card {
 	suit: Suit;

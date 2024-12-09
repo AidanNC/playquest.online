@@ -2,7 +2,7 @@
 //also generates the information that should be available for each player
 import Deck from "./Deck";
 import Card, { Suit } from "./Card";
-import { PlayerInfo, OpponentInfo } from "./PlayerInfo";
+import PlayerInfo, {OpponentInfo } from "./PlayerInfo";
 
 class Game {
 	playerCount: number;

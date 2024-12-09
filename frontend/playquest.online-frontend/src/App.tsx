@@ -1,33 +1,27 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import Game from "../../../gameEngine/GameManager.ts"
+
 import './App.css'
-
+import GameComponent from './views/Game/Game'
 function App() {
-  const [count, setCount] = useState(0)
-
+  const game = new Game(3);
+  game.startRound(10, 0);
+  
+  for (let i = 0; i < 3; i++) {
+    const activePlayer = game.activePlayer;
+    const bet = game.getRandomBet(activePlayer);
+    game.processAction(activePlayer, bet);
+  }
+  for (let j = 0; j < 2; j++) {
+		const activePlayer = game.activePlayer;
+		const play = game.getRandomPlay(activePlayer);
+        console.log(`Player ${activePlayer} plays ${game.hands[activePlayer][play]}`);
+		game.processAction(activePlayer, play);
+	}
+  const playerInfo = game.generateInfo(0);
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+
+      {playerInfo !== -1 && <GameComponent playerInfo={playerInfo}/>}
     </>
   )
 }
