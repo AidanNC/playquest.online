@@ -5,7 +5,7 @@ console.log("###Starting Game!###");
 console.log("####################");
 const game = new Game(3);
 
-game.startRound(3, 0);
+game.startRound(10, 0);
 game.printState(true);
 //make bets
 for (let i = 0; i < 3; i++) {
@@ -35,3 +35,20 @@ for (let i = 0; i < game.handSize; i++) {
 }
 game.scoreRound();
 game.printState(true);
+
+
+function sleep(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+export default async function playGame(playerCount: number, startingRound: number = 10, delay: number = 1000, stateSetter: (state: any) => void | null ){
+	const game = new Game(playerCount);
+	game.startRound(startingRound, 0);
+	while(!game.gameOver){
+		game.processAction(game.activePlayer, game.getRandomPlay(game.activePlayer)); // make a random move
+		if(stateSetter){
+			stateSetter(game.generateInfo(0));
+		}
+		await sleep(delay);
+	}
+}

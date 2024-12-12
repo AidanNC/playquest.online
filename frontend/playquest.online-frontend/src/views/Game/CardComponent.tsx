@@ -25,7 +25,7 @@ const MainContainer = styled.div`
 
 interface CardElementProps {
 	card: Card;
-	id?: string;
+	id?: number;
 	onClick?: () => void;
 }
 
@@ -34,6 +34,8 @@ export default function CardComponent({
 	id,
 	onClick,
 }: CardElementProps) {
+	
+	
 	let displaySuit: JSX.Element = <BsFillSuitClubFill color="black" />;
 	const { name, suit } = card.getNameAndSuit();
 	if (suit === "D") {

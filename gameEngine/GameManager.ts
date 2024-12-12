@@ -20,6 +20,7 @@ class Game {
 	currTrick: Card[] = [];
 	playedCards: Card[] = [];
 	betting: boolean = true;
+	gameOver: boolean = false;
 	constructor(playerCount: number) {
 		if (playerCount < 2 || playerCount > 6) {
 			throw new Error(
@@ -59,7 +60,7 @@ class Game {
 			if(roundOver){
 				this.scoreRound();
 				let handSize = this.handSize;
-				if(this.round >= 3 ){
+				if(this.round >= 10 ){ //once we have gone down ten times then we will start going up
 					handSize++;
 				}else{
 					handSize--;
@@ -69,9 +70,18 @@ class Game {
 		}
 		return result;
 	}
-
+	endGame(){
+		this.gameOver = true;
+		console.log("Game Over!");
+		console.log("Final Scores:");
+		console.log(this.scores);
+	}
 	startRound(handSize: number, dealerIndex: number) {
 		this.round++;
+		if(this.round > 19){
+			this.endGame();
+			return;
+		}
 		this.deck = new Deck();
 		this.handSize = handSize;
 		this.trumpCard = this.deck.drawCard();
@@ -251,7 +261,7 @@ class Game {
 					score: this.scores[dex],
 					active: dex === this.activePlayer,
 					cardsInHand: this.hands[dex].length,
-					playedCard: this.playedCards[dex]
+					playedCard: this.playedCards[dex],
 				});
 			}
 		}
@@ -262,6 +272,7 @@ class Game {
 				playerBet: this.bets[playerIndex],
 				playerWonTricks: this.wonTricks[playerIndex],
 				currTrick: this.currTrick,
+				startingPlayer: this.startingPlayer, 
 				playerScore: this.scores[playerIndex],
 				active: this.activePlayer === playerIndex,
 				playedCard: this.playedCards[playerIndex],

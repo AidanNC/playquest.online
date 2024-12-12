@@ -3,9 +3,6 @@ import PlayerDisplay from "./PlayerDisplay.tsx";
 import OpponentDisplay from "./OpponentDisplay.tsx";
 import TrickAndTrump from "./TrickAndTrump.tsx";
 import styled from "styled-components";
-type GameProps = {
-	playerInfo: PlayerInfo;
-};
 
 const MainContainer = styled.div`
 	display: flex;
@@ -30,19 +27,35 @@ const OpponentHolder = styled.div`
 	width: 100%;
 `;
 
-
-export default function Game({ playerInfo }: GameProps) {
-	const opps = playerInfo.opponents.map((opponent) => {
-		return <OpponentDisplay opponentInfo={opponent} />;
+type GameProps = {
+	playerInfo: PlayerInfo;
+	sendAction: (action:number)=>void;
+};
+export default function Game({ sendAction, playerInfo }: GameProps) {
+	const opps = playerInfo.opponents.map((opponent, index) => {
+		return <OpponentDisplay opponentInfo={opponent} key={index} />;
 	});
+
+	const makeBet = (bet: number) => {
+		console.log("player makes bet: ", bet);
+		sendAction(bet);
+
+	};
+	const playCard = (cardIndex: number) => {
+		console.log("player plays card: ", cardIndex);
+		sendAction(cardIndex);
+	};
+
 	return (
 		<MainContainer>
-			<OpponentHolder>
-			{opps}
-			</OpponentHolder>
-			<TrickAndTrump trump={playerInfo.trumpCard} trick={playerInfo.currTrick}/>
+			<OpponentHolder>{opps}</OpponentHolder>
+			<TrickAndTrump trump={playerInfo.trumpCard} />
 			<PlayerHolder>
-				<PlayerDisplay playerInfo={playerInfo} />
+				<PlayerDisplay
+					playerInfo={playerInfo}
+					makeBet={makeBet}
+					playCard={playCard}
+				/>
 			</PlayerHolder>
 		</MainContainer>
 	);

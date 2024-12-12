@@ -1,6 +1,7 @@
 import {OpponentInfo} from "../../../../../gameEngine/PlayerInfo.ts";
 import styled from "styled-components";
 import { CiFaceSmile } from "react-icons/ci";
+import CardComponent from "./CardComponent.tsx";
 type Props = {
 	opponentInfo: OpponentInfo;
 };
@@ -9,11 +10,11 @@ const MainContainer = styled.div`
 	display: flex;
 	gap: 10px;
 `;
-const ProfileIcon = styled.div<{active: boolean}>`
+const ProfileIcon = styled.div<{$active: boolean}>`
 	height: 100px;
 	width: 100px;
 	background-color: #f0ffd1;
-	border: 2px solid ${props => props.active ? "red" : "black"};
+	border: 2px solid ${props => props.$active ? "red" : "black"};
 	font-size: 100px;
 	display: flex;
 	justify-content: center;
@@ -30,8 +31,9 @@ const InfoDisplay = styled.div`
 export default function OpponentDisplay({ opponentInfo }: Props) {
 	
 	return (
+		<div>
 		<MainContainer>
-			<ProfileIcon active={opponentInfo.active}>
+			<ProfileIcon $active={opponentInfo.active}>
 				<CiFaceSmile />
 			</ProfileIcon>
 			<InfoDisplay>
@@ -40,5 +42,7 @@ export default function OpponentDisplay({ opponentInfo }: Props) {
 				<p>Tricks Won: {opponentInfo.wonTricks.length}</p>
 			</InfoDisplay>
 		</MainContainer>
+		{opponentInfo.playedCard && <CardComponent card={opponentInfo.playedCard} />}
+		</div>
 	);
 }
