@@ -1,54 +1,44 @@
 import Game from "./GameManager";
-
-console.log("####################");
-console.log("###Starting Game!###");
-console.log("####################");
-const game = new Game(3);
-
-game.startRound(10, 0);
-game.printState(true);
-//make bets
-for (let i = 0; i < 3; i++) {
-	const activePlayer = game.activePlayer;
-	const bet = game.getRandomBet(activePlayer);
-	game.processAction(activePlayer, bet);
-	// game.makeBet(activePlayer, bet);
-	// game.setNextPlayer();
-}
-game.printState(true);
-
-//play tricks
-for (let i = 0; i < game.handSize; i++) {
-	//each trick
-    game.printState();
-	for (let j = 0; j < 3; j++) {
-		//each player
-		const activePlayer = game.activePlayer;
-		const play = game.getRandomPlay(activePlayer);
-        console.log(`Player ${activePlayer} plays ${game.hands[activePlayer][play]}`);
-		game.processAction(activePlayer, play);
-		// game.playCard(activePlayer, play);
-		// game.setNextPlayer();
-		
-	}
-	// game.endTrick();
-}
-game.scoreRound();
-game.printState(true);
-
+import PlayerInfo, {deserializePlayerInfo} from "./PlayerInfo";
 
 function sleep(ms: number) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+	return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-export default async function playGame(playerCount: number, startingRound: number = 10, delay: number = 1000, stateSetter: (state: any) => void | null ){
+export default async function playGame(
+	playerCount: number,
+	startingRound: number = 10,
+	delay: number = 1000,
+	stateSetter: (state: any) => void | null
+) {
 	const game = new Game(playerCount);
 	game.startRound(startingRound, 0);
-	while(!game.gameOver){
-		game.processAction(game.activePlayer, game.getRandomPlay(game.activePlayer)); // make a random move
-		if(stateSetter){
+	while (!game.gameOver) {
+		game.processAction(
+			game.activePlayer,
+			game.getRandomPlay(game.activePlayer)
+		); // make a random move
+		if (stateSetter) {
 			stateSetter(game.generateInfo(0));
 		}
 		await sleep(delay);
 	}
+}
+
+export function GetWholeGameInfo(playerCount: number) : PlayerInfo[]{
+	const game = new Game(playerCount);
+	game.startRound(10, 0);
+	let info: PlayerInfo[] = [];
+	while (!game.gameOver) {
+		game.processAction(
+			game.activePlayer,
+			game.getRandomPlay(game.activePlayer)
+		); // make a random move
+		const temp = game.generateInfo(0);
+		if(temp !== -1){
+			// info.push(temp);
+			info.push(deserializePlayerInfo(JSON.parse(JSON.stringify(temp))));
+		}
+	}
+	return info;
 }

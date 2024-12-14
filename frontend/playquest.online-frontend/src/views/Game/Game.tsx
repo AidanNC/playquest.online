@@ -1,8 +1,10 @@
 import PlayerInfo from "../../../../../gameEngine/PlayerInfo.ts";
+import { GameAction } from "../../../../../gameEngine/GameAction.ts";
 import PlayerDisplay from "./PlayerDisplay.tsx";
 import OpponentDisplay from "./OpponentDisplay.tsx";
 import TrickAndTrump from "./TrickAndTrump.tsx";
 import styled from "styled-components";
+import { useEffect } from "react";
 
 const MainContainer = styled.div`
 	display: flex;
@@ -29,25 +31,54 @@ const OpponentHolder = styled.div`
 
 type GameProps = {
 	playerInfo: PlayerInfo;
-	sendAction: (action:number)=>void;
+	sendAction: (action: number) => void;
+	requestNextState: () => void;
 };
-export default function Game({ sendAction, playerInfo }: GameProps) {
+export default function Game({ sendAction, playerInfo, requestNextState }: GameProps) {
+
+	function sleep(ms: number) {
+		return new Promise((resolve) => setTimeout(resolve, ms));
+	}
+
+	useEffect(() => {
+		stateFlowHandler();
+		
+	},[playerInfo]);
+
+	async function stateFlowHandler() {
+		//see if we have a state to process
+		await processActions(playerInfo.actionQueue);
+		//after we have processed the actions we will update the player info
+		requestNextState();
+	}
+	async function processActions(actions: GameAction[]) {
+		for( const action of actions){
+			animateAction(action);
+			await sleep(5000);
+		}
+	}
+	function animateAction(action: GameAction) {
+		console.log(action.pID + " " + action.name);
+	}
+	
+	
+
+	//set the opponent info
 	const opps = playerInfo.opponents.map((opponent, index) => {
 		return <OpponentDisplay opponentInfo={opponent} key={index} />;
 	});
 
 	const makeBet = (bet: number) => {
-		console.log("player makes bet: ", bet);
+		// console.log("player makes bet: ", bet);
 		sendAction(bet);
-
 	};
 	const playCard = (cardIndex: number) => {
-		console.log("player plays card: ", cardIndex);
+		// console.log("player plays card: ", cardIndex);
 		sendAction(cardIndex);
 	};
-
 	return (
 		<MainContainer>
+			<button onClick={requestNextState}>Next State</button>
 			<OpponentHolder>{opps}</OpponentHolder>
 			<TrickAndTrump trump={playerInfo.trumpCard} />
 			<PlayerHolder>

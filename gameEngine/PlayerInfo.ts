@@ -1,5 +1,6 @@
 //This will just be a class definition file for the player info and the opponent info
 import Card from "./Card";
+import GameActionMachine, {GameAction} from "./GameAction";
 
 export default interface PlayerInfo {
 	hand: Card[];
@@ -12,6 +13,9 @@ export default interface PlayerInfo {
 	playedCard: Card | null;
 	opponents: OpponentInfo[];
 	startingPlayer: number;
+	timeStep: number;
+	pID: number;
+	actionQueue: GameAction[];
 }
 
 export interface OpponentInfo {
@@ -21,6 +25,7 @@ export interface OpponentInfo {
 	active: boolean;
 	cardsInHand: number;
 	playedCard: Card | null;
+	pID: number;
 }
 
 //we have to trust that the data is in the correct format, will add error checking later
@@ -48,6 +53,14 @@ export const deserializePlayerInfo = (data: any): PlayerInfo => {
 		return deserializeOpponentInfo(oppInfo);
 	}); // this wont work lol
 	const startingPlayer: number = data.startingPlayer;
+	const timeStep: number = data.timeStep;
+	const pID = data.pID;
+	console.log("asdfasdfasdfasdfasdfadfasdfasdfasdfasdfasdf");
+	// console.log(data.actionQueue);
+	const actionQueue: GameAction[] = data.actionQueue.map((action: any) => {
+		return GameActionMachine.deserialzeGameAction(action);
+	});
+	// console.log(actionQueue);
 
 
 	return {
@@ -61,6 +74,9 @@ export const deserializePlayerInfo = (data: any): PlayerInfo => {
 		playedCard,
 		opponents,
 		startingPlayer,
+		timeStep,
+		pID,
+		actionQueue,
 	};
 };
 
@@ -78,6 +94,7 @@ const deserializeOpponentInfo = (data: any): OpponentInfo => {
 		data.playedCard.value
 	);
 	const cardsInHand: number = data.cardsInHand;
+	const pID = data.pID;
 
 	return {
 		bet,
@@ -86,5 +103,6 @@ const deserializeOpponentInfo = (data: any): OpponentInfo => {
 		active,
 		playedCard,
 		cardsInHand,
+		pID,
 	};
 };

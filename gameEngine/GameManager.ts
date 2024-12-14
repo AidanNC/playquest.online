@@ -3,6 +3,7 @@
 import Deck from "./Deck";
 import Card, { Suit } from "./Card";
 import PlayerInfo, {OpponentInfo } from "./PlayerInfo";
+import GameActionMachine, {GameAction} from "./GameAction";
 
 class Game {
 	playerCount: number;
@@ -21,6 +22,8 @@ class Game {
 	playedCards: Card[] = [];
 	betting: boolean = true;
 	gameOver: boolean = false;
+	timeStep: number = 0;
+	gameActionQueue: GameAction[] = [];
 	constructor(playerCount: number) {
 		if (playerCount < 2 || playerCount > 6) {
 			throw new Error(
@@ -42,8 +45,19 @@ class Game {
 			if(result === 1 && this.activePlayer === this.dealerIndex){
 				this.betting = false;
 			}
+			//add the bet to the action queue
+			if(result === 1){
+				const newAction = GameActionMachine.betAction(playerIndex, action);
+				this.gameActionQueue.push(newAction);
+			}
 		}else{ //otherwise it corresponds to the index of card to play
 			result =  this.playCard(playerIndex,action);
+			
+			//add the card play to the action queue
+			if(result === 1){
+				const newAction = GameActionMachine.playCardAction(playerIndex, this.playedCards[playerIndex]);
+				this.gameActionQueue.push(newAction);
+			}
 		}	
 		if(result === 1){
 			//check to see if the round is over:
@@ -67,6 +81,11 @@ class Game {
 				}
 				this.startRound(handSize, this.nextPlayer(this.dealerIndex));
 			}
+		}
+
+		//see if the timeStep should go up
+		if(result === 1){
+			this.timeStep++;
 		}
 		return result;
 	}
@@ -101,6 +120,12 @@ class Game {
 		this.currTrick = [];
 		this.playedCards = Array(this.playerCount).fill(null);
 		this.betting = true;
+
+		//add the appropriate actions to the action queue
+		const gameActionTrump = GameActionMachine.revealTrumpAction(this.dealerIndex, this.trumpCard);
+		this.gameActionQueue.push(gameActionTrump);
+		const gameActionDeal = GameActionMachine.dealAction(this.dealerIndex, this.handSize);
+		this.gameActionQueue.push(gameActionDeal);
 	}
 
 	//returns the value for the invalid bet, or -1 if any bet is valid
@@ -181,6 +206,10 @@ class Game {
 	endTrick() {
 		const winnerIndex = this.determineWinner();
 		this.wonTricks[winnerIndex].push(this.currTrick);
+		//add the wintrick to the action queue
+		const newAction = GameActionMachine.winTrickAction(winnerIndex, this.currTrick);
+		this.gameActionQueue.push(newAction);
+
 		this.currTrick = [];
 		this.playedCards = Array(this.playerCount).fill(null);
 		this.activePlayer = winnerIndex;
@@ -247,7 +276,6 @@ class Game {
 		return (currPlayerIndex + 1) % this.playerCount;
 	}
 
-	//make sure to update Manager.tsx if you change the structure of the info
 	generateInfo(playerIndex: number) {
 		const opponents: OpponentInfo[] = [];
 		for(let i = 0; i < this.playerCount; i++){
@@ -262,6 +290,7 @@ class Game {
 					active: dex === this.activePlayer,
 					cardsInHand: this.hands[dex].length,
 					playedCard: this.playedCards[dex],
+					pID: dex,
 				});
 			}
 		}
@@ -277,8 +306,13 @@ class Game {
 				active: this.activePlayer === playerIndex,
 				playedCard: this.playedCards[playerIndex],
 				opponents: opponents,
+				timeStep: this.timeStep,
+				pID: playerIndex,
+				actionQueue: this.gameActionQueue,
 				
 			};
+			//clear the action queue after we have generated a state
+			this.gameActionQueue = [];
 			return returner;
 		}
 		return -1;
