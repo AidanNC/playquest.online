@@ -55,7 +55,6 @@ export const deserializePlayerInfo = (data: any): PlayerInfo => {
 	const startingPlayer: number = data.startingPlayer;
 	const timeStep: number = data.timeStep;
 	const pID = data.pID;
-	console.log("asdfasdfasdfasdfasdfadfasdfasdfasdfasdfasdf");
 	// console.log(data.actionQueue);
 	const actionQueue: GameAction[] = data.actionQueue.map((action: any) => {
 		return GameActionMachine.deserialzeGameAction(action);

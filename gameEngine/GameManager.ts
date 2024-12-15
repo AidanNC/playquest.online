@@ -275,7 +275,9 @@ class Game {
 	nextPlayer(currPlayerIndex: number) {
 		return (currPlayerIndex + 1) % this.playerCount;
 	}
-
+	clearActionQueue(){
+		this.gameActionQueue = [];
+	}
 	generateInfo(playerIndex: number) {
 		const opponents: OpponentInfo[] = [];
 		for(let i = 0; i < this.playerCount; i++){
@@ -312,7 +314,7 @@ class Game {
 				
 			};
 			//clear the action queue after we have generated a state
-			this.gameActionQueue = [];
+			// this.gameActionQueue = []; //no ! don't clear after we have generated the state, should only clear once we move to another state
 			return returner;
 		}
 		return -1;

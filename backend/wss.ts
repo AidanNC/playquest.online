@@ -16,7 +16,7 @@ const sockets: WebSocket[] = [];
 
 //basic gameplay
 const game = new Game(MAX_PLAYERS);
-game.startRound(5, 0);
+game.startRound(10, 0);
 
 
 const getAndSendInfo = (client: WebSocket) => {
@@ -56,6 +56,7 @@ wss.on("connection", function connection(ws) {
 				sockets.forEach(function each(client) {
 					getAndSendInfo(client);
 				});
+				game.clearActionQueue();
 			}
 		}
 	});

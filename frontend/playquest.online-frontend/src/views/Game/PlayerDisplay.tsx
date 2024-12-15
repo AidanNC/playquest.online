@@ -1,5 +1,6 @@
 import PlayerInfo from "../../../../../gameEngine/PlayerInfo.ts";
 import CardComponent from "./CardComponent.tsx";
+import Card from "../../../../../gameEngine/Card.ts";
 import styled from "styled-components";
 import { CiFaceSmile } from "react-icons/ci";
 import { useState } from "react";
@@ -38,25 +39,42 @@ type GameProps = {
 	playerInfo: PlayerInfo;
 	makeBet: (bet: number) => void;
 	playCard: (cardIndex: number) => void;
+	justPlayedCard: Card | null;
 };
 
 export default function PlayerDisplay({
 	playerInfo,
 	makeBet,
 	playCard,
+	justPlayedCard,
 }: GameProps) {
 	const hand = playerInfo.hand.map((card, index) => {
-		return <CardComponent card={card} id={index} key={index} onClick={()=>playCard(index)} />;
+		return (
+			<CardComponent
+				card={card}
+				id={index}
+				key={index}
+				onClick={() => playCard(index)}
+			/>
+		);
 	});
 
 	const [bet, setBet] = useState(0);
 	return (
 		<div>
-			{playerInfo.playedCard && <CardComponent card={playerInfo.playedCard} />}
+			{playerInfo.playedCard ? (
+				<CardComponent card={playerInfo.playedCard} />
+			) : justPlayedCard ? (
+				<CardComponent card={justPlayedCard} />
+			) : null}
 			{!playerInfo.playerBet && playerInfo.active && (
 				<div>
 					<p>Place bet:</p>
-					<input type="number" value={bet} onChange={(e)=>setBet(Number(e.target.value))}></input>
+					<input
+						type="number"
+						value={bet}
+						onChange={(e) => setBet(Number(e.target.value))}
+					></input>
 					<button onClick={() => makeBet(bet)}>Submit</button>
 				</div>
 			)}

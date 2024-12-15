@@ -35,6 +35,7 @@ export function GetWholeGameInfo(playerCount: number) : PlayerInfo[]{
 			game.getRandomPlay(game.activePlayer)
 		); // make a random move
 		const temp = game.generateInfo(0);
+		game.clearActionQueue();
 		if(temp !== -1){
 			// info.push(temp);
 			info.push(deserializePlayerInfo(JSON.parse(JSON.stringify(temp))));

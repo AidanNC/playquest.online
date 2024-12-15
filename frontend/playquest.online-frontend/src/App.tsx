@@ -2,7 +2,7 @@
 import PlayerInfo, {
 	deserializePlayerInfo,
 } from "../../../gameEngine/PlayerInfo.ts";
-import playGame, {GetWholeGameInfo} from "../../../gameEngine/GameTest.ts";
+import {GetWholeGameInfo} from "../../../gameEngine/GameTest.ts";
 import { useState, useEffect, useRef } from "react";
 import "./App.css";
 import GameComponent from "./views/Game/Game";
@@ -22,7 +22,7 @@ function App() {
     	console.log(stateList.length);
     	console.log(info.timeStep);
 		if (stateList.length === 0) {
-			// setPlayerInfo(info);
+			setPlayerInfo(info);
 		}
 		setStateList((prevStateList)=>[...prevStateList, info]);
 	}
@@ -38,12 +38,13 @@ function App() {
 	}
 
 	function handleMessage(event: MessageEvent) {
-		console.log("Message from server ", event.data);
+		// console.log("Message from server ", event.data);
 		const data = JSON.parse(event.data);
 		if (data.playerInfo !== undefined) {
 			const info: PlayerInfo = deserializePlayerInfo(data.playerInfo);
 			console.log(info);
-			setPlayerInfo(info);
+			// setPlayerInfo(info);
+			updateStateList(info);
 		}
 	}
 
