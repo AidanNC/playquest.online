@@ -1,15 +1,15 @@
 import PlayerInfo from "../../../../../gameEngine/PlayerInfo.ts";
 import CardComponent from "./CardComponent.tsx";
 import Card from "../../../../../gameEngine/Card.ts";
+import ProfilePicture from "./ProfilePicture.tsx";
 import styled from "styled-components";
-import { CiFaceSmile } from "react-icons/ci";
 import { useState } from "react";
 
 const MainContainer = styled.div`
 	display: flex;
-	align-item: flex-end;
-	justi
+	padding-bottom: 20px;
 	gap: 10px;
+	margin-top: 10px;
 `;
 const HandRack = styled.div`
 	display: flex;
@@ -19,32 +19,20 @@ const HandRack = styled.div`
 	padding: 10px;
 	height: 100px;
 `;
-const ProfileIcon = styled.div<{ $active: boolean }>`
-	margin-top: auto;
-	height: 100px;
-	width: 100px;
-	background-color: #b2f7b0;
-	border: 4px solid ${(props) => (props.$active ? "red" : "black")};
-	font-size: 100px;
-	display: flex;
-	justify-content: center;
-	align-items: center;
+const AnimatedCard = styled.div<{ $x: number; $y: number }>`
+	position: absolute;
+	transition: transform 1s ease;
+	transform: translate(${(props) => props.$x}px, ${(props) => props.$y}px);
 `;
-const InfoDisplay = styled.div`
-	font-size: 25px;
-	text-align: start;
-	margin-top: auto;
-	p {
-		margin: 0;
-		padding: 0;
-	}
-`;
+
 
 type GameProps = {
 	playerInfo: PlayerInfo;
 	makeBet: (bet: number) => void;
 	playCard: (cardIndex: number) => void;
 	justPlayedCard: Card | null;
+	targetCoords: { x: number; y: number } | null;
+	offset: { x: number; y: number };
 };
 
 export default function PlayerDisplay({
@@ -52,6 +40,8 @@ export default function PlayerDisplay({
 	makeBet,
 	playCard,
 	justPlayedCard,
+	targetCoords,
+	offset,
 }: GameProps) {
 	const hand = playerInfo.hand.map((card, index) => {
 		return (
@@ -65,13 +55,24 @@ export default function PlayerDisplay({
 	});
 
 	const [bet, setBet] = useState(0);
+
+	function cardDisplay() {
+		return playerInfo.playedCard ? (
+			<CardComponent card={playerInfo.playedCard} />
+		) : justPlayedCard ? (
+			<CardComponent card={justPlayedCard} />
+		) : null
+	}
+	const coords = targetCoords
+		? { x: targetCoords.x - offset.x, y: targetCoords.y - offset.y + 130 }
+		: { x: 0, y: 0 - 100 };
 	return (
 		<div>
-			{playerInfo.playedCard ? (
-				<CardComponent card={playerInfo.playedCard} />
-			) : justPlayedCard ? (
-				<CardComponent card={justPlayedCard} />
-			) : null}
+			{/* {cardDisplay()} */}
+			{/* because wewant it to be adjusted up */}
+			<AnimatedCard $x={coords.x } $y={coords.y }> 
+				{cardDisplay()}
+			</AnimatedCard>
 			{!playerInfo.playerBet && playerInfo.active && (
 				<div>
 					<p>Place bet:</p>
@@ -84,16 +85,16 @@ export default function PlayerDisplay({
 				</div>
 			)}
 			<MainContainer>
-				<ProfileIcon $active={playerInfo.active}>
-					<CiFaceSmile />
-				</ProfileIcon>
+				<ProfilePicture
+					active={playerInfo.active}
+					name="ANC00"
+					score={playerInfo.playerScore}
+					bet={playerInfo.playerBet}
+					wonTricks={playerInfo.playerWonTricks}
+				/>
 				<HandRack>{hand}</HandRack>
-				<InfoDisplay>
-					<p>Score: {playerInfo.playerScore}</p>
-					<p>Bet: {playerInfo.playerBet}</p>
-					<p>Tricks Won: {playerInfo.playerWonTricks.length}</p>
-				</InfoDisplay>
 			</MainContainer>
+			
 		</div>
 	);
 }

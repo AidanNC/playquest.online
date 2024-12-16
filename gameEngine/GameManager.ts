@@ -113,6 +113,8 @@ class Game {
 				this.hands[i].push(this.deck.drawCard());
 			}
 		}
+		//sort the hands 
+		this.sortHands();
 		this.bets = Array(this.playerCount).fill(0);
 		this.dealerIndex = dealerIndex;
 		this.activePlayer = this.nextPlayer(dealerIndex);
@@ -127,6 +129,14 @@ class Game {
 		const gameActionDeal = GameActionMachine.dealAction(this.dealerIndex, this.handSize);
 		this.gameActionQueue.push(gameActionDeal);
 	}
+	//sorts the hands in ascending order, spades, hearts, diamonds, clubs
+	sortHands(){
+		for(let i = 0; i < this.playerCount; i++){
+			this.hands[i].sort((a, b) => {
+				return a.compare(b);
+			});
+		}
+	}	
 
 	//returns the value for the invalid bet, or -1 if any bet is valid
 	getInvalidBet(playerIndex: number): number {

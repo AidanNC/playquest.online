@@ -1,57 +1,59 @@
 import { OpponentInfo } from "../../../../../gameEngine/PlayerInfo.ts";
 import styled from "styled-components";
-import { CiFaceSmile } from "react-icons/ci";
 import CardComponent from "./CardComponent.tsx";
 import Card from "../../../../../gameEngine/Card.ts";
+import ProfilePicture from "./ProfilePicture.tsx";
 
 const MainContainer = styled.div`
 	display: flex;
 	gap: 10px;
+	margin-bottom: 10px;
 `;
-const ProfileIcon = styled.div<{ $active: boolean }>`
-	height: 100px;
-	width: 100px;
-	background-color: #f0ffd1;
-	border: 2px solid ${(props) => (props.$active ? "red" : "black")};
-	font-size: 100px;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-`;
-const InfoDisplay = styled.div`
-	font-size: 25px;
-	text-align: start;
-	p {
-		margin: 0;
-		padding: 0;
-	}
+const AnimatedCard = styled.div<{ $x: number; $y: number }>`
+	position: absolute;
+	transition: transform 1s ease;
+	transform: translate(${(props) => props.$x}px, ${(props) => props.$y}px);
 `;
 type Props = {
 	opponentInfo: OpponentInfo;
 	justPlayedCard: Card | null;
+	targetCoords: { x: number; y: number } | null;
+	offset: { x: number; y: number };
 };
 
 export default function OpponentDisplay({
 	opponentInfo,
 	justPlayedCard,
+	targetCoords,
+	offset,
 }: Props) {
+	function cardDisplay() {
+		return opponentInfo.playedCard ? (
+			<CardComponent card={opponentInfo.playedCard} />
+		) : justPlayedCard ? (
+			<CardComponent card={justPlayedCard} />
+		) : null;
+	}
+	const coords = targetCoords
+		? { x: targetCoords.x - offset.x, y: targetCoords.y - offset.y }
+		: { x: 0, y: 0 };
 	return (
 		<div>
 			<MainContainer>
-				<ProfileIcon $active={opponentInfo.active}>
-					<CiFaceSmile />
-				</ProfileIcon>
-				<InfoDisplay>
-					<p>Score: {opponentInfo.score}</p>
-					<p>Bet: {opponentInfo.bet}</p>
-					<p>Tricks Won: {opponentInfo.wonTricks.length}</p>
-				</InfoDisplay>
+				<ProfilePicture
+					active={opponentInfo.active}
+					name="Oppo"
+					score={opponentInfo.score}
+					bet={opponentInfo.bet}
+					wonTricks={opponentInfo.wonTricks}
+				/>
 			</MainContainer>
-			{opponentInfo.playedCard ? (
-				<CardComponent card={opponentInfo.playedCard} />
-			) : justPlayedCard ? (
-				<CardComponent card={justPlayedCard} />
-			) : null}
+
+			{/* {cardDisplay()} */}
+
+			<AnimatedCard $x={coords.x} $y={coords.y}>
+				{cardDisplay()}
+			</AnimatedCard>
 		</div>
 	);
 }

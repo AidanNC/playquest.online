@@ -6,7 +6,7 @@ import styled from "styled-components";
 
 const MainContainer = styled.div`
 	
-	margin: auto;
+	
 	position: absolute;
 	top: calc(50% - 40px);
 	left: calc(50% - 20px);

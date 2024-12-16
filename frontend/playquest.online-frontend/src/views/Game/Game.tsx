@@ -5,7 +5,6 @@ import OpponentDisplay from "./OpponentDisplay.tsx";
 import TrickAndTrump from "./TrickAndTrump.tsx";
 import styled from "styled-components";
 import { useState, useRef, useEffect } from "react";
-import CanvasDrawer from "./CanvasDrawer.tsx";
 import CardComponent from "./CardComponent.tsx";
 import Card from "../../../../../gameEngine/Card.ts";
 
@@ -14,17 +13,18 @@ const MainContainer = styled.div`
 	flex-direction: column;
 	// background: #a1a1a1;
 	height: 100vh;
-	width: 100vw;
+	width: 100%;
 	margin: 0px;
 	position: relative;
 	color: white;
 `;
 const PlayerHolder = styled.div`
 	display: flex;
-	justify-content: center;
+	// justify-content: center;
+	padding-left: 10%;
 	margin-top: auto;
 	margin-bottom: 20px;
-	width: 100%;
+	// width: 100%;
 `;
 
 const OpponentHolder = styled.div`
@@ -33,19 +33,7 @@ const OpponentHolder = styled.div`
 	margin-top: 20px;
 	width: 100%;
 `;
-const AnimatedCard = styled.div<{ $x: number; $y: number }>`
-	position: absolute;
-	top: ${(props) => props.$y}px;
-	left: ${(props) => props.$x}px;
-`;
 
-const Canvas = styled.canvas`
-	border: 1px solid pink;
-	width: 100%;
-	height: 100%;
-	position: absolute;
-	pointer-events: none;
-`;
 
 function sleep(ms: number) {
 	return new Promise((resolve) => setTimeout(resolve, ms));
@@ -61,34 +49,25 @@ export default function Game({
 	playerInfo,
 	requestNextState,
 }: GameProps) {
-	const canvasRef = useRef<HTMLCanvasElement>(null);
-	const canvasDrawer = useRef<CanvasDrawer | null>(null);
 	// const [canvasDrawer, setCanvasDrawer] = useState<CanvasDrawer | null>(null);
 	const [currentPlayerInfo, setCurrentPlayerInfo] = useState(playerInfo);
 	const [justPlayedCard, setJustPlayedCard] = useState<Card | null>(null);
 	const [justPlayedPID, setJustPlayedPID] = useState(-1);
+
+	const [targetCoords, setTargetCoords] = useState<{x:number, y:number} | null>(null);
+	const p0 = useRef<HTMLDivElement>(null);
+	const p1 = useRef<HTMLDivElement>(null);
+	const p2 = useRef<HTMLDivElement>(null);
+	const p3 = useRef<HTMLDivElement>(null);
+	const opponents = [p0, p1, p2, p3];
+	const playerDOM = useRef<HTMLDivElement>(null);
+	const movingCard = useRef(null);
 
 	function resetJustPlayed() {
 		setJustPlayedCard(null);
 		setJustPlayedPID(-1);
 	}
 
-	useEffect(() => {
-		const canvas = canvasRef.current;
-		if (canvas) {
-			const parent = canvas.parentElement;
-			if (parent) {
-				canvas.width = parent.clientWidth;
-				canvas.height = parent.clientHeight;
-			}
-			// canvasDrawer.current = new CanvasDrawer(canvas.height, canvas.height, canvas);
-			canvasDrawer.current = new CanvasDrawer(
-				canvas.height,
-				canvas.width,
-				canvas
-			);
-		}
-	}, []);
 	// useEffect(() => {
 	// 	const c = document.getElementById("canvas") as HTMLCanvasElement;
 	// 	setCanvasDrawer(new CanvasDrawer(c.height, c.width, c));
@@ -99,11 +78,14 @@ export default function Game({
 	}, [playerInfo]);
 
 	const opps = currentPlayerInfo.opponents.map((opponent, index) => {
+		const coord = opponents[index].current?.getBoundingClientRect();
 		return (
 			<OpponentDisplay
 				opponentInfo={opponent}
 				key={index}
 				justPlayedCard={justPlayedPID === opponent.pID ? justPlayedCard : null}
+				targetCoords={targetCoords}
+				offset={coord ? coord : { x: 0, y: 0 }}
 			/>
 		);
 	});
@@ -120,13 +102,13 @@ export default function Game({
 		requestNextState();
 	}
 	async function processActions(actions: GameAction[]) {
-		// await sleep(1000);
+		await sleep(1000);
 		for (const action of actions) {
 			animateAction(action);
 			await sleep(1000);
 		}
 	}
-	function animateAction(action: GameAction) {
+	async function animateAction(action: GameAction) {
 		// console.log(action.pID + " " + action.name);
 		if (action.name === "playCardAction") {
 			// console.log("playing card");
@@ -134,9 +116,39 @@ export default function Game({
 			setJustPlayedCard(action.card);
 			setJustPlayedPID(action.pID);
 			const tempPlayer = currentPlayerInfo;
-			tempPlayer.hand = tempPlayer.hand.filter((card) => !card.equals(action.card));
-			
+			tempPlayer.hand = tempPlayer.hand.filter(
+				(card) => !card.equals(action.card)
+			);
+
 			setCurrentPlayerInfo(tempPlayer);
+		} else if (action.name === "winTrickAction") {
+			console.log("wontrick");
+			//get the target based on who won
+			const target = { x: 500, y: 500 };
+			if (action.pID === currentPlayerInfo.pID) {
+				if (playerDOM.current) {
+					target.x = playerDOM.current.getBoundingClientRect().x;
+					target.y = playerDOM.current.getBoundingClientRect().y-230; //this is a magic number, just trying to make it look good
+				}
+			} else {
+				let dex = -1;
+				currentPlayerInfo.opponents.forEach((opp, index) => {
+					if (opp.pID === action.pID) {
+						dex = index;
+					}
+				});
+				if (dex !== -1) {
+					const ref = opponents[dex];
+					if (ref.current) {
+						target.x = ref.current.getBoundingClientRect().x;
+						target.y = ref.current.getBoundingClientRect().y;
+					}
+				}
+			}
+			setTargetCoords(target);
+			await sleep(1000);
+			setTargetCoords(null);
+
 		}
 	}
 
@@ -152,26 +164,30 @@ export default function Game({
 	};
 	return (
 		<MainContainer>
-			<button
-				onClick={() => {
-					canvasDrawer.current?.drawBouncy(10, 8, 8, 100, 50);
-				}}
-			>
-				Draw something
-			</button>
-			<Canvas id="canvas" ref={canvasRef}></Canvas>
-			<OpponentHolder>{opps}</OpponentHolder>
+			<OpponentHolder>
+				{opps[0] ? <div ref={p0}>{opps[0]}</div> : null}
+				{opps[1] ? <div ref={p1}>{opps[1]}</div> : null}
+				{opps[2] ? <div ref={p2}>{opps[2]}</div> : null}
+				{opps[3] ? <div ref={p3}>{opps[3]}</div> : null}
+			</OpponentHolder>
+			
 			{/* <AnimatedCard $x={playedCoords.x} $y={playedCoords.y}>
 				{justPlayedCard ? <CardComponent card={justPlayedCard} /> : null}
 			</AnimatedCard> */}
 			<TrickAndTrump trump={currentPlayerInfo.trumpCard} />
-			<PlayerHolder>
+			<PlayerHolder >
+				<div ref={playerDOM}>
 				<PlayerDisplay
 					playerInfo={currentPlayerInfo}
 					makeBet={makeBet}
 					playCard={playCard}
-					justPlayedCard={justPlayedPID === currentPlayerInfo.pID ? justPlayedCard : null}
+					justPlayedCard={
+						justPlayedPID === currentPlayerInfo.pID ? justPlayedCard : null
+					}
+					targetCoords={targetCoords}
+					offset={playerDOM.current ? playerDOM.current.getBoundingClientRect() : { x: 0, y: 0 }}
 				/>
+				</div>
 			</PlayerHolder>
 		</MainContainer>
 	);

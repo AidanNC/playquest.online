@@ -1,5 +1,5 @@
 type Suit = "C" | "H" | "D" | "S";
-const SUITS: Suit[] = ["C", "H", "D", "S"];
+const SUITS: Suit[] = ["S","H","C", "D",];
 type Value = 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14;
 const VALUES: Value[] = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
 export type { Suit, Value };
@@ -31,6 +31,13 @@ class Card {
     }
 	equals(card: Card) {
 		return this.suit === card.suit && this.value === card.value;
+	}
+	compare(card: Card) {
+		if(this.suit === card.suit){
+			return this.value - card.value;
+		}else{
+			return SUITS.indexOf(this.suit) - SUITS.indexOf(card.suit);
+		}
 	}
 }
 
