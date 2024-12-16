@@ -12,11 +12,12 @@ import Card from "../../../../../gameEngine/Card.ts";
 const MainContainer = styled.div`
 	display: flex;
 	flex-direction: column;
-	background: #a1a1a1;
+	// background: #a1a1a1;
 	height: 100vh;
 	width: 100vw;
 	margin: 0px;
 	position: relative;
+	color: white;
 `;
 const PlayerHolder = styled.div`
 	display: flex;
@@ -132,6 +133,10 @@ export default function Game({
 			// currentTime();
 			setJustPlayedCard(action.card);
 			setJustPlayedPID(action.pID);
+			const tempPlayer = currentPlayerInfo;
+			tempPlayer.hand = tempPlayer.hand.filter((card) => !card.equals(action.card));
+			
+			setCurrentPlayerInfo(tempPlayer);
 		}
 	}
 

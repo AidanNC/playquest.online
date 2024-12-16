@@ -68,7 +68,7 @@ function App() {
 
 	//test the visuals
 	useEffect(() => {
-		//playGame(3, 10, 1000, updateStateList);
+		// playGame(3, 10, 1000, updateStateList);
 		const info = GetWholeGameInfo(3);
 		setStateList(info);
 	}, []);

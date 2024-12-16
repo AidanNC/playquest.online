@@ -12,7 +12,7 @@ class Card {
 	constructor(suit: Suit, value: Value) {
 		this.suit = suit;
 		this.value = value;
-		this.name = value <= 10 ? String(value) : ["J", "Q", "K", "A"][value - 11];
+		this.name = value <= 9 ? String(value) : ["T", "J", "Q", "K", "A"][value - 10];
 	}
 	getValueAndSuit() {
 		return { value: this.value, suit: this.suit };
@@ -29,6 +29,9 @@ class Card {
     toString():string{
         return this.name + " " + this.suit;
     }
+	equals(card: Card) {
+		return this.suit === card.suit && this.value === card.value;
+	}
 }
 
 //make sure to update backendimports/Card.ts if change this

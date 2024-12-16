@@ -7,16 +7,20 @@ import { useState } from "react";
 
 const MainContainer = styled.div`
 	display: flex;
+	align-item: flex-end;
+	justi
 	gap: 10px;
 `;
 const HandRack = styled.div`
 	display: flex;
+	align-items: flex-end;
 	gap: 10px;
-	background: #057f87;
+	// background: #057f87;
 	padding: 10px;
-	height: 85px;
+	height: 100px;
 `;
 const ProfileIcon = styled.div<{ $active: boolean }>`
+	margin-top: auto;
 	height: 100px;
 	width: 100px;
 	background-color: #b2f7b0;
@@ -29,6 +33,7 @@ const ProfileIcon = styled.div<{ $active: boolean }>`
 const InfoDisplay = styled.div`
 	font-size: 25px;
 	text-align: start;
+	margin-top: auto;
 	p {
 		margin: 0;
 		padding: 0;

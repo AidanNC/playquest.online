@@ -8,12 +8,12 @@ margin-left: 50px;
 margin-top: 50px;
 display: flex;
 flex-direction: column;
-gap: 5px;
+gap: 20px;
 `;
 const CardRow = styled.div`
 display: flex;
 flex-direction: row;
-gap: 5px;
+gap: 9px;
 `;
 export default function CardTests() {
 

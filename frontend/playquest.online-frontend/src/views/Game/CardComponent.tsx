@@ -5,22 +5,35 @@ import {
 	BsFillSuitClubFill,
 } from "react-icons/bs";
 import styled from "styled-components";
-import Card from "../../../../../gameEngine/Card.ts"
+import Card from "../../../../../gameEngine/Card.ts";
+import { useState } from "react";
 
-
-const MainContainer = styled.div`
+const MainContainer = styled.div<{ $color: string; $hover: boolean }>`
 	height: 80px;
 	width: 60px;
-	background-color: #ffc4f6;
-	border: 2px solid ##00181a;
-	border-radius: 3px;
+	background-color: #36014a;
+
+	
+	// background-color: ${(props) => props.$color};
+	// border: 1px solid ${(props) => props.$color};
+	// drop-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+	// filter: drop-shadow(0 0 0.3rem crimson);
+	// filter: drop-shadow(0px 0px 6px ${(props) => props.$color});
+	filter: drop-shadow(0px 0px 2px #f5f5c1);
+	//#f2f21d
+
+	border-radius: 5px;
 	display: flex;
+	gap: 2px;
 	margin: 2px;
 	cursor: pointer;
-	color: #000000;
+	color: ${(props) => props.$color};
 	justify-content: center;
 	align-items: center;
-	font-size: 25px;
+	font-size: 35px;
+	font-weight: bold;
+
+	margin-bottom: ${(props) => (props.$hover ? "10px" : "0px")};
 `;
 
 interface CardElementProps {
@@ -29,24 +42,28 @@ interface CardElementProps {
 	onClick?: () => void;
 }
 
-export default function CardComponent({
-	card,
-	id,
-	onClick,
-}: CardElementProps) {
-	
-	
+export default function CardComponent({ card, id, onClick }: CardElementProps) {
+	let color = "#f5f5c1";
 	let displaySuit: JSX.Element = <BsFillSuitClubFill color="black" />;
+	const [hover, setHover] = useState(false);
+
 	const { name, suit } = card.getNameAndSuit();
 	if (suit === "D") {
-		displaySuit = <BsFillSuitDiamondFill color="red" />;
+		color = "#f505f1";
+		displaySuit = <BsFillSuitDiamondFill color={color} />;
 	} else if (suit === "H") {
-		displaySuit = <BsFillHeartFill color="red" />;
+		color = "#ff3b68";
+		displaySuit = <BsFillHeartFill color={color} />;
 	} else if (suit === "S") {
-		displaySuit = <BsFillSuitSpadeFill color="black" />;
+		color = "#00c4cf";
+		displaySuit = <BsFillSuitSpadeFill color={color} />;
 	} else if (suit === "C") {
-		displaySuit = <BsFillSuitClubFill color="black" />;
+		color = "#05f525";
+		color = "#88f26b";
+		color = "#77d45d";
+		displaySuit = <BsFillSuitClubFill color={color} />;
 	}
+
 	return (
 		<MainContainer
 			id={"card" + id}
@@ -55,10 +72,18 @@ export default function CardComponent({
 					onClick();
 				}
 			}}
+			$color={color}
+			$hover={hover}
+			onMouseEnter={() => {
+				setHover(true);
+			}}
+			onMouseLeave={() => {
+				setHover(false);
+			}}
 		>
 			<>
-				<p>{displaySuit}
-				{name}</p>
+				{displaySuit}
+				{name}
 			</>
 		</MainContainer>
 	);
