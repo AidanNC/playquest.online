@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
 
-import tongue from "../../assets/img/profile_pictures/dainty.jpg";
+import tongue from "../../assets/img/profile_pictures/hrmm.jpg";
 import Card from "../../../../../gameEngine/Card";
 import ViewTricksModal from "./ViewTricksModal";
 
@@ -32,7 +32,7 @@ const MainContainer = styled.div<{ $active: boolean }>`
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	border-radius: 4px;
+	border-radius: 16px;
 	${(props) =>
 		props.$active
 			? "border: 3px solid #ee00ff; filter: drop-shadow(0px 0px 6px #ee00ff);"
@@ -40,7 +40,6 @@ const MainContainer = styled.div<{ $active: boolean }>`
 	// border: 3px solid ${(props) => (props.$active ? "#ee00ff" : "#6f51f0")};
 	margin-right: 20px;
 	background-color: #9d44fc;
-	color: #44348c;
 	color: #15001c;
 	padding-right: 10px;
 `;
@@ -48,6 +47,9 @@ const MainContainer = styled.div<{ $active: boolean }>`
 const ProfileIcon = styled.div`
 	height: 120px;
 	width: 120px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 	// background-color: #cbc0fc;
 `;
 
@@ -73,6 +75,13 @@ const InfoDisplay = styled.div`
 		padding: 0;
 		transition: opacity 0.5s ease-in-out;
 	}
+	.tricks {
+		cursor: pointer;
+	}
+	.tricks:hover {
+		outline: 1px solid #15001c;
+		border-radius: 4px;
+	}
 `;
 type ProfilePictureProps = {
 	active: boolean;
@@ -90,13 +99,18 @@ export default function ProfilePicture({
 }: ProfilePictureProps) {
 	const [showModal, setShowModal] = useState(false);
 	useEffect(() => {
-		if(wonTricks.length === 0){
+		if (wonTricks.length === 0) {
 			setShowModal(false);
 		}
 	}, [wonTricks]);
 	return (
 		<div>
-			{showModal && (<ViewTricksModal onClose={()=>setShowModal(false)} tricks={wonTricks} />)}
+			{showModal && (
+				<ViewTricksModal
+					onClose={() => setShowModal(false)}
+					tricks={wonTricks}
+				/>
+			)}
 			<MainContainer $active={active}>
 				<ProfileIcon>
 					<Icon>
@@ -107,7 +121,12 @@ export default function ProfilePicture({
 					<p>{name}</p>
 					<p>Score: {score}</p>
 					<p>Bet: {bet}</p>
-					<p style={{cursor:"pointer"}}onClick={() => setShowModal(wonTricks.length > 0)}>Tricks Won: {wonTricks.length}</p>
+					<p
+						className="tricks"
+						onClick={() => setShowModal(wonTricks.length > 0)}
+					>
+						Tricks Won: {wonTricks.length}
+					</p>
 				</InfoDisplay>
 			</MainContainer>
 		</div>

@@ -2,7 +2,7 @@
 import PlayerInfo, {
 	deserializePlayerInfo,
 } from "../../../gameEngine/PlayerInfo.ts";
-import {GetWholeGameInfo} from "../../../gameEngine/GameTest.ts";
+import { GetWholeGameInfo } from "../../../gameEngine/GameTest.ts";
 import { useState, useEffect, useRef } from "react";
 import "./App.css";
 import GameComponent from "./views/Game/Game";
@@ -19,12 +19,12 @@ function App() {
 
 	function updateStateList(info: PlayerInfo) {
 		console.log("updating state list ");
-    	console.log(stateList.length);
-    	console.log(info.timeStep);
+		console.log(stateList.length);
+		console.log(info.timeStep);
 		if (stateList.length === 0) {
 			setPlayerInfo(info);
 		}
-		setStateList((prevStateList)=>[...prevStateList, info]);
+		setStateList((prevStateList) => [...prevStateList, info]);
 	}
 
 	function nextState() {
@@ -75,7 +75,7 @@ function App() {
 
 	return (
 		<>
-		<button onClick={nextState}>Next State</button>
+			<button onClick={nextState}>Next State</button>
 			{/* {playerInfo !== -1 && <GameComponent playerInfo={playerInfo}/>} */}
 			{playerInfo !== -1 && (
 				<GameComponent

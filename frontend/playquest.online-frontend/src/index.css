@@ -2,6 +2,7 @@
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   background-color: #242424;
   background-color: #15001c;
+  
   /* line-height: 1.5;
   font-weight: 400;
 
@@ -27,6 +28,45 @@ body {
   min-width: 320px;
   min-height: 100vh; */
 }
+button {
+  border-radius: 16px;
+  border: 2px solid transparent;
+  padding: 0.3em 1em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #ee00ff;
+  cursor: pointer;
+  transition: border-color 0.25s;
+  color: #15001c;
+}
+button:hover {
+  border-color: #d400d4;
+  /* background-color: #d400d4; */
+}
+input {
+  border-radius: 16px;
+  border: 2px solid transparent;
+  padding: 0.3em 1em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #ee00ff;
+  cursor: pointer;
+  transition: border-color 0.25s;
+  color: #15001c;
+}
+input:focus {
+  border-color: #d400d4;
+  outline: #d400d4
+  /* background-color: #d400d4; */
+}
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 /* 
 a {
   font-weight: 500;

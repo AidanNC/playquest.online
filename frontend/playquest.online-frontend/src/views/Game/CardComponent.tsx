@@ -13,7 +13,6 @@ const MainContainer = styled.div<{ $color: string; $hover: boolean }>`
 	width: 60px;
 	background-color: #36014a;
 
-	
 	// background-color: ${(props) => props.$color};
 	// border: 1px solid ${(props) => props.$color};
 	// drop-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
@@ -34,6 +33,7 @@ const MainContainer = styled.div<{ $color: string; $hover: boolean }>`
 	font-weight: bold;
 
 	margin-bottom: ${(props) => (props.$hover ? "10px" : "0px")};
+	transition: margin-bottom 0.2s ease;
 `;
 
 interface CardElementProps {
@@ -65,26 +65,35 @@ export default function CardComponent({ card, id, onClick }: CardElementProps) {
 	}
 
 	return (
-		<MainContainer
-			id={"card" + id}
-			onClick={() => {
-				if (onClick !== undefined) {
-					onClick();
-				}
-			}}
-			$color={color}
-			$hover={hover}
+		<div
 			onMouseEnter={() => {
+				//only want the cards to go up if they are in our hand (onClick is defined)
+				if (onClick === undefined) {
+					return;
+				}
 				setHover(true);
 			}}
 			onMouseLeave={() => {
-				setHover(false);
+				setTimeout(() => setHover(false), 100); // Add timeout for hover effect
+                
+				// setHover(false);
 			}}
 		>
-			<>
-				{displaySuit}
-				{name}
-			</>
-		</MainContainer>
+			<MainContainer
+				id={"card" + id}
+				onClick={() => {
+					if (onClick !== undefined) {
+						onClick();
+					}
+				}}
+				$color={color}
+				$hover={hover}
+			>
+				<>
+					{displaySuit}
+					{name}
+				</>
+			</MainContainer>
+		</div>
 	);
 }
