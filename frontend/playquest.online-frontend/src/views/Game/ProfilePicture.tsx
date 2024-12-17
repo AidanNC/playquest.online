@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
 
-import tongue from "../../assets/img/profile_pictures/hrmm.jpg";
+import tongue from "../../assets/img/profile_pictures/happycar.jpg";
 import Card from "../../../../../gameEngine/Card";
 import ViewTricksModal from "./ViewTricksModal";
 
@@ -57,12 +57,13 @@ const Icon = styled.div`
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	// border: 2px solid #cbc0fc;
-	// border-radius: 4px;
+	margin-left: 10px;
+	margin-right: 10px;
 	img {
-		border-radius: 4px;
+		border-radius: 16px;
 		max-height: 120px;
 		max-width: 120px;
+		border: 2px solid #15001c;
 	}
 `;
 
@@ -70,10 +71,12 @@ const InfoDisplay = styled.div`
 	padding: 5px;
 	font-size: 23px;
 	text-align: start;
+	transition: color 0.15s linear;
+	
 	p {
 		margin: 0;
 		padding: 0;
-		transition: opacity 0.5s ease-in-out;
+		transition: opacity 0.3s ease-in-out;
 	}
 	.tricks {
 		cursor: pointer;
@@ -81,6 +84,9 @@ const InfoDisplay = styled.div`
 	.tricks:hover {
 		outline: 1px solid #15001c;
 		border-radius: 4px;
+	}
+	.bet {
+		
 	}
 `;
 type ProfilePictureProps = {
@@ -98,6 +104,51 @@ export default function ProfilePicture({
 	wonTricks,
 }: ProfilePictureProps) {
 	const [showModal, setShowModal] = useState(false);
+	const startColor = "#15001c";
+	const [betColor, setBetColor] = useState<string>(startColor);
+	const [trickColor, setTrickColor] = useState<string>(startColor);
+	
+
+	useEffect(() => {
+		if(bet !== -1) {
+			setBetColor("#ee00ff");
+			setTimeout(() => setBetColor(startColor), 250);
+		}
+	},[bet]);
+	useEffect(() => {
+		let color = "#ee00ff";
+		if(wonTricks.length > bet){
+			color = "red";
+		}else if(wonTricks.length === bet){
+			color = "green";
+		}
+
+		if(wonTricks.length !== 0){
+			setTrickColor(color);
+			setTimeout(() => setTrickColor(startColor), 150);
+			setTimeout(() => setTrickColor(color), 300);
+			setTimeout(() => setTrickColor(startColor), 450);
+		}
+		if(wonTricks.length >= bet && bet !== -1){
+			setBetColor(color);
+			setTimeout(() => setBetColor(startColor), 150);
+			setTimeout(() => setBetColor(color), 300);
+			setTimeout(() => setBetColor(startColor), 450);
+		}
+		if(wonTricks.length > bet && bet !== -1){
+			setTimeout(() => setBetColor("red"), 600);
+			setTimeout(() => setTrickColor("red"), 600);
+		}else if(wonTricks.length === bet && bet !== -1){
+			setTimeout(() => setBetColor("green"), 600);
+			setTimeout(() => setTrickColor("green"), 600);
+		}
+		if(wonTricks.length === 0 && bet === -1){
+			setBetColor(startColor);
+			setTrickColor(startColor);
+		}
+	},[wonTricks.length]);
+
+	
 	useEffect(() => {
 		if (wonTricks.length === 0) {
 			setShowModal(false);
@@ -120,12 +171,13 @@ export default function ProfilePicture({
 				<InfoDisplay>
 					<p>{name}</p>
 					<p>Score: {score}</p>
-					<p>Bet: {bet}</p>
+					<p className="bet" >Bet: <span style={{color:betColor}}>{bet>-1?bet:0}</span></p>
 					<p
 						className="tricks"
 						onClick={() => setShowModal(wonTricks.length > 0)}
+						
 					>
-						Tricks Won: {wonTricks.length}
+						Tricks Won: <span style={{ color: trickColor }}>{wonTricks.length}</span>
 					</p>
 				</InfoDisplay>
 			</MainContainer>

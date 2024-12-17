@@ -34,7 +34,6 @@ const OpponentHolder = styled.div`
 	width: 100%;
 `;
 
-
 function sleep(ms: number) {
 	return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -54,7 +53,10 @@ export default function Game({
 	const [justPlayedCard, setJustPlayedCard] = useState<Card | null>(null);
 	const [justPlayedPID, setJustPlayedPID] = useState(-1);
 
-	const [targetCoords, setTargetCoords] = useState<{x:number, y:number} | null>(null);
+	const [targetCoords, setTargetCoords] = useState<{
+		x: number;
+		y: number;
+	} | null>(null);
 	const p0 = useRef<HTMLDivElement>(null);
 	const p1 = useRef<HTMLDivElement>(null);
 	const p2 = useRef<HTMLDivElement>(null);
@@ -128,7 +130,7 @@ export default function Game({
 			if (action.pID === currentPlayerInfo.pID) {
 				if (playerDOM.current) {
 					target.x = playerDOM.current.getBoundingClientRect().x;
-					target.y = playerDOM.current.getBoundingClientRect().y-230; //this is a magic number, just trying to make it look good
+					target.y = playerDOM.current.getBoundingClientRect().y - 230; //this is a magic number, just trying to make it look good
 				}
 			} else {
 				let dex = -1;
@@ -148,7 +150,12 @@ export default function Game({
 			setTargetCoords(target);
 			await sleep(1000);
 			setTargetCoords(null);
-
+		} else if (action.name === "betAction") {
+			console.log("bet action");
+		} else if (action.name === "dealAction") {
+			console.log("deal action");
+		} else if (action.name === "revealTrumpAction") {
+			console.log("trump action");
 		}
 	}
 
@@ -170,23 +177,27 @@ export default function Game({
 				{opps[2] ? <div ref={p2}>{opps[2]}</div> : null}
 				{opps[3] ? <div ref={p3}>{opps[3]}</div> : null}
 			</OpponentHolder>
-			
+
 			{/* <AnimatedCard $x={playedCoords.x} $y={playedCoords.y}>
 				{justPlayedCard ? <CardComponent card={justPlayedCard} /> : null}
 			</AnimatedCard> */}
 			<TrickAndTrump trump={currentPlayerInfo.trumpCard} />
-			<PlayerHolder >
+			<PlayerHolder>
 				<div ref={playerDOM}>
-				<PlayerDisplay
-					playerInfo={currentPlayerInfo}
-					makeBet={makeBet}
-					playCard={playCard}
-					justPlayedCard={
-						justPlayedPID === currentPlayerInfo.pID ? justPlayedCard : null
-					}
-					targetCoords={targetCoords}
-					offset={playerDOM.current ? playerDOM.current.getBoundingClientRect() : { x: 0, y: 0 }}
-				/>
+					<PlayerDisplay
+						playerInfo={currentPlayerInfo}
+						makeBet={makeBet}
+						playCard={playCard}
+						justPlayedCard={
+							justPlayedPID === currentPlayerInfo.pID ? justPlayedCard : null
+						}
+						targetCoords={targetCoords}
+						offset={
+							playerDOM.current
+								? playerDOM.current.getBoundingClientRect()
+								: { x: 0, y: 0 }
+						}
+					/>
 				</div>
 			</PlayerHolder>
 		</MainContainer>

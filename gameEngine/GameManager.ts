@@ -115,7 +115,7 @@ class Game {
 		}
 		//sort the hands 
 		this.sortHands();
-		this.bets = Array(this.playerCount).fill(0);
+		this.bets = Array(this.playerCount).fill(-1);
 		this.dealerIndex = dealerIndex;
 		this.activePlayer = this.nextPlayer(dealerIndex);
         this.startingPlayer = this.activePlayer;
@@ -141,7 +141,8 @@ class Game {
 	//returns the value for the invalid bet, or -1 if any bet is valid
 	getInvalidBet(playerIndex: number): number {
 		if (playerIndex === this.dealerIndex) {
-			return this.handSize - this.bets.reduce((a, b) => a + b); //it can't sum to the handsize
+			//we have to subtract 1, because the dealers bet is technically -1 rn
+			return this.handSize - this.bets.reduce((a, b) => a + b) -1; //it can't sum to the handsize 
 		}
 		return -1;
 	}
