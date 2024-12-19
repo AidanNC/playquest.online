@@ -2,8 +2,8 @@
 //also generates the information that should be available for each player
 import Deck from "./Deck";
 import Card, { Suit } from "./Card";
-import PlayerInfo, {OpponentInfo } from "./PlayerInfo";
-import GameActionMachine, {GameAction} from "./GameAction";
+import PlayerInfo, { OpponentInfo } from "./PlayerInfo";
+import GameActionMachine, { GameAction } from "./GameAction";
 
 class Game {
 	playerCount: number;
@@ -17,7 +17,7 @@ class Game {
 	dealerIndex!: number;
 	handSize!: number;
 	activePlayer!: number;
-    startingPlayer!: number;
+	startingPlayer!: number;
 	currTrick: Card[] = [];
 	playedCards: Card[] = [];
 	betting: boolean = true;
@@ -36,47 +36,55 @@ class Game {
 
 	//the  meat and potatoes
 	//returns 1 if actions was succesful and -1 otherwise
-	processAction(playerIndex: number, action: number):number{
+	processAction(playerIndex: number, action: number): number {
 		let result = -1;
 		//if there aren't enough bets, then the action corresponds to a bet
-		if(this.betting){
+		if (this.betting) {
 			result = this.makeBet(playerIndex, action);
 			//turn off betting if all players have bet
-			if(result === 1 && this.activePlayer === this.dealerIndex){
+			if (result === 1 && this.activePlayer === this.dealerIndex) {
 				this.betting = false;
 			}
 			//add the bet to the action queue
-			if(result === 1){
+			if (result === 1) {
 				const newAction = GameActionMachine.betAction(playerIndex, action);
 				this.gameActionQueue.push(newAction);
 			}
-		}else{ //otherwise it corresponds to the index of card to play
-			result =  this.playCard(playerIndex,action);
-			
+		} else {
+			//otherwise it corresponds to the index of card to play
+			result = this.playCard(playerIndex, action);
+
 			//add the card play to the action queue
-			if(result === 1){
-				const newAction = GameActionMachine.playCardAction(playerIndex, this.playedCards[playerIndex]);
+			if (result === 1) {
+				const newAction = GameActionMachine.playCardAction(
+					playerIndex,
+					this.playedCards[playerIndex]
+				);
 				this.gameActionQueue.push(newAction);
 			}
-		}	
-		if(result === 1){
+		}
+		if (result === 1) {
 			//check to see if the round is over:
 			let roundOver = false;
-			if(this.nextPlayer(playerIndex) === this.startingPlayer && this.hands[playerIndex].length === 0){
+			if (
+				this.nextPlayer(playerIndex) === this.startingPlayer &&
+				this.hands[playerIndex].length === 0
+			) {
 				roundOver = true;
 			}
 			//if the action was succesful, then we move to the next player
 			this.setNextPlayer();
 			//check if the trick is over
 			if (this.currTrick.length === this.playerCount) {
-				this.endTrick(); // will set the player correctly 
+				this.endTrick(); // will set the player correctly
 			}
-			if(roundOver){
+			if (roundOver) {
 				this.scoreRound();
 				let handSize = this.handSize;
-				if(this.round >= 10 ){ //once we have gone down ten times then we will start going up
+				if (this.round >= 10) {
+					//once we have gone down ten times then we will start going up
 					handSize++;
-				}else{
+				} else {
 					handSize--;
 				}
 				this.startRound(handSize, this.nextPlayer(this.dealerIndex));
@@ -84,12 +92,12 @@ class Game {
 		}
 
 		//see if the timeStep should go up
-		if(result === 1){
+		if (result === 1) {
 			this.timeStep++;
 		}
 		return result;
 	}
-	endGame(){
+	endGame() {
 		this.gameOver = true;
 		console.log("Game Over!");
 		console.log("Final Scores:");
@@ -97,7 +105,7 @@ class Game {
 	}
 	startRound(handSize: number, dealerIndex: number) {
 		this.round++;
-		if(this.round > 19){
+		if (this.round > 19) {
 			this.endGame();
 			return;
 		}
@@ -113,36 +121,42 @@ class Game {
 				this.hands[i].push(this.deck.drawCard());
 			}
 		}
-		//sort the hands 
+		//sort the hands
 		this.sortHands();
 		this.bets = Array(this.playerCount).fill(-1);
 		this.dealerIndex = dealerIndex;
 		this.activePlayer = this.nextPlayer(dealerIndex);
-        this.startingPlayer = this.activePlayer;
+		this.startingPlayer = this.activePlayer;
 		this.currTrick = [];
 		this.playedCards = Array(this.playerCount).fill(null);
 		this.betting = true;
 
 		//add the appropriate actions to the action queue
-		const gameActionTrump = GameActionMachine.revealTrumpAction(this.dealerIndex, this.trumpCard);
+		const gameActionTrump = GameActionMachine.revealTrumpAction(
+			this.dealerIndex,
+			this.trumpCard
+		);
 		this.gameActionQueue.push(gameActionTrump);
-		const gameActionDeal = GameActionMachine.dealAction(this.dealerIndex, this.handSize);
+		const gameActionDeal = GameActionMachine.dealAction(
+			this.dealerIndex,
+			this.handSize
+		);
 		this.gameActionQueue.push(gameActionDeal);
 	}
 	//sorts the hands in ascending order, spades, hearts, diamonds, clubs
-	sortHands(){
-		for(let i = 0; i < this.playerCount; i++){
+	sortHands() {
+		for (let i = 0; i < this.playerCount; i++) {
 			this.hands[i].sort((a, b) => {
 				return a.compare(b);
 			});
 		}
-	}	
+	}
 
 	//returns the value for the invalid bet, or -1 if any bet is valid
 	getInvalidBet(playerIndex: number): number {
 		if (playerIndex === this.dealerIndex) {
 			//we have to subtract 1, because the dealers bet is technically -1 rn
-			return this.handSize - this.bets.reduce((a, b) => a + b) -1; //it can't sum to the handsize 
+			return this.handSize - this.bets.reduce((a, b) => a + b) - 1; //it can't sum to the handsize
 		}
 		return -1;
 	}
@@ -218,21 +232,30 @@ class Game {
 		const winnerIndex = this.determineWinner();
 		this.wonTricks[winnerIndex].push(this.currTrick);
 		//add the wintrick to the action queue
-		const newAction = GameActionMachine.winTrickAction(winnerIndex, this.currTrick);
+		const newAction = GameActionMachine.winTrickAction(
+			winnerIndex,
+			this.currTrick
+		);
 		this.gameActionQueue.push(newAction);
 
 		this.currTrick = [];
 		this.playedCards = Array(this.playerCount).fill(null);
 		this.activePlayer = winnerIndex;
-        this.startingPlayer = this.activePlayer;
+		this.startingPlayer = this.activePlayer;
 	}
 
 	scoreRound() {
+		const scoreIncreases: number[] = [];
 		for (let i = 0; i < this.playerCount; i++) {
-			this.scores[i] +=
+			const scoreIncrease =
 				this.wonTricks[i].length +
 				(this.wonTricks[i].length === this.bets[i] ? 10 : 0);
+			scoreIncreases.push(scoreIncrease);
+
+			this.scores[i] += scoreIncrease;
 		}
+		const newAction = GameActionMachine.endRoundAction(scoreIncreases);
+		this.gameActionQueue.push(newAction);
 	}
 
 	determineWinner() {
@@ -243,7 +266,7 @@ class Game {
 			}
 		}
 		//if best index is 0, then the startingplayer won
-		return (this.startingPlayer + bestIndex)%this.playerCount;
+		return (this.startingPlayer + bestIndex) % this.playerCount;
 	}
 
 	isBetter(c1: Card, c2: Card) {
@@ -286,16 +309,16 @@ class Game {
 	nextPlayer(currPlayerIndex: number) {
 		return (currPlayerIndex + 1) % this.playerCount;
 	}
-	clearActionQueue(){
+	clearActionQueue() {
 		this.gameActionQueue = [];
 	}
 	generateInfo(playerIndex: number) {
 		const opponents: OpponentInfo[] = [];
-		for(let i = 0; i < this.playerCount; i++){
-			 //to make sure we don't go out of bounds
-				// const dex = i;
-			const dex = (i+playerIndex) % this.playerCount;
-			if(dex !== playerIndex){
+		for (let i = 0; i < this.playerCount; i++) {
+			//to make sure we don't go out of bounds
+			// const dex = i;
+			const dex = (i + playerIndex) % this.playerCount;
+			if (dex !== playerIndex) {
 				opponents.push({
 					bet: this.bets[dex],
 					wonTricks: this.wonTricks[dex],
@@ -314,7 +337,7 @@ class Game {
 				playerBet: this.bets[playerIndex],
 				playerWonTricks: this.wonTricks[playerIndex],
 				currTrick: this.currTrick,
-				startingPlayer: this.startingPlayer, 
+				startingPlayer: this.startingPlayer,
 				playerScore: this.scores[playerIndex],
 				active: this.activePlayer === playerIndex,
 				playedCard: this.playedCards[playerIndex],
@@ -322,7 +345,6 @@ class Game {
 				timeStep: this.timeStep,
 				pID: playerIndex,
 				actionQueue: this.gameActionQueue,
-				
 			};
 			//clear the action queue after we have generated a state
 			// this.gameActionQueue = []; //no ! don't clear after we have generated the state, should only clear once we move to another state
@@ -331,7 +353,9 @@ class Game {
 		return -1;
 	}
 	printState(verbose = false) {
-        console.log("***###***###***###***###***###***###***###***###***###***###***###***###***###***###***")
+		console.log(
+			"***###***###***###***###***###***###***###***###***###***###***###***###***###***###***"
+		);
 		if (verbose) {
 			console.log("TrumpCard:");
 			console.log(this.trumpCard.print());
@@ -340,10 +364,10 @@ class Game {
 			console.log("Scores: ");
 			console.log(this.scores);
 			console.log("Won tricks:");
-            this.wonTricks.forEach((tricks, index) => {
-                console.log("Player " + index + " tricks: ");
-                console.log(tricks);
-            });
+			this.wonTricks.forEach((tricks, index) => {
+				console.log("Player " + index + " tricks: ");
+				console.log(tricks);
+			});
 			console.log("Dealer:");
 			console.log(this.dealerIndex);
 			console.log("Round:");

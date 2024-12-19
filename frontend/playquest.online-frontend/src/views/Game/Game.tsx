@@ -63,7 +63,8 @@ export default function Game({
 	const p3 = useRef<HTMLDivElement>(null);
 	const opponents = [p0, p1, p2, p3];
 	const playerDOM = useRef<HTMLDivElement>(null);
-	const movingCard = useRef(null);
+	const [scoreIncreases, setScoreIncreases] = useState<number[] | null[]>([null, null, null, null, null]);
+
 
 	function resetJustPlayed() {
 		setJustPlayedCard(null);
@@ -88,6 +89,7 @@ export default function Game({
 				justPlayedCard={justPlayedPID === opponent.pID ? justPlayedCard : null}
 				targetCoords={targetCoords}
 				offset={coord ? coord : { x: 0, y: 0 }}
+				scoreIncrease={scoreIncreases[opponent.pID]}
 			/>
 		);
 	});
@@ -109,6 +111,9 @@ export default function Game({
 			animateAction(action);
 			await sleep(1000);
 		}
+		//clean up the actions
+		setTargetCoords(null);
+		setScoreIncreases([null, null, null, null, null]);
 	}
 	async function animateAction(action: GameAction) {
 		// console.log(action.pID + " " + action.name);
@@ -149,13 +154,17 @@ export default function Game({
 			}
 			setTargetCoords(target);
 			await sleep(1000);
-			setTargetCoords(null);
+			// setTargetCoords(null);
 		} else if (action.name === "betAction") {
 			console.log("bet action");
 		} else if (action.name === "dealAction") {
 			console.log("deal action");
 		} else if (action.name === "revealTrumpAction") {
 			console.log("trump action");
+		} else if(action.name === "endRoundAction") {
+			setScoreIncreases(action.scoreIncreases);
+			await sleep(3000);
+			// setScoreIncreases([null, null, null, null, null]);
 		}
 	}
 
@@ -197,6 +206,7 @@ export default function Game({
 								? playerDOM.current.getBoundingClientRect()
 								: { x: 0, y: 0 }
 						}
+						scoreIncrease={scoreIncreases[playerInfo.pID]}
 					/>
 				</div>
 			</PlayerHolder>

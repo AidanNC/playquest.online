@@ -29,8 +29,14 @@ interface winTrickAction {
 	trick: Card[];
 	name: "winTrickAction";
 }
+interface endRoundAction {
+	// pID: number; // this should be not really relevant
+	name: "endRoundAction";
+	scoreIncreases: number[];
 
-type GameAction = betAction | playCardAction | revealTrumpAction | dealAction | winTrickAction;
+}
+
+type GameAction = betAction | playCardAction | revealTrumpAction | dealAction | winTrickAction | endRoundAction;
 
 class GameActionMachine {
 	static betAction(pID: number, amount: number): betAction {
@@ -48,6 +54,9 @@ class GameActionMachine {
 	static winTrickAction(pID: number, trick: Card[]): winTrickAction {
 		return { pID, trick, name: "winTrickAction" };
 	}
+	static endRoundAction(scoreIncreases: number[]): endRoundAction {
+		return { scoreIncreases, name: "endRoundAction" };
+	}
 
 	static deserialzeGameAction(data: any): GameAction {
 		switch (data.name) {
@@ -63,6 +72,8 @@ class GameActionMachine {
 			case "winTrickAction":
 				const trick = data.trick.map((card: any) => { return new Card(card.suit, card.value); });
 				return GameActionMachine.winTrickAction(data.pID, trick);
+			case "endRoundAction":
+				return GameActionMachine.endRoundAction(data.scoreIncreases);
 			default:
 				throw new Error("Invalid GameAction");
 		}

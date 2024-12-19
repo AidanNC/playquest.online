@@ -19,6 +19,7 @@ type Props = {
 	justPlayedCard: Card | null;
 	targetCoords: { x: number; y: number } | null;
 	offset: { x: number; y: number };
+	scoreIncrease: number | null;
 };
 
 export default function OpponentDisplay({
@@ -26,6 +27,7 @@ export default function OpponentDisplay({
 	justPlayedCard,
 	targetCoords,
 	offset,
+	scoreIncrease,
 }: Props) {
 	function cardDisplay() {
 		return opponentInfo.playedCard ? (
@@ -44,6 +46,7 @@ export default function OpponentDisplay({
 					active={opponentInfo.active}
 					name="Oppo"
 					score={opponentInfo.score}
+					scoreIncrease={scoreIncrease}
 					bet={opponentInfo.bet}
 					wonTricks={opponentInfo.wonTricks}
 				/>

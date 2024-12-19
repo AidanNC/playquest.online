@@ -30,17 +30,17 @@ export interface OpponentInfo {
 
 //we have to trust that the data is in the correct format, will add error checking later
 export const deserializePlayerInfo = (data: any): PlayerInfo => {
-	const hand: Card[] = data.hand.map((card: any) => {
+	const hand: Card[] = data.hand.map((card: Card) => {
 		return new Card(card.suit, card.value);
 	});
 	const trumpCard: Card = new Card(data.trumpCard.suit, data.trumpCard.value);
 	const playerBet: number = data.playerBet;
-	const playerWonTricks: Card[][] = data.playerWonTricks.map((trick:any)=>{
-		return trick.map((card:any)=>{
+	const playerWonTricks: Card[][] = data.playerWonTricks.map((trick:Card[])=>{
+		return trick.map((card:Card)=>{
 			return new Card(card.suit, card.value);
 		});
 	}); //this might not work
-	const currTrick: Card[] = data.currTrick.map((card: any) => {
+	const currTrick: Card[] = data.currTrick.map((card: Card) => {
 		return new Card(card.suit, card.value);
 	});
 	const playerScore: number = data.playerScore;
@@ -49,14 +49,14 @@ export const deserializePlayerInfo = (data: any): PlayerInfo => {
 		data.playedCard.suit,
 		data.playedCard.value
 	);
-	const opponents: OpponentInfo[] = data.opponents.map((oppInfo: any)=>{
+	const opponents: OpponentInfo[] = data.opponents.map((oppInfo: OpponentInfo)=>{
 		return deserializeOpponentInfo(oppInfo);
 	}); // this wont work lol
 	const startingPlayer: number = data.startingPlayer;
 	const timeStep: number = data.timeStep;
 	const pID = data.pID;
 	// console.log(data.actionQueue);
-	const actionQueue: GameAction[] = data.actionQueue.map((action: any) => {
+	const actionQueue: GameAction[] = data.actionQueue.map((action: GameAction) => {
 		return GameActionMachine.deserialzeGameAction(action);
 	});
 	// console.log(actionQueue);
@@ -81,8 +81,8 @@ export const deserializePlayerInfo = (data: any): PlayerInfo => {
 
 const deserializeOpponentInfo = (data: any): OpponentInfo => {
 	const bet: number = data.bet;
-	const wonTricks: Card[][] = data.wonTricks.map((trick:any)=>{
-		return trick.map((card:any)=>{
+	const wonTricks: Card[][] = data.wonTricks.map((trick:Card[])=>{
+		return trick.map((card:Card)=>{
 			return new Card(card.suit, card.value);
 		});
 	}); //this might not work

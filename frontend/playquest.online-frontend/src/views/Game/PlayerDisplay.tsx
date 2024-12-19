@@ -33,6 +33,7 @@ type GameProps = {
 	justPlayedCard: Card | null;
 	targetCoords: { x: number; y: number } | null;
 	offset: { x: number; y: number };
+	scoreIncrease: number | null;
 };
 
 export default function PlayerDisplay({
@@ -42,6 +43,7 @@ export default function PlayerDisplay({
 	justPlayedCard,
 	targetCoords,
 	offset,
+	scoreIncrease
 }: GameProps) {
 	const hand = playerInfo.hand.map((card, index) => {
 		return (
@@ -73,7 +75,7 @@ export default function PlayerDisplay({
 			<AnimatedCard $x={coords.x } $y={coords.y }> 
 				{cardDisplay()}
 			</AnimatedCard>
-			{!playerInfo.playerBet && playerInfo.active && (
+			{playerInfo.playerBet === -1 && playerInfo.active && (
 				<div>
 					<p>Place bet:</p>
 					<input
@@ -89,6 +91,7 @@ export default function PlayerDisplay({
 					active={playerInfo.active}
 					name="ANC00"
 					score={playerInfo.playerScore}
+					scoreIncrease={scoreIncrease}
 					bet={playerInfo.playerBet}
 					wonTricks={playerInfo.playerWonTricks}
 				/>
