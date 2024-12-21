@@ -23,6 +23,9 @@ const ScorePiece = styled.div`
 	display: flex;
 	margin-top: 10px;
 	width: 90px;
+	.notFinished {
+		outline: none;
+	}
 	.incorrect {
 		outline: 3px solid #6e0206;
 		border-radius: 4px;
@@ -71,15 +74,15 @@ export default function AllRoundScoreboardModal({
 		prevScore: number | null
 	): string {
 		//the round hasn't finished
-		if (!score) {
+		if (score === null) {
 			return "notFinished";
 		}
 		//first round then score shoudl just be bet + 10
-		if (!prevScore && score === bet + 10) {
+		if (prevScore === null && score === bet + 10) {
 			return "correct";
 		}
 		//otherwise its wrong
-		if (!prevScore) {
+		if (prevScore === null) {
 			return "incorrect";
 		}
 		//if the score is the same as the previous score + bet + 10
@@ -128,7 +131,7 @@ export default function AllRoundScoreboardModal({
 								>
 									{bet}
 								</p>
-								{scoreRecord[index] && <p className="score">{scores[index]}</p>}
+								{scores[index] && <p className="score">{scores[index]}</p>}
 							</ScorePiece>
 						</div>
 					);
