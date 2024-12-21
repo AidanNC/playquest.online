@@ -8,7 +8,9 @@ import GameActionMachine, { GameAction } from "./GameAction";
 class Game {
 	playerCount: number;
 	scores: number[] = [];
+	scoreRecord: number[][] = [];
 	bets: number[] = [];
+	betsRecord: number[][] = [];
 	round = 0;
 	hands: Card[][] = [];
 	wonTricks: Card[][][] = [];
@@ -44,6 +46,7 @@ class Game {
 			//turn off betting if all players have bet
 			if (result === 1 && this.activePlayer === this.dealerIndex) {
 				this.betting = false;
+				this.betsRecord.push(this.bets); //record the bets
 			}
 			//add the bet to the action queue
 			if (result === 1) {
@@ -254,6 +257,7 @@ class Game {
 
 			this.scores[i] += scoreIncrease;
 		}
+		this.scoreRecord.push(this.scores.filter((x) => x));
 		const newAction = GameActionMachine.endRoundAction(scoreIncreases);
 		this.gameActionQueue.push(newAction);
 	}
@@ -345,6 +349,8 @@ class Game {
 				timeStep: this.timeStep,
 				pID: playerIndex,
 				actionQueue: this.gameActionQueue,
+				scoreRecord: this.scoreRecord,
+				betsRecord: this.betsRecord,
 			};
 			//clear the action queue after we have generated a state
 			// this.gameActionQueue = []; //no ! don't clear after we have generated the state, should only clear once we move to another state

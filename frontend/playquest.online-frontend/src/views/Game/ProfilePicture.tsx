@@ -170,7 +170,7 @@ export default function ProfilePicture({
 			setBetColor(startColor);
 			setTrickColor(startColor);
 		}
-	}, [wonTricks.length]);
+	}, [wonTricks.length, bet]);
 
 	useEffect(() => {
 		if (wonTricks.length === 0) {

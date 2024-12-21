@@ -16,6 +16,8 @@ export default interface PlayerInfo {
 	timeStep: number;
 	pID: number;
 	actionQueue: GameAction[];
+	scoreRecord: number[][];
+	betsRecord: number[][];
 }
 
 export interface OpponentInfo {
@@ -60,7 +62,8 @@ export const deserializePlayerInfo = (data: any): PlayerInfo => {
 		return GameActionMachine.deserialzeGameAction(action);
 	});
 	// console.log(actionQueue);
-
+	const scoreRecord: number[][] = data.scoreRecord;
+	const betsRecord: number[][] = data.betsRecord;
 
 	return {
 		hand,
@@ -76,6 +79,8 @@ export const deserializePlayerInfo = (data: any): PlayerInfo => {
 		timeStep,
 		pID,
 		actionQueue,
+		scoreRecord,
+		betsRecord,
 	};
 };
 

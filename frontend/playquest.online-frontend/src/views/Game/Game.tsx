@@ -7,6 +7,7 @@ import styled from "styled-components";
 import { useState, useRef, useEffect } from "react";
 import CardComponent from "./CardComponent.tsx";
 import Card from "../../../../../gameEngine/Card.ts";
+import AllRoundScoreboardModal from "./AllRoundScoreboardModal.tsx";
 
 const MainContainer = styled.div`
 	display: flex;
@@ -16,7 +17,6 @@ const MainContainer = styled.div`
 	width: 100%;
 	margin: 0px;
 	position: relative;
-	color: white;
 `;
 const PlayerHolder = styled.div`
 	display: flex;
@@ -49,6 +49,7 @@ export default function Game({
 	requestNextState,
 }: GameProps) {
 	// const [canvasDrawer, setCanvasDrawer] = useState<CanvasDrawer | null>(null);
+	const [showScoreBoard, setShowScoreBoard] = useState(false);
 	const [currentPlayerInfo, setCurrentPlayerInfo] = useState(playerInfo);
 	const [justPlayedCard, setJustPlayedCard] = useState<Card | null>(null);
 	const [justPlayedPID, setJustPlayedPID] = useState(-1);
@@ -63,8 +64,13 @@ export default function Game({
 	const p3 = useRef<HTMLDivElement>(null);
 	const opponents = [p0, p1, p2, p3];
 	const playerDOM = useRef<HTMLDivElement>(null);
-	const [scoreIncreases, setScoreIncreases] = useState<number[] | null[]>([null, null, null, null, null]);
-
+	const [scoreIncreases, setScoreIncreases] = useState<number[] | null[]>([
+		null,
+		null,
+		null,
+		null,
+		null,
+	]);
 
 	function resetJustPlayed() {
 		setJustPlayedCard(null);
@@ -161,7 +167,7 @@ export default function Game({
 			console.log("deal action");
 		} else if (action.name === "revealTrumpAction") {
 			console.log("trump action");
-		} else if(action.name === "endRoundAction") {
+		} else if (action.name === "endRoundAction") {
 			setScoreIncreases(action.scoreIncreases);
 			await sleep(3000);
 			// setScoreIncreases([null, null, null, null, null]);
@@ -180,6 +186,15 @@ export default function Game({
 	};
 	return (
 		<MainContainer>
+			<button onClick={() => setShowScoreBoard(true)}>Show Scoreboard</button>
+			{playerInfo && showScoreBoard && (
+				<AllRoundScoreboardModal
+					playerNames={["p1", "p2", "p3"]}
+					scoreRecord={currentPlayerInfo.scoreRecord}
+					betsRecord={currentPlayerInfo.betsRecord}
+					onClose={()=>{setShowScoreBoard(false)}}
+				/>
+			)}
 			<OpponentHolder>
 				{opps[0] ? <div ref={p0}>{opps[0]}</div> : null}
 				{opps[1] ? <div ref={p1}>{opps[1]}</div> : null}

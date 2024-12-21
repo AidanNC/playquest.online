@@ -25,8 +25,8 @@ export default async function playGame(
 	}
 }
 
-export function GetWholeGameInfo(playerCount: number) : PlayerInfo[]{
-	const game = new Game(playerCount);
+export function GetWholeGameInfo(playerCount: number, inputGame: Game | null = null) : PlayerInfo[]{
+	const game = inputGame ? inputGame : new Game(playerCount);
 	game.startRound(10, 0);
 	let info: PlayerInfo[] = [];
 	while (!game.gameOver) {
