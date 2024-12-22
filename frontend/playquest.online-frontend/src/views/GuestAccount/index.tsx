@@ -2,6 +2,7 @@ import ProfileImage, { imageNames } from "../../components/ProfileImage";
 import ProfilePicture from "../../components/ProfilePicture";
 import styled from "styled-components";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const ProfileContainer = styled.div`
 	margin-top: 10px;
@@ -26,12 +27,15 @@ const MessageDisplay = styled.div`
 	align-items: center;
 	color: var(--white);
 	width: 200px;
-`
+`;
 export default function GuestAccount() {
+	const navigate = useNavigate();
 	const imageGrid = [];
 	const savedImageString = localStorage.getItem("imageString");
 	const savedName = localStorage.getItem("userName");
-	const [selected, setSelected] = useState(savedImageString ? imageNames.indexOf(savedImageString) : -1);
+	const [selected, setSelected] = useState(
+		savedImageString ? imageNames.indexOf(savedImageString) : -1
+	);
 	const [imageString, setImageString] = useState(
 		savedImageString ? savedImageString : imageNames[0]
 	);
@@ -105,9 +109,14 @@ export default function GuestAccount() {
 								handleSetName(e.target.value);
 							}}
 						></input>
-						<button style={{ marginLeft: "auto" }} onClick={handleSubmit}>
-							Ready!
-						</button>
+						
+							<button  style={{ marginLeft: "auto" }} onClick={handleSubmit}>
+								Ready!
+							</button>
+							<button  onClick={()=>{navigate("/App")}}>
+								Join!
+							</button>
+						
 					</Row>
 
 					<p className="whiteFont">Choose a profile image!</p>

@@ -6,12 +6,19 @@ import { GetWholeGameInfo } from "../../../gameEngine/GameTest.ts";
 import { useState, useEffect, useRef } from "react";
 import "./App.css";
 import GameComponent from "./views/Game/Game";
+import { useNavigate } from "react-router-dom";
 // import { useRef } from "react";
 
 
 
 function App() {
-	const socketRef = useRef(new WebSocket("ws://10.0.0.66:8007")); //chanage this all the time
+	const navigate = useNavigate();
+	const port = parseInt(localStorage.getItem("port") || "-1");
+	if(port === -1){
+		navigate("/");
+	}
+
+	const socketRef = useRef(new WebSocket(`ws://10.0.0.66:${port}`)); //chanage this all the time
 	const socket = socketRef.current;
 	const randomID = () => {
 		return Math.floor(Math.random() * 1000000).toString();

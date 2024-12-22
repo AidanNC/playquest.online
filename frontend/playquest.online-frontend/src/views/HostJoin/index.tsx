@@ -1,5 +1,8 @@
 import styled from "styled-components";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+import { createGame } from "../../utils/backend";
 
 const MainContainer = styled.div`
 	display: flex;
@@ -24,6 +27,20 @@ export default function MainPage() {
 	const [playerCount, setPlayerCount] = useState(3);
 	const [hosting, setHosting] = useState(false);
 	const [joining, setJoining] = useState(false);
+	const [roomCode, setRoomCode] = useState(0);
+	const navigate = useNavigate();
+
+	async function handleCreate() {
+		const res = await createGame(playerCount);
+		console.log(res);
+		if (res.port) {
+			handleJoin(res.port);
+		}
+	}
+	function handleJoin(port: number) {
+		localStorage.setItem("port", port.toString());
+		navigate("/GuestAccount");
+	}
 
 	return (
 		<MainContainer>
@@ -35,7 +52,7 @@ export default function MainPage() {
 					setJoining(false);
 				}}
 			>
-				Host
+				Create
 			</button>
 			{hosting && <p className="whiteFont">Number of players</p>}
 			{hosting && (
@@ -60,7 +77,7 @@ export default function MainPage() {
 					</PlayerCountButton>
 				</PlayerCountRow>
 			)}
-			{hosting && <button>Start</button>}
+			{hosting && <button onClick={handleCreate}>Start</button>}
 			<button
 				onClick={() => {
 					setJoining(true);
@@ -70,8 +87,17 @@ export default function MainPage() {
 				Join
 			</button>
 			{joining && <p className="whiteFont">Enter Room Code</p>}
-			{joining && <input />}
-			{joining && <button>Go!</button>}
+			{joining && (
+				<input
+				type="number"
+					onChange={(e) => {
+						setRoomCode(parseInt(e.target.value));
+					}}
+				/>
+			)}
+			{joining && <button onClick={()=>{
+				handleJoin(roomCode);
+			}}>Go!</button>}
 		</MainContainer>
 	);
 }

@@ -32,7 +32,7 @@ const MainContainer = styled.div<{ $color: string; $hover: boolean }>`
 	font-size: 35px;
 	font-weight: bold;
 
-	margin-bottom: ${(props) => (props.$hover ? "15px" : "0px")};
+	margin-bottom: ${(props) => (props.$hover ? "15px" : "2px")};
 	transition: margin-bottom 0.2s ease;
 `;
 
