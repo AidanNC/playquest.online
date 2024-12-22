@@ -1,8 +1,10 @@
 {
   "dependencies": {
+    "express": "^4.21.2",
     "ws": "^8.18.0"
   },
   "devDependencies": {
+    "@types/express": "^5.0.0",
     "@types/ws": "^8.5.13"
   }
 }

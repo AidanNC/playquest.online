@@ -8,12 +8,17 @@ import "./App.css";
 import GameComponent from "./views/Game/Game";
 // import { useRef } from "react";
 
-const socket = new WebSocket("ws://10.0.0.66:8070"); //chanage this all the time
+
+
 function App() {
+	const socketRef = useRef(new WebSocket("ws://10.0.0.66:8007")); //chanage this all the time
+	const socket = socketRef.current;
 	const randomID = () => {
 		return Math.floor(Math.random() * 1000000).toString();
 	};
-	const clientID = useRef<string>(randomID());
+	const savedId = localStorage.getItem("clientID");
+	const clientID = useRef<string>(savedId || randomID());
+	localStorage.setItem("clientID", clientID.current);
 	const [playerInfo, setPlayerInfo] = useState<PlayerInfo | -1>(-1);
 	const [metaInfo, setMetaInfo] = useState({playerNames: [], imageStrings: []});
 	const [stateList, setStateList] = useState<PlayerInfo[]>([]);
