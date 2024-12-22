@@ -1,4 +1,4 @@
-import CardComponent from "./CardComponent.tsx";
+import CardComponent from "../../components/CardComponent.tsx";
 import Card from "../../../../../gameEngine/Card.ts"
 import styled from "styled-components";
 

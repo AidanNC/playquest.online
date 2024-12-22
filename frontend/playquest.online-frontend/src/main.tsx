@@ -4,11 +4,13 @@ import './index.css'
 import App from './App.tsx'
 import CardTests from './views/StyleTests/CardTests.tsx'
 import GuestAccount from './views/GuestAccount/index.tsx'
+import MainPage from './views/HostJoin/index.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <App />
     {/* <CardTests /> */}
     {/* <GuestAccount /> */}
+    {/* <MainPage /> */}
   </StrictMode>,
 )

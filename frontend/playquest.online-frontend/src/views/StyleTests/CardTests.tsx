@@ -1,4 +1,4 @@
-import CardComponent from "../Game/CardComponent";
+import CardComponent from "../../components/CardComponent.tsx";
 import Card, {SUITS, VALUES } from "../../../../../gameEngine/Card.ts";
 import styled from "styled-components";
 

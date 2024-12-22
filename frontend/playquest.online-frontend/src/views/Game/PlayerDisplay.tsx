@@ -1,5 +1,5 @@
 import PlayerInfo from "../../../../../gameEngine/PlayerInfo.ts";
-import CardComponent from "./CardComponent.tsx";
+import CardComponent from "../../components/CardComponent.tsx";
 import Card from "../../../../../gameEngine/Card.ts";
 import ProfilePicture from "../../components/ProfilePicture.tsx";
 import styled from "styled-components";

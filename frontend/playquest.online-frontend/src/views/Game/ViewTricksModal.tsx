@@ -1,5 +1,5 @@
 import Card from "../../../../../gameEngine/Card";
-import CardComponent from "./CardComponent";
+import CardComponent from "../../components/CardComponent";
 import styled from "styled-components";
 import ModalContainer from "../../components/ModalContainer";
 

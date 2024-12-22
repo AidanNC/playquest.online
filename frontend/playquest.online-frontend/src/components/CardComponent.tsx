@@ -5,7 +5,7 @@ import {
 	BsFillSuitClubFill,
 } from "react-icons/bs";
 import styled from "styled-components";
-import Card from "../../../../../gameEngine/Card.ts";
+import Card from "../../../../gameEngine/Card.ts";
 import { useState } from "react";
 
 const MainContainer = styled.div<{ $color: string; $hover: boolean }>`
