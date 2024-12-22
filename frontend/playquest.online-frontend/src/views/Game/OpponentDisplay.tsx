@@ -15,6 +15,8 @@ const AnimatedCard = styled.div<{ $x: number; $y: number }>`
 	transform: translate(${(props) => props.$x}px, ${(props) => props.$y}px);
 `;
 type Props = {
+	name: string;
+	imageString: string;
 	opponentInfo: OpponentInfo;
 	justPlayedCard: Card | null;
 	targetCoords: { x: number; y: number } | null;
@@ -23,6 +25,8 @@ type Props = {
 };
 
 export default function OpponentDisplay({
+	name, 
+	imageString,
 	opponentInfo,
 	justPlayedCard,
 	targetCoords,
@@ -44,9 +48,9 @@ export default function OpponentDisplay({
 			<MainContainer>
 				<ProfilePicture
 				// will fix the imagestring later TODO
-					imageString="" 
+					imageString={imageString}
 					active={opponentInfo.active}
-					name="Oppo"
+					name={name}
 					score={opponentInfo.score}
 					scoreIncrease={scoreIncrease}
 					bet={opponentInfo.bet}

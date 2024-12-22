@@ -15,6 +15,7 @@ function App() {
 	};
 	const clientID = useRef<string>(randomID());
 	const [playerInfo, setPlayerInfo] = useState<PlayerInfo | -1>(-1);
+	const [metaInfo, setMetaInfo] = useState({playerNames: [], imageStrings: []});
 	const [stateList, setStateList] = useState<PlayerInfo[]>([]);
 
 	function updateStateList(info: PlayerInfo) {
@@ -46,12 +47,20 @@ function App() {
 			// setPlayerInfo(info);
 			updateStateList(info);
 		}
+		if (data.metaInfo !== undefined) {
+			setMetaInfo(data.metaInfo);
+		}
 	}
 
 	useEffect(() => {
 		socket.addEventListener("open", () => {
 			console.log("Connected to server");
-			const message = JSON.stringify({ join: true, id: clientID.current });
+			const message = JSON.stringify({
+				join: true,
+				id: clientID.current,
+				name: localStorage.getItem("userName"),
+				imageString: localStorage.getItem("imageString"),
+			});
 			socket.send(message);
 		});
 	}, []);
@@ -69,8 +78,8 @@ function App() {
 	//test the visuals
 	useEffect(() => {
 		// playGame(3, 10, 1000, updateStateList);
-		const info = GetWholeGameInfo(5);
-		setStateList(info);
+		// const info = GetWholeGameInfo(5);
+		// setStateList(info);
 	}, []);
 
 	return (
@@ -87,6 +96,7 @@ function App() {
 						socket.send(message);
 					}}
 					playerInfo={playerInfo}
+					metaInfo={metaInfo}
 					requestNextState={nextState}
 				/>
 			)}

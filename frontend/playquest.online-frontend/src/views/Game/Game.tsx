@@ -49,11 +49,13 @@ type GameProps = {
 	playerInfo: PlayerInfo;
 	sendAction: (action: number) => void;
 	requestNextState: () => void;
+	metaInfo: {playerNames: string[], imageStrings: string[]};
 };
 export default function Game({
 	sendAction,
 	playerInfo,
 	requestNextState,
+	metaInfo,
 }: GameProps) {
 	// const [canvasDrawer, setCanvasDrawer] = useState<CanvasDrawer | null>(null);
 	const [showScoreBoard, setShowScoreBoard] = useState(false);
@@ -97,6 +99,8 @@ export default function Game({
 		const coord = opponents[index].current?.getBoundingClientRect();
 		return (
 			<OpponentDisplay
+				name={metaInfo.playerNames[opponent.pID]}
+				imageString={metaInfo.imageStrings[opponent.pID]}
 				opponentInfo={opponent}
 				key={index}
 				justPlayedCard={justPlayedPID === opponent.pID ? justPlayedCard : null}
@@ -119,10 +123,10 @@ export default function Game({
 		requestNextState();
 	}
 	async function processActions(actions: GameAction[]) {
-		await sleep(1000);
+		// await sleep(1000);
 		for (const action of actions) {
-			animateAction(action);
-			await sleep(1000);
+			await animateAction(action);
+			// await sleep(1000);
 		}
 		//clean up the actions
 		setTargetCoords(null);
@@ -141,6 +145,7 @@ export default function Game({
 			);
 
 			setCurrentPlayerInfo(tempPlayer);
+			await sleep(1000);
 		} else if (action.name === "winTrickAction") {
 			console.log("wontrick");
 			//get the target based on who won

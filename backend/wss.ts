@@ -12,16 +12,21 @@ const randomID = () => {
 };
 
 const playerIDs: string[] = [];
+const playerNames: string[] = [];
+const imageStrings: string[] = [];
 const sockets: WebSocket[] = [];
 
 //basic gameplay
 const game = new Game(MAX_PLAYERS);
 game.startRound(10, 0);
 
-
 const getAndSendInfo = (client: WebSocket) => {
 	const gameInfo = game.generateInfo(sockets.indexOf(client));
-	const message = JSON.stringify({ playerInfo: gameInfo });
+	const metaInfo = {
+		playerNames: playerNames,
+		imageStrings: imageStrings,
+	};
+	const message = JSON.stringify({ playerInfo: gameInfo, metaInfo: metaInfo });
 	console.log("sending");
 	client.send(message);
 };
@@ -32,24 +37,29 @@ wss.on("connection", function connection(ws) {
 	ws.on("message", function message(data) {
 		console.log(data.toString());
 		const jsonData = JSON.parse(data.toString());
-		if(jsonData.join !== undefined && jsonData.id !== undefined){
-			if(playerCount < MAX_PLAYERS && !playerIDs.includes(jsonData.id)){
+		if (jsonData.join !== undefined && jsonData.id !== undefined) {
+			//player isn't in the game and there is room, let them join
+			if (playerCount < MAX_PLAYERS && !playerIDs.includes(jsonData.id)) {
 				playerCount++;
 				sockets.push(ws);
 				playerIDs.push(jsonData.id);
+				playerNames.push(jsonData.name); //just assume these fields are populated
+				imageStrings.push(jsonData.imageString);
 				getAndSendInfo(ws);
-			}else{
-				if(playerIDs.includes(jsonData.id)){
+				//update the other players on the opponents info
+				sockets.forEach(function each(client) {
+					getAndSendInfo(client);
+				});
+			} else {
+				if (playerIDs.includes(jsonData.id)) {
 					console.log("Player already in game, join rejected!");
-				}else{
+				} else {
 					console.log("Game full, join rejected!");
 					console.log(playerIDs);
 				}
-				
-				
 			}
 		}
-		if(jsonData.action !== undefined && playerIDs.includes(jsonData.id)){
+		if (jsonData.action !== undefined && playerIDs.includes(jsonData.id)) {
 			const playerIndex = sockets.indexOf(ws);
 			const result = game.processAction(playerIndex, jsonData.action);
 			if (result === 1) {
