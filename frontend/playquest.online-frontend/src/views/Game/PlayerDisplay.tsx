@@ -1,9 +1,9 @@
 import PlayerInfo from "../../../../../gameEngine/PlayerInfo.ts";
 import CardComponent from "./CardComponent.tsx";
 import Card from "../../../../../gameEngine/Card.ts";
-import ProfilePicture from "./ProfilePicture.tsx";
+import ProfilePicture from "../../components/ProfilePicture.tsx";
 import styled from "styled-components";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 const MainContainer = styled.div`
 	display: flex;
@@ -57,6 +57,8 @@ export default function PlayerDisplay({
 	});
 
 	const [bet, setBet] = useState(0);
+	const name = useRef(localStorage.getItem("userName") || "Guest");
+	const imageString = useRef(localStorage.getItem("imageString") || "none");
 
 	function cardDisplay() {
 		return playerInfo.playedCard ? (
@@ -88,8 +90,10 @@ export default function PlayerDisplay({
 			)}
 			<MainContainer>
 				<ProfilePicture
+
+					imageString={imageString.current}
 					active={playerInfo.active}
-					name="ANC00"
+					name={name.current}
 					score={playerInfo.playerScore}
 					scoreIncrease={scoreIncrease}
 					bet={playerInfo.playerBet}

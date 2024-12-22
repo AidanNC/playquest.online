@@ -16,6 +16,11 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale; */
   --main-dark:#15001c;
+  --main-pink: #ee00ff;
+  --white: #ffffff;
+}
+.whiteFont {
+  color: #ffffff;
 }
 @font-face {
   font-family: 'Inter';

@@ -5,7 +5,6 @@ import OpponentDisplay from "./OpponentDisplay.tsx";
 import TrickAndTrump from "./TrickAndTrump.tsx";
 import styled from "styled-components";
 import { useState, useRef, useEffect } from "react";
-import CardComponent from "./CardComponent.tsx";
 import Card from "../../../../../gameEngine/Card.ts";
 import AllRoundScoreboardModal from "./AllRoundScoreboardModal.tsx";
 
@@ -27,11 +26,19 @@ const PlayerHolder = styled.div`
 	// width: 100%;
 `;
 
-const OpponentHolder = styled.div`
+const TopOpponentHolder = styled.div`
 	display: flex;
-	justify-content: space-around;
+	justify-content: center;
+	gap: 60px;
 	margin-top: 20px;
 	width: 100%;
+`;
+const BottomOpponentHolder = styled.div`
+	display: flex;
+	justify-content: space-between;
+	margin-top: 90px;
+	margin-left: 2%;
+	margin-right: 2%;
 `;
 
 function sleep(ms: number) {
@@ -192,15 +199,44 @@ export default function Game({
 					playerNames={["p1", "p2", "p3"]}
 					scoreRecord={currentPlayerInfo.scoreRecord}
 					betsRecord={currentPlayerInfo.betsRecord}
-					onClose={()=>{setShowScoreBoard(false)}}
+					onClose={() => {
+						setShowScoreBoard(false);
+					}}
 				/>
 			)}
-			<OpponentHolder>
-				{opps[0] ? <div ref={p0}>{opps[0]}</div> : null}
-				{opps[1] ? <div ref={p1}>{opps[1]}</div> : null}
-				{opps[2] ? <div ref={p2}>{opps[2]}</div> : null}
-				{opps[3] ? <div ref={p3}>{opps[3]}</div> : null}
-			</OpponentHolder>
+			{/* 3player game */}
+			{!opps[2] && (
+				<TopOpponentHolder>
+					{opps[0] ? <div ref={p0}>{opps[0]}</div> : null}
+					{opps[1] ? <div ref={p1}>{opps[1]}</div> : null}
+				</TopOpponentHolder>
+			)}
+			{/* 4 player game */}
+			{opps[2] && !opps[3] && (
+				<div>
+					<TopOpponentHolder>
+						{opps[1] ? <div ref={p1}>{opps[1]}</div> : null}
+					</TopOpponentHolder>
+					<BottomOpponentHolder>
+						{opps[0] ? <div ref={p0}>{opps[0]}</div> : null}
+
+						{opps[2] ? <div ref={p2}>{opps[2]}</div> : null}
+					</BottomOpponentHolder>
+				</div>
+			)}
+			{/* 5 player game */}
+			{opps[2] && opps[3] && (
+				<div>
+					<TopOpponentHolder>
+						{opps[1] ? <div ref={p1}>{opps[1]}</div> : null}
+						{opps[2] ? <div ref={p2}>{opps[2]}</div> : null}
+					</TopOpponentHolder>
+					<BottomOpponentHolder>
+						{opps[0] ? <div ref={p0}>{opps[0]}</div> : null}
+						{opps[3] ? <div ref={p3}>{opps[3]}</div> : null}
+					</BottomOpponentHolder>
+				</div>
+			)}
 
 			{/* <AnimatedCard $x={playedCoords.x} $y={playedCoords.y}>
 				{justPlayedCard ? <CardComponent card={justPlayedCard} /> : null}

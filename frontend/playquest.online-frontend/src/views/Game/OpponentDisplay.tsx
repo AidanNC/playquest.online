@@ -2,7 +2,7 @@ import { OpponentInfo } from "../../../../../gameEngine/PlayerInfo.ts";
 import styled from "styled-components";
 import CardComponent from "./CardComponent.tsx";
 import Card from "../../../../../gameEngine/Card.ts";
-import ProfilePicture from "./ProfilePicture.tsx";
+import ProfilePicture from "../../components/ProfilePicture.tsx";
 
 const MainContainer = styled.div`
 	display: flex;
@@ -43,6 +43,8 @@ export default function OpponentDisplay({
 		<div>
 			<MainContainer>
 				<ProfilePicture
+				// will fix the imagestring later TODO
+					imageString="" 
 					active={opponentInfo.active}
 					name="Oppo"
 					score={opponentInfo.score}

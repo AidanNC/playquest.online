@@ -8,7 +8,7 @@ const MainContainer = styled.div`
 	
 	
 	position: absolute;
-	top: calc(50% - 40px);
+	top: calc(50% );
 	left: calc(50% - 20px);
 	
 `;
