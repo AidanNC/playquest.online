@@ -78,7 +78,8 @@ export default function PlayerDisplay({
 				{cardDisplay()}
 			</AnimatedCard>
 			{playerInfo.playerBet === -1 && playerInfo.active && (
-				<div>
+				// magic number
+				<div style={{marginLeft: "100px"}}> 
 					<p>Place bet:</p>
 					<input
 						type="number"

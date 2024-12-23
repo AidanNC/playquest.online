@@ -8,7 +8,10 @@ import styled from "styled-components";
 import Card from "../../../../gameEngine/Card.ts";
 import { useState } from "react";
 
-const MainContainer = styled.div<{ $color: string; $hover: boolean }>`
+const MainContainer = styled.div<{
+	$color: string;
+	$hover: boolean;
+}>`
 	height: 80px;
 	width: 60px;
 	background-color: #36014a;
@@ -29,20 +32,50 @@ const MainContainer = styled.div<{ $color: string; $hover: boolean }>`
 	color: ${(props) => props.$color};
 	justify-content: center;
 	align-items: center;
+	//if something is super small then we will reduce the fontsize
 	font-size: 35px;
 	font-weight: bold;
 
 	margin-bottom: ${(props) => (props.$hover ? "15px" : "2px")};
 	transition: margin-bottom 0.2s ease;
 `;
+const MiniMainContainer = styled.div<{
+	$color: string;
+}>`
+	height: 20px;
+	width: 15px;
+	background-color: #36014a;
+
+	// filter: drop-shadow(0px 0px 1px #f5f5c1);
+	border: 1px solid #f5f5c1;
+
+	border-radius: 2px;
+	display: flex;
+	gap: 2px;
+	margin: 2px;
+	color: ${(props) => props.$color};
+	justify-content: center;
+	align-items: center;
+
+	font-size: 20px;
+	font-weight: bold;
+
+	margin-bottom: 2px;
+`;
 
 interface CardElementProps {
 	card: Card;
 	id?: number;
 	onClick?: () => void;
+	mini?: boolean;
 }
 
-export default function CardComponent({ card, id, onClick }: CardElementProps) {
+export default function CardComponent({
+	card,
+	id,
+	onClick,
+	mini,
+}: CardElementProps) {
 	let color = "#f5f5c1";
 	let displaySuit: JSX.Element = <BsFillSuitClubFill color="black" />;
 	const [hover, setHover] = useState(false);
@@ -75,25 +108,33 @@ export default function CardComponent({ card, id, onClick }: CardElementProps) {
 			}}
 			onMouseLeave={() => {
 				setTimeout(() => setHover(false), 100); // Add timeout for hover effect
-                
+
 				// setHover(false);
 			}}
 		>
-			<MainContainer
-				id={"card" + id}
-				onClick={() => {
-					if (onClick !== undefined) {
-						onClick();
-					}
-				}}
-				$color={color}
-				$hover={hover}
-			>
-				<>
-					{displaySuit}
-					{name}
-				</>
-			</MainContainer>
+			{mini ? (
+				<MiniMainContainer $color={color}>
+					<>
+						{name}
+					</>
+				</MiniMainContainer>
+			) : (
+				<MainContainer
+					id={"card" + id}
+					onClick={() => {
+						if (onClick !== undefined) {
+							onClick();
+						}
+					}}
+					$color={color}
+					$hover={hover}
+				>
+					<>
+						{displaySuit}
+						{name}
+					</>
+				</MainContainer>
+			)}
 		</div>
 	);
 }

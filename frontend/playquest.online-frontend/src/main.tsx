@@ -23,6 +23,10 @@ const router = createBrowserRouter([
   {
     path: '/App',
     element: <App />
+  },
+  {
+    path: '/CardTests',
+    element: <CardTests />
   }
 ])
 

@@ -3,9 +3,15 @@ import { useEffect, useState } from "react";
 import ProfileImage from "./ProfileImage";
 import Card from "../../../../gameEngine/Card";
 import ViewTricksModal from "../views/Game/ViewTricksModal";
+import MiniTrick from "./MiniTrick";
 
-
+const TrickAndMainContainer = styled.div`
+	display: flex;
+	flex-direction: row;
+`;
 const MainContainer = styled.div<{ $active: boolean }>`
+	height: 130px;
+	width: 320px;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -41,6 +47,15 @@ const InfoDisplay = styled.div`
 	}
 	.bet {
 	}
+`;
+
+const TrickDisplay = styled.div`
+	display: flex;
+	justify-content: flex-start;
+	flex-wrap: wrap;
+	margin-right: 20px;
+	margin-left: auto;
+	width: 80px;
 `;
 type ProfilePictureProps = {
 	imageString: string;
@@ -120,32 +135,41 @@ export default function ProfilePicture({
 					tricks={wonTricks}
 				/>
 			)}
-			<MainContainer $active={active}>
-				<ProfileImage selected={false} imageString={imageString} />
+			<TrickAndMainContainer>
+				<TrickDisplay>
+					{wonTricks.map((trick, i) => (
+						<MiniTrick trick={trick} key={i} />
+					))}
+				</TrickDisplay>
+				<MainContainer $active={active}>
+					<ProfileImage selected={false} imageString={imageString} />
 
-				<InfoDisplay>
-					<p>{name}</p>
-					<p>
-						Score: {score}
-						{scoreIncrease !== null && (
-							<span style={{ color: scoreIncrease === bet + 10 ? green : red }}>
-								{" "}
-								+ {scoreIncrease}
-							</span>
-						)}
-					</p>
-					<p className="bet">
-						Bet: <span style={{ color: betColor }}>{bet > -1 ? bet : 0}</span>
-					</p>
-					<p
-						className="tricks"
-						onClick={() => setShowModal(wonTricks.length > 0)}
-					>
-						Tricks Won:{" "}
-						<span style={{ color: trickColor }}>{wonTricks.length}</span>
-					</p>
-				</InfoDisplay>
-			</MainContainer>
+					<InfoDisplay>
+						<p>{name}</p>
+						<p>
+							Score: {score}
+							{scoreIncrease !== null && (
+								<span
+									style={{ color: scoreIncrease === bet + 10 ? green : red }}
+								>
+									{" "}
+									+ {scoreIncrease}
+								</span>
+							)}
+						</p>
+						<p className="bet">
+							Bet: <span style={{ color: betColor }}>{bet > -1 ? bet : 0}</span>
+						</p>
+						<p
+							className="tricks"
+							onClick={() => setShowModal(wonTricks.length > 0)}
+						>
+							Tricks Won:{" "}
+							<span style={{ color: trickColor }}>{wonTricks.length}</span>
+						</p>
+					</InfoDisplay>
+				</MainContainer>
+			</TrickAndMainContainer>
 		</div>
 	);
 }
