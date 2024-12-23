@@ -25,7 +25,6 @@ const AnimatedCard = styled.div<{ $x: number; $y: number }>`
 	transform: translate(${(props) => props.$x}px, ${(props) => props.$y}px);
 `;
 
-
 type GameProps = {
 	playerInfo: PlayerInfo;
 	visibleCardNumber: number;
@@ -45,7 +44,7 @@ export default function PlayerDisplay({
 	justPlayedCard,
 	targetCoords,
 	offset,
-	scoreIncrease
+	scoreIncrease,
 }: GameProps) {
 	const hand = playerInfo.hand.map((card, index) => {
 		return (
@@ -58,7 +57,7 @@ export default function PlayerDisplay({
 		);
 	});
 	console.log("visibleCardNumber", visibleCardNumber);
-	const [bet, setBet] = useState(0);
+	const [bet, setBet] = useState<number | null>(null);
 	const name = useRef(localStorage.getItem("userName") || "Guest");
 	const imageString = useRef(localStorage.getItem("imageString") || "none");
 
@@ -67,7 +66,7 @@ export default function PlayerDisplay({
 			<CardComponent card={playerInfo.playedCard} />
 		) : justPlayedCard ? (
 			<CardComponent card={justPlayedCard} />
-		) : null
+		) : null;
 	}
 	const coords = targetCoords
 		? { x: targetCoords.x - offset.x, y: targetCoords.y - offset.y + 130 }
@@ -76,24 +75,31 @@ export default function PlayerDisplay({
 		<div>
 			{/* {cardDisplay()} */}
 			{/* because wewant it to be adjusted up */}
-			<AnimatedCard $x={coords.x } $y={coords.y }> 
+			<AnimatedCard $x={coords.x} $y={coords.y}>
 				{cardDisplay()}
 			</AnimatedCard>
 			{playerInfo.playerBet === -1 && playerInfo.active && (
 				// magic number
-				<div style={{marginLeft: "100px"}}> 
+				<div style={{ marginLeft: "100px" }}>
 					<p>Place bet:</p>
 					<input
 						type="number"
-						value={bet}
-						onChange={(e) => setBet(Number(e.target.value))}
+						value={bet !== null ? bet : ""}
+						onChange={(e) => setBet(parseInt(e.target.value))}
 					></input>
-					<button onClick={() => makeBet(bet)}>Submit</button>
+					<button
+						onClick={() => {
+							if(bet!== null){
+								makeBet(bet);
+							}
+						}}
+					>
+						Submit
+					</button>
 				</div>
 			)}
 			<MainContainer>
 				<ProfilePicture
-
 					imageString={imageString.current}
 					active={playerInfo.active}
 					name={name.current}
@@ -102,9 +108,8 @@ export default function PlayerDisplay({
 					bet={playerInfo.playerBet}
 					wonTricks={playerInfo.playerWonTricks}
 				/>
-				<HandRack>{hand.slice(0,visibleCardNumber)}</HandRack>
+				<HandRack>{hand.slice(0, visibleCardNumber)}</HandRack>
 			</MainContainer>
-			
 		</div>
 	);
 }
