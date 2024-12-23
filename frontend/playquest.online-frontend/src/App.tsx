@@ -20,6 +20,8 @@ function App() {
 
 	const socketRef = useRef(new WebSocket(`ws://10.0.0.66:${port}`)); //chanage this all the time
 	const socket = socketRef.current;
+	//only for debugging
+	// const socket = new WebSocket(`ws://10.0.0.66:${port}`)
 	const randomID = () => {
 		return Math.floor(Math.random() * 1000000).toString();
 	};
@@ -36,8 +38,11 @@ function App() {
 		console.log(info.timeStep);
 		if (stateList.length === 0) {
 			setPlayerInfo(info);
+		}else if (info.timeStep !== stateList[stateList.length - 1].timeStep) { 
+			//don't add to list if we already received this state
+			setStateList((prevStateList) => [...prevStateList, info]);
 		}
-		setStateList((prevStateList) => [...prevStateList, info]);
+		
 	}
 
 	function nextState() {
@@ -90,7 +95,7 @@ function App() {
 	//test the visuals
 	useEffect(() => {
 		// playGame(3, 10, 1000, updateStateList);
-		// const info = GetWholeGameInfo(5);
+		// const info = GetWholeGameInfo(3);
 		// setStateList(info);
 	}, []);
 

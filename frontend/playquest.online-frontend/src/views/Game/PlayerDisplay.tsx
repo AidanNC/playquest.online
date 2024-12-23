@@ -28,6 +28,7 @@ const AnimatedCard = styled.div<{ $x: number; $y: number }>`
 
 type GameProps = {
 	playerInfo: PlayerInfo;
+	visibleCardNumber: number;
 	makeBet: (bet: number) => void;
 	playCard: (cardIndex: number) => void;
 	justPlayedCard: Card | null;
@@ -38,6 +39,7 @@ type GameProps = {
 
 export default function PlayerDisplay({
 	playerInfo,
+	visibleCardNumber,
 	makeBet,
 	playCard,
 	justPlayedCard,
@@ -55,7 +57,7 @@ export default function PlayerDisplay({
 			/>
 		);
 	});
-
+	console.log("visibleCardNumber", visibleCardNumber);
 	const [bet, setBet] = useState(0);
 	const name = useRef(localStorage.getItem("userName") || "Guest");
 	const imageString = useRef(localStorage.getItem("imageString") || "none");
@@ -100,7 +102,7 @@ export default function PlayerDisplay({
 					bet={playerInfo.playerBet}
 					wonTricks={playerInfo.playerWonTricks}
 				/>
-				<HandRack>{hand}</HandRack>
+				<HandRack>{hand.slice(0,visibleCardNumber)}</HandRack>
 			</MainContainer>
 			
 		</div>

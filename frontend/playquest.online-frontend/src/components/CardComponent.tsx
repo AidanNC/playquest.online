@@ -114,9 +114,7 @@ export default function CardComponent({
 		>
 			{mini ? (
 				<MiniMainContainer $color={color}>
-					<>
-						{name}
-					</>
+					<>{name}</>
 				</MiniMainContainer>
 			) : (
 				<MainContainer
@@ -136,5 +134,14 @@ export default function CardComponent({
 				</MainContainer>
 			)}
 		</div>
+	);
+}
+
+export function FaceDownCard() {
+	const color = "var(--white)";
+	return (
+		<MainContainer $hover={false} $color={color}>
+			<>?</>
+		</MainContainer>
 	);
 }

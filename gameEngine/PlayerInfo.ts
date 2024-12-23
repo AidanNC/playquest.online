@@ -18,6 +18,10 @@ export default interface PlayerInfo {
 	actionQueue: GameAction[];
 	scoreRecord: number[][];
 	betsRecord: number[][];
+	startingHandSize: number;
+	round: number;
+	dealerIndex: number;
+
 }
 
 export interface OpponentInfo {
@@ -65,6 +69,10 @@ export const deserializePlayerInfo = (data: any): PlayerInfo => {
 	const scoreRecord: number[][] = data.scoreRecord;
 	const betsRecord: number[][] = data.betsRecord;
 
+	const round: number = data.round;
+	const startingHandSize: number = data.startingHandSize;
+
+	const dealerIndex: number = data.dealerIndex;
 	return {
 		hand,
 		trumpCard,
@@ -81,6 +89,9 @@ export const deserializePlayerInfo = (data: any): PlayerInfo => {
 		actionQueue,
 		scoreRecord,
 		betsRecord,
+		startingHandSize,
+		round,
+		dealerIndex
 	};
 };
 

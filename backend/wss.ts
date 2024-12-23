@@ -17,7 +17,7 @@ export default function HostGame(port: number, maxPlayers: number) {
 	const game = new Game(MAX_PLAYERS);
 	game.startRound(10, 0);
 
-	const getAndSendInfo = (client: WebSocket) => {
+	const getAndSendInfo = (client: WebSocket,) => {
 		const gameInfo = game.generateInfo(sockets.indexOf(client));
 		const metaInfo = {
 			playerNames: playerNames,
@@ -28,6 +28,18 @@ export default function HostGame(port: number, maxPlayers: number) {
 			metaInfo: metaInfo,
 		});
 		console.log("sending");
+		console.log(gameInfo !== -1 ? gameInfo.timeStep: "no info");
+		client.send(message);
+	};
+	const sendMetaInfo = (client: WebSocket) => {
+		const metaInfo = {
+			playerNames: playerNames,
+			imageStrings: imageStrings,
+		};
+		const message = JSON.stringify({
+			metaInfo: metaInfo,
+		});
+		console.log("sending metainfo");
 		client.send(message);
 	};
 
@@ -48,7 +60,7 @@ export default function HostGame(port: number, maxPlayers: number) {
 					getAndSendInfo(ws);
 					//update the other players on the opponents info
 					sockets.forEach(function each(client) {
-						getAndSendInfo(client);
+						sendMetaInfo(client);
 					});
 				} else if (playerIDs.includes(jsonData.id)) {
 					const pindex = playerIDs.indexOf(jsonData.id);
@@ -61,13 +73,14 @@ export default function HostGame(port: number, maxPlayers: number) {
 				}
 			}
 			if (jsonData.action !== undefined && playerIDs.includes(jsonData.id)) {
+				game.clearActionQueue();
 				const playerIndex = sockets.indexOf(ws);
 				const result = game.processAction(playerIndex, jsonData.action);
 				if (result === 1) {
 					sockets.forEach(function each(client) {
 						getAndSendInfo(client);
 					});
-					game.clearActionQueue();
+					// game.clearActionQueue();
 				}
 			}
 		});

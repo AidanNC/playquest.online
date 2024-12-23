@@ -1,4 +1,4 @@
-import CardComponent from "../../components/CardComponent.tsx";
+import CardComponent, {FaceDownCard} from "../../components/CardComponent.tsx";
 import Card, { SUITS, VALUES } from "../../../../../gameEngine/Card.ts";
 import styled from "styled-components";
 import MiniTrick from "../../components/MiniTrick.tsx";
@@ -57,6 +57,7 @@ export default function CardTests() {
 					]}
 				/>
 			</div>
+			<FaceDownCard />
 		</div>
 	);
 }

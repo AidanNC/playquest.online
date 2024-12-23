@@ -7,6 +7,7 @@ import styled from "styled-components";
 import { useState, useRef, useEffect } from "react";
 import Card from "../../../../../gameEngine/Card.ts";
 import AllRoundScoreboardModal from "./AllRoundScoreboardModal.tsx";
+import DealingCard from "./DealingCard.tsx";
 
 const MainContainer = styled.div`
 	display: flex;
@@ -49,7 +50,7 @@ type GameProps = {
 	playerInfo: PlayerInfo;
 	sendAction: (action: number) => void;
 	requestNextState: () => void;
-	metaInfo: {playerNames: string[], imageStrings: string[]};
+	metaInfo: { playerNames: string[]; imageStrings: string[] };
 };
 export default function Game({
 	sendAction,
@@ -62,6 +63,8 @@ export default function Game({
 	const [currentPlayerInfo, setCurrentPlayerInfo] = useState(playerInfo);
 	const [justPlayedCard, setJustPlayedCard] = useState<Card | null>(null);
 	const [justPlayedPID, setJustPlayedPID] = useState(-1);
+	const [playDealAnimation, setPlayDealAnimation] = useState(false);
+	const [visibleCardNumber, setVisibleCardNumber] = useState(10);
 
 	const [targetCoords, setTargetCoords] = useState<{
 		x: number;
@@ -81,6 +84,28 @@ export default function Game({
 		null,
 	]);
 
+	function getDealerTargetCoords() {
+		const coords: { x: number; y: number }[] = [];
+
+		if (playerDOM.current) {
+			coords.push(getCoords(playerDOM.current));
+		}
+		opponents.forEach((ref) => {
+			if (ref.current) {
+				coords.push(getCoords(ref.current));
+			}
+		});
+		// if (playerDOM.current) {
+		// 	coords.splice(currentPlayerInfo.pID, 0, getCoords(playerDOM.current));
+		// }
+		function getCoords(obj: HTMLDivElement) {
+			return {
+				x: obj.getBoundingClientRect().x,
+				y: obj.getBoundingClientRect().y,
+			};
+		}
+		return coords;
+	}
 	function resetJustPlayed() {
 		setJustPlayedCard(null);
 		setJustPlayedPID(-1);
@@ -176,7 +201,13 @@ export default function Game({
 		} else if (action.name === "betAction") {
 			console.log("bet action");
 		} else if (action.name === "dealAction") {
+			setCurrentPlayerInfo(playerInfo);
 			console.log("deal action");
+			setVisibleCardNumber(0);
+			setPlayDealAnimation(true);
+			await sleep(10000);
+			setPlayDealAnimation(false);
+			setVisibleCardNumber(10);
 		} else if (action.name === "revealTrumpAction") {
 			console.log("trump action");
 		} else if (action.name === "endRoundAction") {
@@ -198,6 +229,31 @@ export default function Game({
 	};
 	return (
 		<MainContainer>
+			{playDealAnimation && (
+				<DealingCard
+					numCards={
+						currentPlayerInfo.startingHandSize *
+						(1 + currentPlayerInfo.opponents.length)
+					}
+					coordinates={getDealerTargetCoords()}
+					dealerIndex={
+						//this cooked math needs to be looked at again and explained for future me
+						(currentPlayerInfo.dealerIndex +
+							1 +
+							currentPlayerInfo.opponents.length -
+							currentPlayerInfo.pID) %
+						(1 + currentPlayerInfo.opponents.length)
+					}
+					incrementCard={(index: number, value: number) => {
+						if (index === currentPlayerInfo.pID) {
+							if (currentPlayerInfo.dealerIndex !== currentPlayerInfo.pID) {
+								value += 1;
+							}
+							setVisibleCardNumber(value);
+						}
+					}}
+				/>
+			)}
 			<button onClick={() => setShowScoreBoard(true)}>Show Scoreboard</button>
 			{playerInfo && showScoreBoard && (
 				<AllRoundScoreboardModal
@@ -246,11 +302,14 @@ export default function Game({
 			{/* <AnimatedCard $x={playedCoords.x} $y={playedCoords.y}>
 				{justPlayedCard ? <CardComponent card={justPlayedCard} /> : null}
 			</AnimatedCard> */}
+
 			<TrickAndTrump trump={currentPlayerInfo.trumpCard} />
+
 			<PlayerHolder>
 				<div ref={playerDOM}>
 					<PlayerDisplay
 						playerInfo={currentPlayerInfo}
+						visibleCardNumber={playDealAnimation ? visibleCardNumber : 10}
 						makeBet={makeBet}
 						playCard={playCard}
 						justPlayedCard={
