@@ -131,6 +131,7 @@ export default function ProfilePicture({
 		<div>
 			{showModal && (
 				<ViewTricksModal
+					isOpen={showModal}
 					onClose={() => setShowModal(false)}
 					tricks={wonTricks}
 				/>

@@ -257,6 +257,7 @@ export default function Game({
 			<button onClick={() => setShowScoreBoard(true)}>Show Scoreboard</button>
 			{playerInfo && showScoreBoard && (
 				<AllRoundScoreboardModal
+					isOpen={showScoreBoard}
 					playerNames={metaInfo.playerNames}
 					scoreRecord={currentPlayerInfo.scoreRecord}
 					betsRecord={currentPlayerInfo.betsRecord}

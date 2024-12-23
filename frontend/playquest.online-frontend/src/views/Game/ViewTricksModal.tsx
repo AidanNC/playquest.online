@@ -6,6 +6,7 @@ import ModalContainer from "../../components/ModalContainer";
 type ViewTricksModalProps = {
 	tricks: Card[][];
 	onClose: () => void;
+	isOpen: boolean;
 };
 
 const TrickContainer = styled.div`
@@ -15,9 +16,10 @@ const TrickContainer = styled.div`
 export default function ViewTricksModal({
 	tricks,
 	onClose,
+	isOpen,
 }: ViewTricksModalProps) {
 	return (
-		<ModalContainer onClose={onClose}>
+		<ModalContainer isOpen={isOpen} onClose={onClose}>
 			{tricks.map((trick, index) => {
 				return (
 					<TrickContainer key={index}>

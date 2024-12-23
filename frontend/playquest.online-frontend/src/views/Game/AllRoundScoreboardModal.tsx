@@ -57,6 +57,7 @@ type ViewTricksModalProps = {
 	scoreRecord: number[][];
 	betsRecord: number[][];
 	onClose: () => void;
+	isOpen: boolean;
 };
 
 export default function AllRoundScoreboardModal({
@@ -64,6 +65,7 @@ export default function AllRoundScoreboardModal({
 	scoreRecord,
 	betsRecord,
 	onClose,
+	isOpen,
 }: ViewTricksModalProps) {
 	// betsRecord = betsRecord ? [[0],[0],[0],[0],[0]] : betsRecord;
 	// scoreRecord = scoreRecord ? [[0],[0],[0],[0],[0]] : scoreRecord;
@@ -144,7 +146,7 @@ export default function AllRoundScoreboardModal({
 	}
 
 	return (
-		<ModalContainer onClose={onClose}>
+		<ModalContainer isOpen={isOpen} onClose={onClose}>
 			<MainContainer>{headerRow}
 				{rows}
 			</MainContainer>

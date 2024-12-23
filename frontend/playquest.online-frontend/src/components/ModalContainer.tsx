@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useRef, useEffect } from "react";
 import styled from "styled-components";
 
 const MainContainer = styled.div`
@@ -36,14 +36,44 @@ const CloseButton = styled.button`
 type ModalContainerProps = {
 	children: ReactNode;
 	onClose: () => void;
+	isOpen: boolean;
 };
 
 export default function ModalContainer({
 	children,
 	onClose,
+	isOpen,
 }: ModalContainerProps) {
+	const mainRef = useRef<HTMLDivElement>(null);
+
+	const handleDocumentClick = (event: MouseEvent) => {
+		if (
+			mainRef.current && !mainRef.current.contains(event.target as Node)
+		) {
+			console.log("clicked outside");
+			if(isOpen) {
+				onClose();
+			}
+			// onClose();
+		}
+	};
+
+	useEffect(() => {
+		// document.addEventListener("click", handleDocumentClick);
+		// return () => {
+		// 	document.removeEventListener("click", handleDocumentClick);
+		// };
+		const timer = setTimeout(() => {
+            document.addEventListener("click", handleDocumentClick);
+        }, 0);
+
+        return () => {
+            clearTimeout(timer);
+            document.removeEventListener("click", handleDocumentClick);
+        };
+	}, [isOpen]);
 	return (
-		<MainContainer>
+		<MainContainer ref={mainRef}>
 			<CloseButton onClick={onClose}>X</CloseButton>
 			<ContentContainer>{children}</ContentContainer>
 		</MainContainer>
