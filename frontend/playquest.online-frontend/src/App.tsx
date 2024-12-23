@@ -9,12 +9,10 @@ import GameComponent from "./views/Game/Game";
 import { useNavigate } from "react-router-dom";
 // import { useRef } from "react";
 
-
-
 function App() {
 	const navigate = useNavigate();
 	const port = parseInt(localStorage.getItem("port") || "-1");
-	if(port === -1){
+	if (port === -1) {
 		navigate("/");
 	}
 
@@ -29,7 +27,10 @@ function App() {
 	const clientID = useRef<string>(savedId || randomID());
 	localStorage.setItem("clientID", clientID.current);
 	const [playerInfo, setPlayerInfo] = useState<PlayerInfo | -1>(-1);
-	const [metaInfo, setMetaInfo] = useState({playerNames: [], imageStrings: []});
+	const [metaInfo, setMetaInfo] = useState({
+		playerNames: [],
+		imageStrings: [],
+	});
 	const [stateList, setStateList] = useState<PlayerInfo[]>([]);
 
 	function updateStateList(info: PlayerInfo) {
@@ -38,11 +39,10 @@ function App() {
 		console.log(info.timeStep);
 		if (stateList.length === 0) {
 			setPlayerInfo(info);
-		}else if (info.timeStep !== stateList[stateList.length - 1].timeStep) { 
+		} else if (info.timeStep !== stateList[stateList.length - 1].timeStep) {
 			//don't add to list if we already received this state
 			setStateList((prevStateList) => [...prevStateList, info]);
 		}
-		
 	}
 
 	function nextState() {
@@ -95,8 +95,8 @@ function App() {
 	//test the visuals
 	useEffect(() => {
 		// playGame(3, 10, 1000, updateStateList);
-		const info = GetWholeGameInfo(3);
-		setStateList(info);
+		// const info = GetWholeGameInfo(5);
+		// setStateList(info);
 	}, []);
 
 	return (
@@ -117,7 +117,16 @@ function App() {
 					requestNextState={nextState}
 				/>
 			)}
-			{playerInfo === -1 && <h1>Loading...</h1>}
+			{playerInfo === -1 && 
+			<div style={{display: "flex", flexDirection:"column", justifyContent:"center", alignItems:"center"}}>
+				{<h1 className="whiteFont">Waiting for Players</h1>}
+				<h1 className="whiteFont">Room Code: {port}</h1>
+				<h1 className="whiteFont">Players:</h1>
+				{metaInfo &&
+					metaInfo.playerNames.map((name: string) => (
+						<h1 className="whiteFont">{name}</h1>
+					))}
+			</div>}
 		</>
 	);
 }

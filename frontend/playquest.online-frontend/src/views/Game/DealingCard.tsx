@@ -2,6 +2,8 @@ import styled from "styled-components";
 import { FaceDownCard } from "../../components/CardComponent";
 import { useEffect, useState } from "react";
 
+export const MOVE_DURATION = 400;
+
 const AnimatedCard = styled.div<{ $x: number; $y: number; $animate: boolean }>`
 	position: absolute;
 	${(props) =>

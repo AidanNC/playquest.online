@@ -7,7 +7,7 @@ import styled from "styled-components";
 import { useState, useRef, useEffect } from "react";
 import Card from "../../../../../gameEngine/Card.ts";
 import AllRoundScoreboardModal from "./AllRoundScoreboardModal.tsx";
-import DealingCard from "./DealingCard.tsx";
+import DealingCard, {MOVE_DURATION} from "./DealingCard.tsx";
 
 const MainContainer = styled.div`
 	display: flex;
@@ -213,7 +213,9 @@ export default function Game({
 			console.log("deal action");
 			setVisibleCardNumber(0);
 			setPlayDealAnimation(true);
-			await sleep(10000);
+			const waitDuration = (currentPlayerInfo.startingHandSize *
+			(1 + currentPlayerInfo.opponents.length)) * MOVE_DURATION *2/3;
+			await sleep(waitDuration);
 			setPlayDealAnimation(false);
 			setVisibleCardNumber(10);
 		} else if (action.name === "revealTrumpAction") {

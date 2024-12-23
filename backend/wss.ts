@@ -57,7 +57,12 @@ export default function HostGame(port: number, maxPlayers: number) {
 					playerIDs.push(jsonData.id);
 					playerNames.push(jsonData.name); //just assume these fields are populated
 					imageStrings.push(jsonData.imageString);
-					getAndSendInfo(ws);
+					if(playerCount === MAX_PLAYERS) {
+						// getAndSendInfo(ws);
+						sockets.forEach(function each(client) {
+							getAndSendInfo(client);
+						});
+					}
 					//update the other players on the opponents info
 					sockets.forEach(function each(client) {
 						sendMetaInfo(client);
@@ -66,7 +71,11 @@ export default function HostGame(port: number, maxPlayers: number) {
 					const pindex = playerIDs.indexOf(jsonData.id);
 					sockets[pindex] = ws;
 					console.log(`Player ${jsonData.name} reconnected!`);
-					getAndSendInfo(ws);
+					if(playerCount === MAX_PLAYERS) {
+						console.log(playerCount);
+						getAndSendInfo(ws);
+					}
+					
 				} else {
 					console.log("Game full, join rejected!");
 					console.log(playerIDs);
