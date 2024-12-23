@@ -70,7 +70,7 @@ class GameActionMachine {
 			case "dealAction":
 				return GameActionMachine.dealAction(data.pID, data.handSize);
 			case "winTrickAction":
-				const trick = data.trick.map((card: any) => { return new Card(card.suit, card.value); });
+				const trick: Card[] = data.trick.map((card: Card) => { return new Card(card.suit, card.value); });
 				return GameActionMachine.winTrickAction(data.pID, trick);
 			case "endRoundAction":
 				return GameActionMachine.endRoundAction(data.scoreIncreases);

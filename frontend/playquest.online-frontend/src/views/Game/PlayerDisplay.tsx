@@ -34,6 +34,8 @@ type GameProps = {
 	targetCoords: { x: number; y: number } | null;
 	offset: { x: number; y: number };
 	scoreIncrease: number | null;
+	finalTrick: Card[] | null;
+	finalTrickWinner: number;
 };
 
 export default function PlayerDisplay({
@@ -45,6 +47,8 @@ export default function PlayerDisplay({
 	targetCoords,
 	offset,
 	scoreIncrease,
+	finalTrick,
+	finalTrickWinner,
 }: GameProps) {
 	const hand = playerInfo.hand.map((card, index) => {
 		return (
@@ -56,7 +60,6 @@ export default function PlayerDisplay({
 			/>
 		);
 	});
-	console.log("visibleCardNumber", visibleCardNumber);
 	const [bet, setBet] = useState<number | null>(null);
 	const name = useRef(localStorage.getItem("userName") || "Guest");
 	const imageString = useRef(localStorage.getItem("imageString") || "none");
@@ -71,6 +74,10 @@ export default function PlayerDisplay({
 	const coords = targetCoords
 		? { x: targetCoords.x - offset.x, y: targetCoords.y - offset.y + 130 }
 		: { x: 0, y: 0 - 100 };
+
+	const wonTricks = playerInfo.pID === finalTrickWinner && finalTrick
+        ? [...playerInfo.playerWonTricks, finalTrick]
+        : playerInfo.playerWonTricks;
 	return (
 		<div>
 			{/* {cardDisplay()} */}
@@ -89,7 +96,7 @@ export default function PlayerDisplay({
 					></input>
 					<button
 						onClick={() => {
-							if(bet!== null){
+							if (bet !== null) {
 								makeBet(bet);
 							}
 						}}
@@ -106,7 +113,7 @@ export default function PlayerDisplay({
 					score={playerInfo.playerScore}
 					scoreIncrease={scoreIncrease}
 					bet={playerInfo.playerBet}
-					wonTricks={playerInfo.playerWonTricks}
+					wonTricks={wonTricks}
 				/>
 				<HandRack>{hand.slice(0, visibleCardNumber)}</HandRack>
 			</MainContainer>

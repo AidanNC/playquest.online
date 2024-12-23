@@ -22,16 +22,20 @@ type Props = {
 	targetCoords: { x: number; y: number } | null;
 	offset: { x: number; y: number };
 	scoreIncrease: number | null;
+	finalTrick: Card[] | null;
+	finalTrickWinner: number;
 };
 
 export default function OpponentDisplay({
-	name, 
+	name,
 	imageString,
 	opponentInfo,
 	justPlayedCard,
 	targetCoords,
 	offset,
 	scoreIncrease,
+	finalTrick,
+	finalTrickWinner,
 }: Props) {
 	function cardDisplay() {
 		return opponentInfo.playedCard ? (
@@ -43,18 +47,22 @@ export default function OpponentDisplay({
 	const coords = targetCoords
 		? { x: targetCoords.x - offset.x, y: targetCoords.y - offset.y }
 		: { x: 0, y: 0 };
+
+		const wonTricks = opponentInfo.pID === finalTrickWinner && finalTrick
+        ? [...opponentInfo.wonTricks, finalTrick]
+        : opponentInfo.wonTricks;
 	return (
 		<div>
 			<MainContainer>
 				<ProfilePicture
-				// will fix the imagestring later TODO
+					// will fix the imagestring later TODO
 					imageString={imageString}
 					active={opponentInfo.active}
 					name={name}
 					score={opponentInfo.score}
 					scoreIncrease={scoreIncrease}
 					bet={opponentInfo.bet}
-					wonTricks={opponentInfo.wonTricks}
+					wonTricks={wonTricks}
 				/>
 			</MainContainer>
 

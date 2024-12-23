@@ -65,6 +65,9 @@ export default function Game({
 	const [justPlayedPID, setJustPlayedPID] = useState(-1);
 	const [playDealAnimation, setPlayDealAnimation] = useState(false);
 	const [visibleCardNumber, setVisibleCardNumber] = useState(10);
+	const [finalTrick, setFinalTrick] = useState<Card[] | null>(null);
+	const [finalTrickWinner, setFinalTrickWinner] = useState<number>(-1);
+	 
 
 	const [targetCoords, setTargetCoords] = useState<{
 		x: number;
@@ -132,6 +135,8 @@ export default function Game({
 				targetCoords={targetCoords}
 				offset={coord ? coord : { x: 0, y: 0 }}
 				scoreIncrease={scoreIncreases[opponent.pID]}
+				finalTrick={finalTrick}
+				finalTrickWinner={finalTrickWinner}
 			/>
 		);
 	});
@@ -150,15 +155,16 @@ export default function Game({
 	async function processActions(actions: GameAction[]) {
 		// await sleep(1000);
 		for (const action of actions) {
-			await animateAction(action);
+			await animateAction(action, actions);
 			// await sleep(1000);
 		}
 		//clean up the actions
 		setTargetCoords(null);
 		setScoreIncreases([null, null, null, null, null]);
 	}
-	async function animateAction(action: GameAction) {
+	async function animateAction(action: GameAction, actions: GameAction[]) {
 		// console.log(action.pID + " " + action.name);
+
 		if (action.name === "playCardAction") {
 			// console.log("playing card");
 			// currentTime();
@@ -201,7 +207,9 @@ export default function Game({
 		} else if (action.name === "betAction") {
 			console.log("bet action");
 		} else if (action.name === "dealAction") {
-			setCurrentPlayerInfo(playerInfo);
+			setScoreIncreases([null, null, null, null, null]);
+			resetJustPlayed(); //make it disappear for when we deal
+			setCurrentPlayerInfo(playerInfo); //want to have the new hand information
 			console.log("deal action");
 			setVisibleCardNumber(0);
 			setPlayDealAnimation(true);
@@ -211,8 +219,30 @@ export default function Game({
 		} else if (action.name === "revealTrumpAction") {
 			console.log("trump action");
 		} else if (action.name === "endRoundAction") {
+			console.log("end round action");
+
+			//get the final trick from the action queue, duh lol
+			let currentTrick: Card[] | null = null;
+			let winnerIndex = -1;
+			//we need to find what the iwnning trick was this round and who won it
+			for (const act of actions) {
+				if (act.name === "winTrickAction") {
+					currentTrick = act.trick;
+					winnerIndex = act.pID;
+				}
+			}
+			console.log(currentTrick);
+			console.log(winnerIndex);
+			//now we give the right winner the current trick
+			if (currentTrick)
+				setFinalTrick(currentTrick);
+			setFinalTrickWinner(winnerIndex);
+
 			setScoreIncreases(action.scoreIncreases);
-			await sleep(3000);
+
+			await sleep(5000);
+			setFinalTrick(null);
+			setFinalTrickWinner(-1);
 			// setScoreIncreases([null, null, null, null, null]);
 		}
 	}
@@ -323,6 +353,8 @@ export default function Game({
 								: { x: 0, y: 0 }
 						}
 						scoreIncrease={scoreIncreases[playerInfo.pID]}
+						finalTrick={finalTrick}
+						finalTrickWinner={finalTrickWinner}
 					/>
 				</div>
 			</PlayerHolder>

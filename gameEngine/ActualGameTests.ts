@@ -69,9 +69,3 @@ const game = new Game(3);
 game.startRound(10, 0);
 
 const info = GetWholeGameInfo(3, game);
-
-console.log("*****************************");
-for(let i = 0; i < game.scoreRecord.length; i++){
-	console.log("Bets: " + game.betsRecord[i]);
-	console.log("Scores: " + game.scoreRecord[i]);
-}

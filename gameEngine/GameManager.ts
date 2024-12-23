@@ -257,7 +257,7 @@ class Game {
 
 			this.scores[i] += scoreIncrease;
 		}
-		this.scoreRecord.push(this.scores.filter((x) => x));
+		this.scoreRecord.push(this.scores.filter((x) => x)); //need to copy the values so that they don't get changed
 		const newAction = GameActionMachine.endRoundAction(scoreIncreases);
 		this.gameActionQueue.push(newAction);
 	}

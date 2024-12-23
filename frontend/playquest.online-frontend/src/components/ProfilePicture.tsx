@@ -47,6 +47,9 @@ const InfoDisplay = styled.div`
 	}
 	.bet {
 	}
+	.score {
+		transition: 
+	}
 `;
 
 const TrickDisplay = styled.div`
@@ -127,6 +130,7 @@ export default function ProfilePicture({
 			setShowModal(false);
 		}
 	}, [wonTricks]);
+	
 	return (
 		<div>
 			{showModal && (
