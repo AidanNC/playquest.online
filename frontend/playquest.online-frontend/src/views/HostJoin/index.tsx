@@ -28,13 +28,15 @@ export default function MainPage() {
 	const [hosting, setHosting] = useState(false);
 	const [joining, setJoining] = useState(false);
 	const [roomCode, setRoomCode] = useState(0);
+	const [port, setPort] = useState(-1);
 	const navigate = useNavigate();
 
 	async function handleCreate() {
 		const res = await createGame(playerCount);
 		console.log(res);
 		if (res.port) {
-			handleJoin(res.port);
+			setPort(res.port);
+			// handleJoin(res.port);
 		}
 	}
 	function handleJoin(port: number) {
@@ -46,14 +48,16 @@ export default function MainPage() {
 		<MainContainer>
 			<h1 className="whiteFont">Quest Online</h1>
 
-			<button
-				onClick={() => {
-					setHosting(true);
-					setJoining(false);
-				}}
-			>
-				Create
-			</button>
+			{!hosting  &&
+				<button
+					onClick={() => {
+						setHosting(true);
+						setJoining(false);
+					}}
+				>
+					Create Game
+				</button>
+			}
 			{hosting && <p className="whiteFont">Number of players</p>}
 			{hosting && (
 				<PlayerCountRow>
@@ -77,9 +81,13 @@ export default function MainPage() {
 					</PlayerCountButton>
 				</PlayerCountRow>
 			)}
-			{hosting && <button onClick={handleCreate}>Start</button>}
+			{hosting && <button onClick={handleCreate}>Create</button>}
+			{hosting && port !== -1 && <p className="whiteFont">Your room code is : {port}</p>}
 			<button
 				onClick={() => {
+					if(port !== -1){
+						handleJoin(port);
+					}
 					setJoining(true);
 					setHosting(false);
 				}}
@@ -89,15 +97,21 @@ export default function MainPage() {
 			{joining && <p className="whiteFont">Enter Room Code</p>}
 			{joining && (
 				<input
-				type="number"
+					type="number"
 					onChange={(e) => {
 						setRoomCode(parseInt(e.target.value));
 					}}
 				/>
 			)}
-			{joining && <button onClick={()=>{
-				handleJoin(roomCode);
-			}}>Go!</button>}
+			{joining && (
+				<button
+					onClick={() => {
+						handleJoin(roomCode);
+					}}
+				>
+					Go!
+				</button>
+			)}
 		</MainContainer>
 	);
 }
