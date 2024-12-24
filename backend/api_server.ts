@@ -8,8 +8,12 @@ let basePort = 8000;
 const maxGames = 20;
 let numGames = 0;
 
+const corsOptions = {
+    origin: "*", // Allow all origins for testing purposes. Change this to your frontend domain in production.
+    optionsSuccessStatus: 200, // Some legacy browsers (IE11, various SmartTVs) choke on 204
+};
 // Use the cors middleware
-app.use(cors());
+app.use(cors(corsOptions));
 
 app.get("/createGame", (req, res) => {
 	const playerCount = Number(req.query.numPlayers);
