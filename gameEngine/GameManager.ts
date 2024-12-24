@@ -204,7 +204,7 @@ class Game {
 		) {
 			return Array<number>(this.hands[playerIndex].length)
 				.fill(0)
-				.map((x, i) => i);
+				.map((_x, i) => i);
 		} else {
 			const validPlays: number[] = [];
 			this.hands[playerIndex].forEach((card, index) => {
