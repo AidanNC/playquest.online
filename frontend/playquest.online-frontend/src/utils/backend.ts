@@ -1,6 +1,11 @@
 
 export async function createGame(numPlayers: number) {
-	const url = `/api/createGame?numPlayers=${numPlayers}`
+	const websocketUrl = import.meta.env.VITE_API_URL || "ws://10.0.0.66";
+	// const url = `/api/createGame?numPlayers=${numPlayers}`
+	const url = `${websocketUrl}/createGame?numPlayers=${numPlayers}`
+
+	console.log("Connecting to", url);
+
 	try {
 		const response = await fetch(url);
 		if (!response.ok) {
