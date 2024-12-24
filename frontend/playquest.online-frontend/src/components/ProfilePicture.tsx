@@ -79,6 +79,8 @@ const TrickDisplay = styled.div`
 	margin-right: 20px;
 	margin-left: auto;
 	width: 80px;
+	position: relative;
+	z-index: -1;
 	@media (max-width: ${MobileWidth}) {
 		width: 80px;
 		max-height: 15vh;
