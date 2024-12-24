@@ -1,14 +1,20 @@
 import ProfileImage, { imageNames } from "../../components/ProfileImage";
-import ProfilePicture from "../../components/ProfilePicture";
 import styled from "styled-components";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { MobileWidth } from "../../MediaQueryConstants";
 
 const ProfileContainer = styled.div`
 	margin-top: 10px;
 	display: flex;
 	align-items: center;
 	flex-direction: column;
+	@media (max-width: ${MobileWidth}) {
+		flex-wrap: wrap;
+		max-width: 100vw;
+		overflow-x: hidden;
+	}
+	
 `;
 const Row = styled.div`
 	display: flex;
@@ -18,15 +24,38 @@ const ImageGrid = styled.div`
 	display: flex;
 	gap: 20px;
 	flex-direction: column;
+	@media (max-width: ${MobileWidth}) {
+		flex-direction: row;
+		max-width: 95vw;
+		overflow-x: auto;
+		border: 1px solid var(--main-pink);
+		border-radius: 6px;
+		padding: 5px;
+		margin: 5px;
+	}
 `;
 const SelectIndicator = styled.div`
 	cursor: pointer;
 `;
 
-const MessageDisplay = styled.div`
+const FlexRow = styled.div`
+	gap: 20px;
+	display: flex;
 	align-items: center;
-	color: var(--white);
-	width: 200px;
+	justify-content: space-between;
+	@media (max-width: ${MobileWidth}) {
+		flex-direction: column;
+		align-items: flex-start;
+		align-items: center;
+		justify-content: center;
+		width: 100%;
+		text-align: center;
+	}
+`;
+const AlwaysRow = styled.div`
+display: flex;
+gap: 20px;
+align-items: center;
 `;
 export default function GuestAccount() {
 	const navigate = useNavigate();
@@ -39,10 +68,9 @@ export default function GuestAccount() {
 	const [imageString, setImageString] = useState(
 		savedImageString ? savedImageString : imageNames[0]
 	);
-	const [saveStatus, setSavedStatus] = useState(true);
 	const [name, setName] = useState(savedName ? savedName : "");
 	function handleSetName(name: string) {
-		setSavedStatus(false);
+		
 		if (name.length === 0) {
 			setName("Guest");
 		} else {
@@ -50,13 +78,13 @@ export default function GuestAccount() {
 		}
 	}
 	function handleSetImage(image: string) {
-		setSavedStatus(false);
+		
 		setImageString(image);
 	}
 	function handleSubmit() {
 		localStorage.setItem("userName", name);
 		localStorage.setItem("imageString", imageString);
-		setSavedStatus(true);
+		
 	}
 	for (let i = 0; i < imageNames.length / 5; i++) {
 		const row = [];
@@ -79,50 +107,39 @@ export default function GuestAccount() {
 	}
 
 	return (
-		<div>
-			<ProfileContainer>
-				<div style={{ display: "flex", alignItems: "center" }}>
-					<ProfilePicture
-						imageString={imageString}
-						active={false}
-						name={name}
-						score={0}
-						scoreIncrease={null}
-						bet={0}
-						wonTricks={[]}
-					/>
+		<ProfileContainer>
+			<FlexRow>
+				<AlwaysRow>
+					<h1 className="whiteFont">{name}</h1>
+					<ProfileImage selected={false} imageString={imageString} />{" "}
+				</AlwaysRow>
 
-					<MessageDisplay>
-						{saveStatus
-							? "All Changes Saved!"
-							: "Click ready to save your changes!"}
-					</MessageDisplay>
-				</div>
-				<div>
-					<p className="whiteFont">Enter a username:</p>
-					<Row>
-						<input
-							maxLength={13}
-							defaultValue={name}
-							placeholder={"Guest"}
-							onChange={(e) => {
-								handleSetName(e.target.value);
-							}}
-						></input>
-						
-							<button  style={{ marginLeft: "auto" }} onClick={handleSubmit}>
-								Ready!
-							</button>
-							<button  onClick={()=>{navigate("/App")}}>
-								Join!
-							</button>
-						
-					</Row>
+			</FlexRow>
+			
+				<p className="whiteFont">Enter a username:</p>
+				<AlwaysRow>
+					<input
+						maxLength={13}
+						defaultValue={name}
+						placeholder={"Guest"}
+						onChange={(e) => {
+							handleSetName(e.target.value);
+						}}
+					></input>
 
-					<p className="whiteFont">Choose a profile image!</p>
-					<ImageGrid>{imageGrid}</ImageGrid>
-				</div>
-			</ProfileContainer>
-		</div>
+					<button
+						onClick={() => {
+							handleSubmit();
+							navigate("/App");
+						}}
+					>
+						Join!
+					</button>
+				</AlwaysRow>
+
+				<p className="whiteFont">Choose a profile image!</p>
+				<ImageGrid>{imageGrid}</ImageGrid>
+			
+		</ProfileContainer>
 	);
 }

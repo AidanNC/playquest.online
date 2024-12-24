@@ -18,6 +18,7 @@
   --main-dark:#15001c;
   --main-pink: #ee00ff;
   --white: #ffffff;
+  --breakpoint-mobile: 700px; 
 }
 .whiteFont {
   color: #ffffff;
