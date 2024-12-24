@@ -4,7 +4,7 @@ import Card from "../../../../../gameEngine/Card.ts";
 import ProfilePicture from "../../components/ProfilePicture.tsx";
 import styled from "styled-components";
 import { useRef, useState } from "react";
-import { MobileWidth, MobileWidthInt } from "../../MediaQueryConstants.ts";
+import { MobileWidth } from "../../MediaQueryConstants.ts";
 
 const MainContainer = styled.div`
 	display: flex;

@@ -10,7 +10,11 @@ export async function createGame(numPlayers: number) {
 		const json = await response.json();
 		return json;
 	  } catch (error) {
-		console.error(error.message);
+		if (error instanceof Error) {
+			console.error(error.message);
+		} else {
+			console.error(String(error));
+		}
 	  }
 }
 

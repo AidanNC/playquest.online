@@ -2,7 +2,7 @@
 import PlayerInfo, {
 	deserializePlayerInfo,
 } from "../../../gameEngine/PlayerInfo.ts";
-import { GetWholeGameInfo } from "../../../gameEngine/GameTest.ts";
+// import { GetWholeGameInfo } from "../../../gameEngine/GameTest.ts";
 import { useState, useEffect, useRef } from "react";
 import "./App.css";
 import GameComponent from "./views/Game/Game";
