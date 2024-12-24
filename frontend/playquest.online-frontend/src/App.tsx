@@ -18,6 +18,7 @@ function App() {
 
 	// const socketRef = useRef(new WebSocket(`ws://10.0.0.66:${port}`)); //chanage this all the time
 	const websocketUrl = import.meta.env.VITE_REACT_APP_WEBSOCKET_URL || "ws://10.0.0.66";
+	// const websocketUrl = "wss://10.0.0.66";
 	console.log(websocketUrl);
 	const socketRef = useRef(new WebSocket(`${websocketUrl}:${port}`)); //chanage this all the time
 	const socket = socketRef.current;

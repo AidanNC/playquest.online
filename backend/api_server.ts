@@ -1,11 +1,15 @@
 import express from "express";
+import cors from "cors"; 
 import HostGame from "./wss";
 const app = express();
 const port = 4000;
 let basePort = 8000;
 
-const maxGames = 3;
+const maxGames = 20;
 let numGames = 0;
+
+// Use the cors middleware
+app.use(cors());
 
 app.get("/createGame", (req, res) => {
 	const playerCount = Number(req.query.numPlayers);

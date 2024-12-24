@@ -9,7 +9,7 @@ export default defineConfig({
 		proxy: {
 			"/api": {
 				// target: "http://10.0.0.66:4000",
-				target: "http://174.138.51.78:4000",
+				target: "https://playquest.online:4000",
 				changeOrigin: true,
 				rewrite: (path) => path.replace(/^\/api/, ""),
 			},
