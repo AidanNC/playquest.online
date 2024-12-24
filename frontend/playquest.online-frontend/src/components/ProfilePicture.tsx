@@ -4,6 +4,7 @@ import ProfileImage from "./ProfileImage";
 import Card from "../../../../gameEngine/Card";
 import ViewTricksModal from "../views/Game/ViewTricksModal";
 import MiniTrick from "./MiniTrick";
+import { MobileWidth } from "../MediaQueryConstants";
 
 const TrickAndMainContainer = styled.div`
 	display: flex;
@@ -25,6 +26,16 @@ const MainContainer = styled.div<{ $active: boolean }>`
 	background-color: #9d44fc;
 	color: #15001c;
 	padding-right: 10px;
+
+	@media (max-width: ${MobileWidth}) {
+		max-width: 60vw;
+		margin-right: 10px;
+		padding-right: 5px;
+		// max-height: 15vh;
+		height: calc(17svh - 20px);
+		justify-content: flex-start;
+
+	}
 `;
 
 const InfoDisplay = styled.div`
@@ -50,6 +61,15 @@ const InfoDisplay = styled.div`
 	.score {
 		transition: 
 	}
+	.name{
+		text-decoration: underline;
+	}
+	
+	@media (max-width: ${MobileWidth}) {
+		font-size: 18px;
+		.name{
+			font-size: 23px;}
+	}
 `;
 
 const TrickDisplay = styled.div`
@@ -59,6 +79,12 @@ const TrickDisplay = styled.div`
 	margin-right: 20px;
 	margin-left: auto;
 	width: 80px;
+	@media (max-width: ${MobileWidth}) {
+		width: 80px;
+		max-height: 15vh;
+		// overflow-y: auto;
+		margin: 0px
+	}
 `;
 type ProfilePictureProps = {
 	imageString: string;
@@ -150,7 +176,7 @@ export default function ProfilePicture({
 					<ProfileImage selected={false} imageString={imageString} />
 
 					<InfoDisplay>
-						<p>{name}</p>
+						<p className="name">{name}</p>
 						<p>
 							Score: {score}
 							{scoreIncrease !== null && (
@@ -169,7 +195,7 @@ export default function ProfilePicture({
 							className="tricks"
 							onClick={() => setShowModal(wonTricks.length > 0)}
 						>
-							Tricks Won:{" "}
+							Tricks:{" "}
 							<span style={{ color: trickColor }}>{wonTricks.length}</span>
 						</p>
 					</InfoDisplay>

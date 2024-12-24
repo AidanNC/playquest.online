@@ -101,7 +101,7 @@ function App() {
 
 	return (
 		<>
-			<button onClick={nextState}>Next State</button>
+			{/* <button onClick={nextState}>Next State</button> */}
 			{/* {playerInfo !== -1 && <GameComponent playerInfo={playerInfo}/>} */}
 			{playerInfo !== -1 && (
 				<GameComponent
@@ -117,16 +117,24 @@ function App() {
 					requestNextState={nextState}
 				/>
 			)}
-			{playerInfo === -1 && 
-			<div style={{display: "flex", flexDirection:"column", justifyContent:"center", alignItems:"center"}}>
-				{<h1 className="whiteFont">Waiting for Players</h1>}
-				<h1 className="whiteFont">Room Code: {port}</h1>
-				<h1 className="whiteFont">Players:</h1>
-				{metaInfo &&
-					metaInfo.playerNames.map((name: string) => (
-						<h1 className="whiteFont">{name}</h1>
-					))}
-			</div>}
+			{playerInfo === -1 && (
+				<div
+					style={{
+						display: "flex",
+						flexDirection: "column",
+						justifyContent: "center",
+						alignItems: "center",
+					}}
+				>
+					{<h1 className="whiteFont">Waiting for Players</h1>}
+					<h1 className="whiteFont">Room Code: {port}</h1>
+					<h1 className="whiteFont">Players:</h1>
+					{metaInfo &&
+						metaInfo.playerNames.map((name: string) => (
+							<h1 className="whiteFont">{name}</h1>
+						))}
+				</div>
+			)}
 		</>
 	);
 }

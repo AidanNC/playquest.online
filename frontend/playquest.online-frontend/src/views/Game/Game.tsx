@@ -7,7 +7,8 @@ import styled from "styled-components";
 import { useState, useRef, useEffect } from "react";
 import Card from "../../../../../gameEngine/Card.ts";
 import AllRoundScoreboardModal from "./AllRoundScoreboardModal.tsx";
-import DealingCard, {MOVE_DURATION} from "./DealingCard.tsx";
+import DealingCard, { MOVE_DURATION } from "./DealingCard.tsx";
+import { MobileWidth, MobileWidthInt } from "../../MediaQueryConstants.ts";
 
 const MainContainer = styled.div`
 	display: flex;
@@ -17,6 +18,10 @@ const MainContainer = styled.div`
 	width: 100%;
 	margin: 0px;
 	position: relative;
+	@media (max-width: ${MobileWidth}) {
+		width: 100vw;
+		height: 100svh;
+	}
 `;
 const PlayerHolder = styled.div`
 	display: flex;
@@ -25,6 +30,11 @@ const PlayerHolder = styled.div`
 	margin-top: auto;
 	margin-bottom: 20px;
 	// width: 100%;
+	@media (max-width: ${MobileWidth}) {
+		padding-left: 0px;
+		margin-bottom: 0px;
+	}
+}
 `;
 
 const TopOpponentHolder = styled.div`
@@ -33,6 +43,11 @@ const TopOpponentHolder = styled.div`
 	gap: 60px;
 	margin-top: 20px;
 	width: 100%;
+	@media (max-width: ${MobileWidth}) {
+		flex-direction: column;
+		margin-top: 10px;
+		gap: 10px;
+	}
 `;
 const BottomOpponentHolder = styled.div`
 	display: flex;
@@ -41,6 +56,14 @@ const BottomOpponentHolder = styled.div`
 	margin-left: 2%;
 	margin-right: 2%;
 `;
+
+const MobileOpps = styled.div`
+	display: flex;
+	flex-direction: column;
+	justify-content: space-evenly;
+	height: calc(68svh); //second number is how high the hand extends above the player display
+`;
+
 
 function sleep(ms: number) {
 	return new Promise((resolve) => setTimeout(resolve, ms));
@@ -67,7 +90,6 @@ export default function Game({
 	const [visibleCardNumber, setVisibleCardNumber] = useState(10);
 	const [finalTrick, setFinalTrick] = useState<Card[] | null>(null);
 	const [finalTrickWinner, setFinalTrickWinner] = useState<number>(-1);
-	 
 
 	const [targetCoords, setTargetCoords] = useState<{
 		x: number;
@@ -184,7 +206,12 @@ export default function Game({
 			if (action.pID === currentPlayerInfo.pID) {
 				if (playerDOM.current) {
 					target.x = playerDOM.current.getBoundingClientRect().x;
-					target.y = playerDOM.current.getBoundingClientRect().y - 230; //this is a magic number, just trying to make it look good
+					if (window.innerWidth <= MobileWidthInt) {
+						console.log("mobile");
+						target.y = playerDOM.current.getBoundingClientRect().y; //this is a magic number, just trying to make it look good
+					} else {
+						target.y = playerDOM.current.getBoundingClientRect().y - 230; //this is a magic number, just trying to make it look good
+					}
 				}
 			} else {
 				let dex = -1;
@@ -213,8 +240,12 @@ export default function Game({
 			console.log("deal action");
 			setVisibleCardNumber(0);
 			setPlayDealAnimation(true);
-			const waitDuration = (currentPlayerInfo.startingHandSize *
-			(1 + currentPlayerInfo.opponents.length)) * MOVE_DURATION *2/3;
+			const waitDuration =
+				(currentPlayerInfo.startingHandSize *
+					(1 + currentPlayerInfo.opponents.length) *
+					MOVE_DURATION *
+					2) /
+				3;
 			await sleep(waitDuration);
 			setPlayDealAnimation(false);
 			setVisibleCardNumber(10);
@@ -236,8 +267,7 @@ export default function Game({
 			console.log(currentTrick);
 			console.log(winnerIndex);
 			//now we give the right winner the current trick
-			if (currentTrick)
-				setFinalTrick(currentTrick);
+			if (currentTrick) setFinalTrick(currentTrick);
 			setFinalTrickWinner(winnerIndex);
 
 			setScoreIncreases(action.scoreIncreases);
@@ -286,7 +316,17 @@ export default function Game({
 					}}
 				/>
 			)}
-			<button onClick={() => setShowScoreBoard(true)}>Show Scoreboard</button>
+			<button
+				style={{
+					width: "200px",
+					marginLeft: "auto",
+					marginRight: "auto",
+					marginTop: "5px",
+				}}
+				onClick={() => setShowScoreBoard(true)}
+			>
+				Show Scoreboard
+			</button>
 			{playerInfo && showScoreBoard && (
 				<AllRoundScoreboardModal
 					isOpen={showScoreBoard}
@@ -299,13 +339,56 @@ export default function Game({
 				/>
 			)}
 			{/* 3player game */}
-			{!opps[2] && (
+			{window.innerWidth <= MobileWidthInt ? (
+				<MobileOpps>
+					{opps[0] ? <div ref={p0}>{opps[0]}</div> : null}
+					{opps[1] ? <div ref={p1}>{opps[1]}</div> : null}
+					{opps[2] ? <div ref={p2}>{opps[2]}</div> : null}
+					{opps[3] ? <div ref={p3}>{opps[3]}</div> : null}
+				</MobileOpps>
+			) : (
+				<>
+					{!opps[2] && (
+						<TopOpponentHolder>
+							{opps[0] ? <div ref={p0}>{opps[0]}</div> : null}
+							{opps[1] ? <div ref={p1}>{opps[1]}</div> : null}
+						</TopOpponentHolder>
+					)}
+					{/* 4 player game */}
+					{opps[2] && !opps[3] && (
+						<div>
+							<TopOpponentHolder>
+								{opps[1] ? <div ref={p1}>{opps[1]}</div> : null}
+							</TopOpponentHolder>
+							<BottomOpponentHolder>
+								{opps[0] ? <div ref={p0}>{opps[0]}</div> : null}
+
+								{opps[2] ? <div ref={p2}>{opps[2]}</div> : null}
+							</BottomOpponentHolder>
+						</div>
+					)}
+					{/* 5 player game */}
+					{opps[2] && opps[3] && (
+						<div>
+							<TopOpponentHolder>
+								{opps[1] ? <div ref={p1}>{opps[1]}</div> : null}
+								{opps[2] ? <div ref={p2}>{opps[2]}</div> : null}
+							</TopOpponentHolder>
+							<BottomOpponentHolder>
+								{opps[0] ? <div ref={p0}>{opps[0]}</div> : null}
+								{opps[3] ? <div ref={p3}>{opps[3]}</div> : null}
+							</BottomOpponentHolder>
+						</div>
+					)}
+				</>
+			)}
+			{/* {!opps[2] && (
 				<TopOpponentHolder>
 					{opps[0] ? <div ref={p0}>{opps[0]}</div> : null}
 					{opps[1] ? <div ref={p1}>{opps[1]}</div> : null}
 				</TopOpponentHolder>
 			)}
-			{/* 4 player game */}
+			
 			{opps[2] && !opps[3] && (
 				<div>
 					<TopOpponentHolder>
@@ -318,7 +401,7 @@ export default function Game({
 					</BottomOpponentHolder>
 				</div>
 			)}
-			{/* 5 player game */}
+			
 			{opps[2] && opps[3] && (
 				<div>
 					<TopOpponentHolder>
@@ -330,7 +413,7 @@ export default function Game({
 						{opps[3] ? <div ref={p3}>{opps[3]}</div> : null}
 					</BottomOpponentHolder>
 				</div>
-			)}
+			)} */}
 
 			{/* <AnimatedCard $x={playedCoords.x} $y={playedCoords.y}>
 				{justPlayedCard ? <CardComponent card={justPlayedCard} /> : null}

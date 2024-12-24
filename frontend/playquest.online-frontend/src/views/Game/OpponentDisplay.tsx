@@ -3,16 +3,30 @@ import styled from "styled-components";
 import CardComponent from "../../components/CardComponent.tsx";
 import Card from "../../../../../gameEngine/Card.ts";
 import ProfilePicture from "../../components/ProfilePicture.tsx";
+import { MobileWidth } from "../../MediaQueryConstants.ts";
 
 const MainContainer = styled.div`
 	display: flex;
 	gap: 10px;
 	margin-bottom: 10px;
+	@media (max-width: ${MobileWidth}) {
+		margin-bottom: 0;
+}
 `;
 const AnimatedCard = styled.div<{ $x: number; $y: number }>`
 	position: absolute;
 	transition: transform 1s ease;
 	transform: translate(${(props) => props.$x}px, ${(props) => props.$y}px);
+	@media (max-width: ${MobileWidth}) {
+		left: 84vw;
+		transform: translate(${(props) => props.$x}px, ${(props) => props.$y}px);
+	}
+`;
+const CompleteContainer = styled.div`
+	@media (max-width: ${MobileWidth}) {
+		width: 100vw;
+		display: flex;
+	}
 `;
 type Props = {
 	name: string;
@@ -48,11 +62,12 @@ export default function OpponentDisplay({
 		? { x: targetCoords.x - offset.x, y: targetCoords.y - offset.y }
 		: { x: 0, y: 0 };
 
-		const wonTricks = opponentInfo.pID === finalTrickWinner && finalTrick
-        ? [...opponentInfo.wonTricks, finalTrick]
-        : opponentInfo.wonTricks;
+	const wonTricks =
+		opponentInfo.pID === finalTrickWinner && finalTrick
+			? [...opponentInfo.wonTricks, finalTrick]
+			: opponentInfo.wonTricks;
 	return (
-		<div>
+		<CompleteContainer>
 			<MainContainer>
 				<ProfilePicture
 					// will fix the imagestring later TODO
@@ -67,10 +82,11 @@ export default function OpponentDisplay({
 			</MainContainer>
 
 			{/* {cardDisplay()} */}
-
-			<AnimatedCard $x={coords.x} $y={coords.y}>
-				{cardDisplay()}
-			</AnimatedCard>
-		</div>
+			<div>
+				<AnimatedCard $x={coords.x} $y={coords.y}>
+					{cardDisplay()}
+				</AnimatedCard>
+			</div>
+		</CompleteContainer>
 	);
 }

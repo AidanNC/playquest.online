@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { MobileWidth } from "../MediaQueryConstants";
 
 import beanbag from "../assets/img/profile_pictures/beanbag.jpg";
 import chef from "../assets/img/profile_pictures/chef.jpg";
@@ -73,6 +74,12 @@ const ProfileIcon = styled.div`
 	justify-content: center;
 	align-items: center;
 	// background-color: #cbc0fc;
+
+	@media (max-width: ${MobileWidth}) {
+		height: 100px;
+		width: 100px;
+		margin-left: -5px;
+	}
 `;
 
 const Icon = styled.div`
@@ -90,6 +97,14 @@ const Icon = styled.div`
 	}
 	&.selected {
 		border: 3px solid var(--main-pink);
+	}
+	@media (max-width: ${MobileWidth}) {
+		img {
+			max-height: 100%;
+			max-width: 100%;
+		}
+		height: 100px;
+		width: 100px;
 	}
 `;
 

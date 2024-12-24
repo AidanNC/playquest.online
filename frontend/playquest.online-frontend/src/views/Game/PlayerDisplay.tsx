@@ -4,25 +4,82 @@ import Card from "../../../../../gameEngine/Card.ts";
 import ProfilePicture from "../../components/ProfilePicture.tsx";
 import styled from "styled-components";
 import { useRef, useState } from "react";
+import { MobileWidth, MobileWidthInt } from "../../MediaQueryConstants.ts";
 
 const MainContainer = styled.div`
 	display: flex;
 	padding-bottom: 20px;
 	gap: 10px;
 	margin-top: 10px;
+	@media (max-width: ${MobileWidth}) {
+		gap: 0px;
+		padding-bottom: 0px;
+		margin-top: 0px;
+	}
 `;
 const HandRack = styled.div`
 	display: flex;
 	align-items: flex-end;
+	align-items: center;
 	gap: 10px;
 	// background: #057f87;
 	padding: 10px;
 	height: 100px;
+	@media (max-width: ${MobileWidth}) {
+		padding: 0px;
+		position: absolute;
+		top: -105px;
+		left: -82vw;
+		overflow-x: auto;
+		max-width: 80vw;
+		min-width: 80vw;
+		border: 1px solid var(--main-pink);
+		border-radius: 6px;
+	}
 `;
 const AnimatedCard = styled.div<{ $x: number; $y: number }>`
 	position: absolute;
 	transition: transform 1s ease;
 	transform: translate(${(props) => props.$x}px, ${(props) => props.$y}px);
+	@media (max-width: ${MobileWidth}) {
+		left: 84vw;
+		transform: translate(
+			${(props) => props.$x}px,
+			${(props) => (props.$y === -100 ? props.$y : props.$y - 130)}px
+		);
+	}
+`;
+const CompleteContainer = styled.div`
+	@media (max-width: ${MobileWidth}) {
+		width: 100vw;
+		display: flex;
+	}
+`;
+const BetHolder = styled.div`
+	margin-left: 100px;
+	@media (max-width: ${MobileWidth}) {
+		margin-left: 0px;
+		background: #9d44fc;
+		width: 40vw;
+		left: 2vw;
+		padding: 2px;
+		height: calc(15svh - 20px);
+		padding-left: 10px;
+		border-radius: 10px;
+		border: 3px solid var(--main-pink);
+		position: absolute;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 5px;
+		z-index: 100;
+		input {
+			width: 50%;
+		}
+		p {
+			margin: 0;
+		}
+	}
 `;
 
 type GameProps = {
@@ -75,11 +132,12 @@ export default function PlayerDisplay({
 		? { x: targetCoords.x - offset.x, y: targetCoords.y - offset.y + 130 }
 		: { x: 0, y: 0 - 100 };
 
-	const wonTricks = playerInfo.pID === finalTrickWinner && finalTrick
-        ? [...playerInfo.playerWonTricks, finalTrick]
-        : playerInfo.playerWonTricks;
+	const wonTricks =
+		playerInfo.pID === finalTrickWinner && finalTrick
+			? [...playerInfo.playerWonTricks, finalTrick]
+			: playerInfo.playerWonTricks;
 	return (
-		<div>
+		<CompleteContainer>
 			{/* {cardDisplay()} */}
 			{/* because wewant it to be adjusted up */}
 			<AnimatedCard $x={coords.x} $y={coords.y}>
@@ -87,7 +145,7 @@ export default function PlayerDisplay({
 			</AnimatedCard>
 			{playerInfo.playerBet === -1 && playerInfo.active && (
 				// magic number
-				<div style={{ marginLeft: "100px" }}>
+				<BetHolder>
 					<p>Place bet:</p>
 					<input
 						type="number"
@@ -103,7 +161,7 @@ export default function PlayerDisplay({
 					>
 						Submit
 					</button>
-				</div>
+				</BetHolder>
 			)}
 			<MainContainer>
 				<ProfilePicture
@@ -115,8 +173,10 @@ export default function PlayerDisplay({
 					bet={playerInfo.playerBet}
 					wonTricks={wonTricks}
 				/>
-				<HandRack>{hand.slice(0, visibleCardNumber)}</HandRack>
+				<div style={{position:"relative"}}>
+					<HandRack>{hand.slice(0, visibleCardNumber)}</HandRack>
+				</div>
 			</MainContainer>
-		</div>
+		</CompleteContainer>
 	);
 }

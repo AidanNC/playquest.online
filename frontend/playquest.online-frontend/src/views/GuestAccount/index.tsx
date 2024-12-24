@@ -119,7 +119,7 @@ export default function GuestAccount() {
 				<p className="whiteFont">Enter a username:</p>
 				<AlwaysRow>
 					<input
-						maxLength={13}
+						maxLength={11}
 						defaultValue={name}
 						placeholder={"Guest"}
 						onChange={(e) => {

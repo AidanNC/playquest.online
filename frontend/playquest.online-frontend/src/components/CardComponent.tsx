@@ -7,6 +7,7 @@ import {
 import styled from "styled-components";
 import Card from "../../../../gameEngine/Card.ts";
 import { useState } from "react";
+import { MobileWidth } from "../MediaQueryConstants.ts";
 
 const MainContainer = styled.div<{
 	$color: string;
@@ -37,7 +38,12 @@ const MainContainer = styled.div<{
 	font-weight: bold;
 
 	margin-bottom: ${(props) => (props.$hover ? "15px" : "2px")};
+
 	transition: margin-bottom 0.2s ease;
+	@media(max-width: ${MobileWidth}) {
+	margin-bottom: 2px;
+}
+	
 `;
 const MiniMainContainer = styled.div<{
 	$color: string;

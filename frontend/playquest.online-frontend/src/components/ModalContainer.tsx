@@ -1,5 +1,6 @@
 import { ReactNode, useRef, useEffect } from "react";
 import styled from "styled-components";
+import { MobileWidth } from "../MediaQueryConstants";
 
 const MainContainer = styled.div`
 	position: absolute;
@@ -10,6 +11,11 @@ const MainContainer = styled.div`
 	background-color: #9d44fc;
 	padding-top: 1rem;
 	border: 2px solid #ee00ff;
+	@media (max-width: ${MobileWidth}) {
+		top: 5svh;
+		left: 5vw;
+		width: 90vw;
+	}
 `;
 
 const ContentContainer = styled.div`
