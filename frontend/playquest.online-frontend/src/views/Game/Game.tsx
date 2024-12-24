@@ -61,7 +61,7 @@ const MobileOpps = styled.div`
 	display: flex;
 	flex-direction: column;
 	justify-content: space-evenly;
-	height: calc(68svh); //second number is how high the hand extends above the player display
+	height: 66svh; //second number is how high the hand extends above the player display
 `;
 
 

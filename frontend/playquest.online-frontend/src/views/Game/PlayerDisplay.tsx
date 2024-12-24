@@ -15,6 +15,7 @@ const MainContainer = styled.div`
 		gap: 0px;
 		padding-bottom: 0px;
 		margin-top: 0px;
+		width: 60vw;
 	}
 `;
 const HandRack = styled.div`
@@ -28,11 +29,13 @@ const HandRack = styled.div`
 	@media (max-width: ${MobileWidth}) {
 		padding: 0px;
 		position: absolute;
-		top: -105px;
-		left: -82vw;
+		top: 71svh;
+		left: 2vw;
 		overflow-x: auto;
-		max-width: 80vw;
-		min-width: 80vw;
+		// max-width: 80vw;
+		// min-width: 60vw;
+		width: 80vw;
+		
 		border: 1px solid var(--main-pink);
 		border-radius: 6px;
 	}
@@ -173,7 +176,7 @@ export default function PlayerDisplay({
 					bet={playerInfo.playerBet}
 					wonTricks={wonTricks}
 				/>
-				<div style={{position:"relative"}}>
+				<div >
 					<HandRack>{hand.slice(0, visibleCardNumber)}</HandRack>
 				</div>
 			</MainContainer>

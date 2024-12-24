@@ -1,3 +1,3 @@
 
-export const MobileWidth = "700px";
-export const MobileWidthInt = 700;
+export const MobileWidth = "900px";
+export const MobileWidthInt = 900;
