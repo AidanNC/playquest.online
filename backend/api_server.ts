@@ -19,7 +19,7 @@ app.get("/createGame", (req, res) => {
 	const playerCount = Number(req.query.numPlayers);
 	console.log(`Creating game with ${playerCount} players`);
 
-	if (playerCount < 2 || playerCount > 4) {
+	if (playerCount < 2 || playerCount > 5) {
 		res.status(400).send({ message: "Invalid number of players" });
 		return;
 	} else if (numGames >= maxGames) {

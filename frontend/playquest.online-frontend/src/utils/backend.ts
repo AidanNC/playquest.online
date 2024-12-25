@@ -1,8 +1,8 @@
 
 export async function createGame(numPlayers: number) {
-	// const websocketUrl = import.meta.env.VITE_API_URL || "ws://10.0.0.66";
+	const websocketUrl = import.meta.env.VITE_API_URL || "ws://10.0.0.66";
 	// const url = `/api/createGame?numPlayers=${numPlayers}`
-	const websocketUrl = `https://playquest.online/api`
+	// const websocketUrl = `https://playquest.online/api`
 	const url = `${websocketUrl}/createGame?numPlayers=${numPlayers}`
 
 	console.log("Connecting to", url);
