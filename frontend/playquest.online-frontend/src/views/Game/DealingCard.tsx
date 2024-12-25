@@ -66,7 +66,7 @@ export default function DealingCard({
 	return (
 		<div>
 			<AnimatedCard $x={baseLocation.x} $y={baseLocation.y} $animate={false}>
-				<FaceDownCard />
+				<FaceDownCard onClick={null}/>
 			</AnimatedCard>
 			<AnimatedCard
 				$x={coords.x}
@@ -74,7 +74,7 @@ export default function DealingCard({
 				$animate={coords.x !== baseLocation.x || coords.y !== baseLocation.y}
 				// $animate={true}
 			>
-				<FaceDownCard />
+				<FaceDownCard onClick={null}/>
 			</AnimatedCard>
 			<AnimatedCard
 				$x={coords2.x}
@@ -82,7 +82,7 @@ export default function DealingCard({
 				$animate={coords2.x !== baseLocation.x || coords2.y !== baseLocation.y}
 				// $animate={true}
 			>
-				<FaceDownCard />
+				<FaceDownCard onClick={null}/>
 			</AnimatedCard>
 		</div>
 	);

@@ -57,7 +57,7 @@ export default function CardTests() {
 					]}
 				/>
 			</div>
-			<FaceDownCard />
+			<FaceDownCard onClick={null} />
 		</div>
 	);
 }
