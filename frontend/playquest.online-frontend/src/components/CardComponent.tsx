@@ -40,10 +40,9 @@ const MainContainer = styled.div<{
 	margin-bottom: ${(props) => (props.$hover ? "15px" : "2px")};
 
 	transition: margin-bottom 0.2s ease;
-	@media(max-width: ${MobileWidth}) {
-	margin-bottom: 2px;
-}
-	
+	@media (max-width: ${MobileWidth}) {
+		margin-bottom: 2px;
+	}
 `;
 const MiniMainContainer = styled.div<{
 	$color: string;
@@ -143,10 +142,21 @@ export default function CardComponent({
 	);
 }
 
-export function FaceDownCard() {
+type FaceDownCardProps = {
+	onClick: null | (() => void);
+};
+export function FaceDownCard({ onClick = null }: FaceDownCardProps) {
 	const color = "var(--white)";
 	return (
-		<MainContainer $hover={false} $color={color}>
+		<MainContainer
+			$hover={false}
+			$color={color}
+			onClick={() => {
+				if (onClick) {
+					onClick();
+				}
+			}}
+		>
 			<>?</>
 		</MainContainer>
 	);

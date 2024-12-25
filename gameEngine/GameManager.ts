@@ -331,12 +331,13 @@ class Game {
 					cardsInHand: this.hands[dex].length,
 					playedCard: this.playedCards[dex],
 					pID: dex,
+					roundOfOneCard: this.round === 10 && this.hands[dex].length >0 ? this.hands[dex][0] : null,
 				});
 			}
 		}
 		if (playerIndex >= 0 && playerIndex <= this.playerCount) {
 			const returner: PlayerInfo = {
-				hand: this.hands[playerIndex],
+				hand: this.round === 10 ? [] : this.hands[playerIndex],
 				trumpCard: this.trumpCard,
 				playerBet: this.bets[playerIndex],
 				playerWonTricks: this.wonTricks[playerIndex],
@@ -354,6 +355,7 @@ class Game {
 				round: this.round,
 				startingHandSize: this.handSize,
 				dealerIndex: this.dealerIndex,
+				isRoundOfOne: this.round === 10,
 			};
 			//clear the action queue after we have generated a state
 			// this.gameActionQueue = []; //no ! don't clear after we have generated the state, should only clear once we move to another state

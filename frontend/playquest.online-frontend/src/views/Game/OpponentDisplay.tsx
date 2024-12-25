@@ -52,6 +52,9 @@ export default function OpponentDisplay({
 	finalTrickWinner,
 }: Props) {
 	function cardDisplay() {
+		if(opponentInfo.roundOfOneCard){
+			return <CardComponent card={opponentInfo.roundOfOneCard} />
+		}
 		return opponentInfo.playedCard ? (
 			<CardComponent card={opponentInfo.playedCard} />
 		) : justPlayedCard ? (

@@ -1,5 +1,7 @@
 import PlayerInfo from "../../../../../gameEngine/PlayerInfo.ts";
-import CardComponent from "../../components/CardComponent.tsx";
+import CardComponent, {
+	FaceDownCard,
+} from "../../components/CardComponent.tsx";
 import Card from "../../../../../gameEngine/Card.ts";
 import ProfilePicture from "../../components/ProfilePicture.tsx";
 import styled from "styled-components";
@@ -35,7 +37,7 @@ const HandRack = styled.div`
 		// max-width: 80vw;
 		// min-width: 60vw;
 		width: 80vw;
-		
+
 		border: 1px solid var(--main-pink);
 		border-radius: 6px;
 	}
@@ -176,8 +178,14 @@ export default function PlayerDisplay({
 					bet={playerInfo.playerBet}
 					wonTricks={wonTricks}
 				/>
-				<div >
-					<HandRack>{hand.slice(0, visibleCardNumber)}</HandRack>
+				<div>
+					<HandRack>
+						{playerInfo.isRoundOfOne
+							? !playerInfo.playedCard && (
+									<FaceDownCard onClick={() => playCard(0)} />
+							  )
+							: hand.slice(0, visibleCardNumber)}
+					</HandRack>
 				</div>
 			</MainContainer>
 		</CompleteContainer>
