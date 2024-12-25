@@ -1,10 +1,23 @@
 import WebSocket, { WebSocketServer } from "ws";
 import Game from "../gameEngine/GameManager";
 
-export default function HostGame(port: number, maxPlayers: number) {
+export default function HostGame(port: number, maxPlayers: number,portFreed:()=>void) {
 	const wss = new WebSocketServer({ port: port });
+	const tenMinutes = 600000;
+	const tenHours = 36000000;
+	function checkEndGame(){
+		console.log("Checking if game should end");
+		setTimeout(() => {
+			if(activePlayerCount===0){
+				wss.close();
+				portFreed();
+			}
+		}, tenHours); 
+	}
+	checkEndGame();
 
 	console.log(`Starting WSS Server! Port: ${port}`);
+	let activePlayerCount = 0;
 	let playerCount = 0;
 	const MAX_PLAYERS = maxPlayers;
 
@@ -17,7 +30,7 @@ export default function HostGame(port: number, maxPlayers: number) {
 	const game = new Game(MAX_PLAYERS);
 	game.startRound(10, 0);
 
-	const getAndSendInfo = (client: WebSocket,) => {
+	const getAndSendInfo = (client: WebSocket) => {
 		const gameInfo = game.generateInfo(sockets.indexOf(client));
 		const metaInfo = {
 			playerNames: playerNames,
@@ -28,7 +41,7 @@ export default function HostGame(port: number, maxPlayers: number) {
 			metaInfo: metaInfo,
 		});
 		console.log("sending");
-		console.log(gameInfo !== -1 ? gameInfo.timeStep: "no info");
+		console.log(gameInfo !== -1 ? gameInfo.timeStep : "no info");
 		client.send(message);
 	};
 	const sendMetaInfo = (client: WebSocket) => {
@@ -53,11 +66,12 @@ export default function HostGame(port: number, maxPlayers: number) {
 				//player isn't in the game and there is room, let them join
 				if (playerCount < MAX_PLAYERS && !playerIDs.includes(jsonData.id)) {
 					playerCount++;
+					activePlayerCount++;
 					sockets.push(ws);
 					playerIDs.push(jsonData.id);
 					playerNames.push(jsonData.name); //just assume these fields are populated
 					imageStrings.push(jsonData.imageString);
-					if(playerCount === MAX_PLAYERS) {
+					if (playerCount === MAX_PLAYERS) {
 						// getAndSendInfo(ws);
 						sockets.forEach(function each(client) {
 							getAndSendInfo(client);
@@ -70,12 +84,13 @@ export default function HostGame(port: number, maxPlayers: number) {
 				} else if (playerIDs.includes(jsonData.id)) {
 					const pindex = playerIDs.indexOf(jsonData.id);
 					sockets[pindex] = ws;
+					activePlayerCount++;
 					console.log(`Player ${jsonData.name} reconnected!`);
-					if(playerCount === MAX_PLAYERS) {
+					sendMetaInfo(ws);
+					if (playerCount === MAX_PLAYERS) {
 						console.log(playerCount);
 						getAndSendInfo(ws);
 					}
-					
 				} else {
 					console.log("Game full, join rejected!");
 					console.log(playerIDs);
@@ -91,6 +106,15 @@ export default function HostGame(port: number, maxPlayers: number) {
 					});
 					// game.clearActionQueue();
 				}
+			}
+		});
+		ws.on("close", function close() {
+			const index = sockets.indexOf(ws);
+			console.log(`Player ${playerNames[index]} disconnected!`);
+			activePlayerCount--;
+			if (activePlayerCount === 0) {
+				console.log("No players left, closing game!");
+				checkEndGame();
 			}
 		});
 	});

@@ -8,12 +8,20 @@ let basePort = 8000;
 const maxGames = 20;
 let numGames = 0;
 
+const availablePorts: number[] = Array.from({ length: 20 }, (_, i) => i + 1);
+
 const corsOptions = {
     origin: "*", // Allow all origins for testing purposes. Change this to your frontend domain in production.
     optionsSuccessStatus: 200, // Some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 // Use the cors middleware
 app.use(cors(corsOptions));
+
+function portFreed(port:number){
+	numGames--;
+	console.log(`Game on port ${port} has ended`);
+	availablePorts.push(port);
+}
 
 app.get("/createGame", (req, res) => {
 	const playerCount = Number(req.query.numPlayers);
@@ -27,8 +35,13 @@ app.get("/createGame", (req, res) => {
 		return;
 	} else {
 		numGames++;
-		res.send({ message: "Game created", port: ++basePort });
-		HostGame(basePort, playerCount);
+		// res.send({ message: "Game created", port: ++basePort });
+		const wsport = availablePorts.shift();
+		if(wsport === undefined){ //this shouldn't ever happen becaseu we are checking the number of games
+			return;
+		}
+		res.send({ message: "Game created", port: basePort+wsport });
+		HostGame(basePort+wsport, playerCount, ()=>{portFreed(wsport)});
 	}
 });
 

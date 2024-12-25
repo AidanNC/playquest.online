@@ -20,7 +20,7 @@ function App() {
 	const websocketUrl = import.meta.env.VITE_REACT_APP_WEBSOCKET_URL || "ws://10.0.0.66";
 	// const websocketUrl = "wss://10.0.0.66";
 	console.log(websocketUrl);
-	const socketRef = useRef(new WebSocket(`${websocketUrl}/${port}`)); //chanage this all the time
+	const socketRef = useRef(new WebSocket(`${websocketUrl}:${port}`)); //chanage this all the time
 	// const socketRef = useRef(new WebSocket(`https://playquest.online/wss/${port}`)); //chanage this all the ti
 	const socket = socketRef.current;
 	//only for debugging
