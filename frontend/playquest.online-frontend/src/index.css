@@ -3,6 +3,8 @@
   background-color: #242424;
   background-color: #15001c;
   color: #15001c;
+  /* color: #ffffff; */
+  
   user-select: none;
   /* line-height: 1.5;
   font-weight: 400;
@@ -19,6 +21,7 @@
   --main-pink: #ee00ff;
   --white: #ffffff;
   --breakpoint-mobile: 700px; 
+  --blue-border: #6f51f0;
 }
 .whiteFont {
   color: #ffffff;

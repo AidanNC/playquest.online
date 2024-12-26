@@ -15,17 +15,43 @@ function App() {
 	if (port === -1) {
 		navigate("/");
 	}
-	// const socketRef = useRef(new WebSocket(`ws://10.0.0.66:${port}`)); //chanage this all the time
 	const websocketUrl =
 		import.meta.env.VITE_REACT_APP_WEBSOCKET_URL || "ws://10.0.0.66";
 	const urlAndPort =
 		import.meta.env.VITE_DEVELOPMENT === "true"
 			? `${websocketUrl}:${port}`
 			: `${websocketUrl}/${port}`;
-	const socketRef = useRef(new WebSocket(urlAndPort)); //chanage this all the time
+
+	const socketRef = useRef<WebSocket>(); 
+	useEffect(() => {
+		socketRef.current = new WebSocket(urlAndPort)
+		socketRef.current.addEventListener("open", () => {
+			console.log("Connected to server");
+			const message = JSON.stringify({
+				join: true,
+				id: clientID.current,
+				name: localStorage.getItem("userName"),
+				imageString: localStorage.getItem("imageString"),
+			});
+			// socketRef.current.send(message);
+			sendMessage(message);
+		});
+		socketRef.current.addEventListener("message", handleMessage);
+		console.log("Adding event listener");
+
+		return () => socketRef.current && socketRef.current.removeEventListener("message", handleMessage);
+	}, []);
+	function sendMessage(message: string) {
+		if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+			socketRef.current.send(message);
+		}else{
+			console.log("socket not connected");
+		}
+	}
 	
-	const socket = socketRef.current;
-	
+
+	// const socket = socketRef.current;
+
 	const randomID = () => {
 		return Math.floor(Math.random() * 1000000).toString();
 	};
@@ -40,7 +66,7 @@ function App() {
 	const [ping, setPing] = useState(-1);
 	const lastServerCommunication = useRef<number>(-1);
 	const latestTimeStep = useRef<number>(-1);
-	
+
 	const [stateList, setStateList] = useState<PlayerInfo[]>([]);
 
 	useEffect(() => {
@@ -51,25 +77,27 @@ function App() {
 				sentTime: now,
 				id: clientID.current,
 			});
-			socket.send(message);
+			// socket.send(message);
+			sendMessage(message);
 			//check to see if we haven't heard from the server in a while
-			if(lastServerCommunication.current !== -1 && now - lastServerCommunication.current > 5000){
+			if (
+				lastServerCommunication.current !== -1 &&
+				now - lastServerCommunication.current > 5000
+			) {
 				console.log("lost connection to server");
 				setPing(-1);
-				
 			}
 		}, 1000);
 		return () => clearInterval(interval);
 	}, []);
 
 	function handleSetPlayerInfo(info: PlayerInfo) {
-		if(info.timeStep > latestTimeStep.current){
+		if (info.timeStep > latestTimeStep.current) {
 			setPlayerInfo(info);
 			latestTimeStep.current = info.timeStep;
-		}else{
+		} else {
 			console.log("already updated this state timestep");
 		}
-		
 	}
 	function updateStateList(info: PlayerInfo) {
 		console.log("updating state list ");
@@ -106,34 +134,34 @@ function App() {
 		if (data.metaInfo !== undefined) {
 			setMetaInfo(data.metaInfo);
 		}
-		if(data.ping !== undefined){
+		if (data.ping !== undefined) {
 			const now = Date.now();
 			const ping = now - data.sentTime;
 			setPing(ping);
 		}
 	}
 
-	useEffect(() => {
-		socket.addEventListener("open", () => {
-			console.log("Connected to server");
-			const message = JSON.stringify({
-				join: true,
-				id: clientID.current,
-				name: localStorage.getItem("userName"),
-				imageString: localStorage.getItem("imageString"),
-			});
-			socket.send(message);
-		});
-	}, []);
+	// useEffect(() => {
+	// 	socket.addEventListener("open", () => {
+	// 		console.log("Connected to server");
+	// 		const message = JSON.stringify({
+	// 			join: true,
+	// 			id: clientID.current,
+	// 			name: localStorage.getItem("userName"),
+	// 			imageString: localStorage.getItem("imageString"),
+	// 		});
+	// 		socket.send(message);
+	// 	});
+	// }, []);
 
 	useEffect(() => {
-		// socket.addEventListener("message", (event) => {
-		//     handleMessage(event);
-		// });
-		socket.addEventListener("message", handleMessage);
-		console.log("Adding event listener");
+		// // socket.addEventListener("message", (event) => {
+		// //     handleMessage(event);
+		// // });
+		// socket.addEventListener("message", handleMessage);
+		// console.log("Adding event listener");
 
-		return () => socket.removeEventListener("message", handleMessage);
+		// return () => socket.removeEventListener("message", handleMessage);
 	}, []);
 
 	//test the visuals
@@ -158,7 +186,8 @@ function App() {
 							action: action,
 							id: clientID.current,
 						});
-						socket.send(message);
+						// socket.send(message);
+						sendMessage(message);
 					}}
 					playerInfo={playerInfo}
 					metaInfo={metaInfo}

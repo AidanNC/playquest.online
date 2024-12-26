@@ -1,4 +1,6 @@
-import CardComponent, {MiniSuitCard} from "../../components/CardComponent.tsx";
+import CardComponent, {
+	MiniTrumpCards,
+} from "../../components/CardComponent.tsx";
 import Card from "../../../../../gameEngine/Card.ts";
 import styled from "styled-components";
 import { MobileWidth, MobileWidthInt } from "../../MediaQueryConstants.ts";
@@ -28,10 +30,14 @@ export default function TrickAndTrump({ trump }: Props) {
 	return (
 		<MainContainer>
 			<p className="whiteFont">Trump:</p>
-			{window.innerWidth <= MobileWidthInt && (
-				<MiniSuitCard card={trump} />
+			{window.innerWidth <= MobileWidthInt ? (
+				<MiniTrumpCards card={trump} />
+			) : (
+				<CardComponent
+					card={trump}
+					mini={window.innerWidth <= MobileWidthInt}
+				/>
 			)}
-			<CardComponent card={trump} mini={window.innerWidth <= MobileWidthInt} />
 		</MainContainer>
 	);
 }

@@ -66,6 +66,11 @@ const MiniMainContainer = styled.div<{
 	font-weight: bold;
 
 	margin-bottom: 2px;
+	&.trump {
+		height: 40px;
+		width: 30px;
+		font-size: 30px;
+	}
 `;
 
 function getDisplaySuitAndColor(suit: string): [JSX.Element, string] {
@@ -181,13 +186,17 @@ export function FaceDownCard({ onClick = null }: FaceDownCardProps) {
 		</MainContainer>
 	);
 }
-export function MiniSuitCard({ card }: CardElementProps) {
-	const [displaySuit, color]: [JSX.Element, string] = getDisplaySuitAndColor(card.getNameAndSuit().suit);
+export function MiniTrumpCards({ card }: CardElementProps) {
+	const [displaySuit, color]: [JSX.Element, string] = getDisplaySuitAndColor(
+		card.getNameAndSuit().suit
+	);
 	return (
-		<div
-		>
-			<MiniMainContainer $color={color}>
+		<div style={{ display: "flex", gap: "5px" }}>
+			<MiniMainContainer className="trump" $color={color}>
 				{displaySuit}
+			</MiniMainContainer>
+			<MiniMainContainer className="trump" $color={color}>
+				{card.getNameAndSuit().name}
 			</MiniMainContainer>
 		</div>
 	);

@@ -40,11 +40,11 @@ const MainContainer = styled.div<{ $active: boolean }>`
 			background: linear-gradient(130deg, #ee00ff, #fcf403);
 			background-size: 200% 200%;
 			animation: ${animation};`
-			: "border: 3px solid #6f51f0;"}
+			: `border: 3px solid var(--blue-border);`} //#6f51f0
 	// border: 3px solid ${(props) => (props.$active ? "#ee00ff" : "#6f51f0")};
 	margin-right: 20px;
 	background-color: #9d44fc;
-	color: #15001c;
+	// color: #15001c;
 	padding-right: 10px;
 
 	@media (max-width: ${MobileWidth}) {
