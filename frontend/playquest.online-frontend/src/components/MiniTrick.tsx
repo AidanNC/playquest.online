@@ -4,6 +4,7 @@ import styled from "styled-components";
 
 type MiniTrickProps = {
 	trick: Card[];
+	onClick: () => void;
 };
 
 const MainContainer = styled.div`
@@ -12,18 +13,27 @@ const MainContainer = styled.div`
 	height: 20px;
 	width: 40px;
 `;
-const CardContainer = styled.div<{ $offsetX: number, $offsetY: number }>`
+const CardContainer = styled.div<{ $offsetX: number; $offsetY: number }>`
 	position: absolute;
+	cursor: pointer;
 	left: ${(props) => props.$offsetX}px;
 	top: ${(props) => props.$offsetY}px;
 `;
 
-export default function MiniTrick({ trick }: MiniTrickProps) {
+export default function MiniTrick({ trick, onClick }: MiniTrickProps) {
 	return (
 		<MainContainer>
 			{trick.map((card, i) => (
-				<CardContainer $offsetX={10*i} $offsetY={-2*i}>
-					<CardComponent key={i} card={card} mini={true} />
+				<CardContainer
+					key={i}
+					onClick={() => {
+						console.log("clicked");
+						onClick();
+					}}
+					$offsetX={10 * i}
+					$offsetY={-2 * i}
+				>
+					<CardComponent card={card} mini={true} />
 				</CardContainer>
 			))}
 		</MainContainer>

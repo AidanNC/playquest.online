@@ -17,6 +17,7 @@ const MainContainer = styled.div<{ $active: boolean }>`
 	justify-content: center;
 	align-items: center;
 	border-radius: 16px;
+	z-index: 1;
 	${(props) =>
 		props.$active
 			? "border: 3px solid #ee00ff; filter: drop-shadow(0px 0px 6px #ee00ff);"
@@ -34,7 +35,6 @@ const MainContainer = styled.div<{ $active: boolean }>`
 		// max-height: 15vh;
 		height: calc(17svh - 20px);
 		justify-content: flex-start;
-
 	}
 `;
 
@@ -59,16 +59,17 @@ const InfoDisplay = styled.div`
 	.bet {
 	}
 	.score {
-		transition: 
+		transition: ;
 	}
-	.name{
+	.name {
 		text-decoration: underline;
 	}
-	
+
 	@media (max-width: ${MobileWidth}) {
 		font-size: 18px;
-		.name{
-			font-size: 23px;}
+		.name {
+			font-size: 23px;
+		}
 	}
 `;
 
@@ -80,12 +81,11 @@ const TrickDisplay = styled.div`
 	margin-left: auto;
 	width: 80px;
 	position: relative;
-	z-index: -1;
 	@media (max-width: ${MobileWidth}) {
 		width: 80px;
 		max-height: 15vh;
 		// overflow-y: auto;
-		margin: 0px
+		margin: 0px;
 	}
 `;
 type ProfilePictureProps = {
@@ -158,7 +158,7 @@ export default function ProfilePicture({
 			setShowModal(false);
 		}
 	}, [wonTricks]);
-	
+
 	return (
 		<div>
 			{showModal && (
@@ -169,9 +169,15 @@ export default function ProfilePicture({
 				/>
 			)}
 			<TrickAndMainContainer>
-				<TrickDisplay>
+				<TrickDisplay >
 					{wonTricks.map((trick, i) => (
-						<MiniTrick trick={trick} key={i} />
+						<MiniTrick
+							onClick={() => {
+								setShowModal(true);
+							}}
+							trick={trick}
+							key={i}
+						/>
 					))}
 				</TrickDisplay>
 				<MainContainer $active={active}>

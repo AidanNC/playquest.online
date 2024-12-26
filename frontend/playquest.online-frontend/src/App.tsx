@@ -2,7 +2,7 @@
 import PlayerInfo, {
 	deserializePlayerInfo,
 } from "../../../gameEngine/PlayerInfo.ts";
-// import { GetWholeGameInfo } from "../../../gameEngine/GameTest.ts";
+import { GetWholeGameInfo } from "../../../gameEngine/GameTest.ts";
 import { useState, useEffect, useRef } from "react";
 import "./App.css";
 import GameComponent from "./views/Game/Game";
@@ -15,9 +15,9 @@ function App() {
 	if (port === -1) {
 		navigate("/");
 	}
-
 	// const socketRef = useRef(new WebSocket(`ws://10.0.0.66:${port}`)); //chanage this all the time
-	const websocketUrl = import.meta.env.VITE_REACT_APP_WEBSOCKET_URL || "ws://10.0.0.66";
+	const websocketUrl =
+		import.meta.env.VITE_REACT_APP_WEBSOCKET_URL || "ws://10.0.0.66";
 	// const websocketUrl = "wss://10.0.0.66";
 	console.log(websocketUrl);
 	const socketRef = useRef(new WebSocket(`${websocketUrl}/${port}`)); //chanage this all the time
@@ -98,15 +98,19 @@ function App() {
 	}, []);
 
 	//test the visuals
+	const autoPlay = import.meta.env.VITE_AUTOPLAY === "true";
 	useEffect(() => {
 		// playGame(3, 10, 1000, updateStateList);
-		// const info = GetWholeGameInfo(5);
-		// setStateList(info);
+
+		if (autoPlay) {
+			const info = GetWholeGameInfo(5);
+			setStateList(info);
+		}
 	}, []);
 
 	return (
 		<>
-			{/* <button onClick={nextState}>Next State</button> */}
+			{autoPlay && <button onClick={nextState}>Next State</button>}
 			{/* {playerInfo !== -1 && <GameComponent playerInfo={playerInfo}/>} */}
 			{playerInfo !== -1 && (
 				<GameComponent
