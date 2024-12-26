@@ -64,7 +64,6 @@ const MobileOpps = styled.div`
 	height: 66svh; //second number is how high the hand extends above the player display
 `;
 
-
 function sleep(ms: number) {
 	return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -287,7 +286,9 @@ export default function Game({
 	};
 	const playCard = (cardIndex: number) => {
 		// console.log("player plays card: ", cardIndex);
-		sendAction(cardIndex);
+		if (playerInfo.playerBet !== -1) {
+			sendAction(cardIndex);
+		}
 	};
 	return (
 		<MainContainer>
