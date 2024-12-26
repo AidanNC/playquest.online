@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css, keyframes } from "styled-components";
 import { useEffect, useState } from "react";
 import ProfileImage from "./ProfileImage";
 import Card from "../../../../gameEngine/Card";
@@ -10,6 +10,21 @@ const TrickAndMainContainer = styled.div`
 	display: flex;
 	flex-direction: row;
 `;
+const gradientAnimation = keyframes`
+  0% {
+    background-position:0% 50%;
+  }
+  50% {
+    background-position:100% 50%;
+  }
+  100% {
+    background-position:0% 50%;
+  }
+`;
+
+const animation = css`
+	${gradientAnimation} 2s ease infinite;
+`;
 const MainContainer = styled.div<{ $active: boolean }>`
 	height: 130px;
 	width: 320px;
@@ -17,10 +32,14 @@ const MainContainer = styled.div<{ $active: boolean }>`
 	justify-content: center;
 	align-items: center;
 	border-radius: 16px;
-	z-index: 1;
+	z-index: 1; //so that the won tricks dislay behind the more important content
 	${(props) =>
 		props.$active
-			? "border: 3px solid #ee00ff; filter: drop-shadow(0px 0px 6px #ee00ff);"
+			? css`border: 3px solid #ee00ff; 
+			filter: drop-shadow(0px 0px 6px #ee00ff); 
+			background: linear-gradient(130deg, #ee00ff, #fcf403);
+			background-size: 200% 200%;
+			animation: ${animation};`
 			: "border: 3px solid #6f51f0;"}
 	// border: 3px solid ${(props) => (props.$active ? "#ee00ff" : "#6f51f0")};
 	margin-right: 20px;
@@ -169,7 +188,7 @@ export default function ProfilePicture({
 				/>
 			)}
 			<TrickAndMainContainer>
-				<TrickDisplay >
+				<TrickDisplay>
 					{wonTricks.map((trick, i) => (
 						<MiniTrick
 							onClick={() => {

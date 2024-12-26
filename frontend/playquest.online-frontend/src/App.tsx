@@ -18,9 +18,11 @@ function App() {
 	// const socketRef = useRef(new WebSocket(`ws://10.0.0.66:${port}`)); //chanage this all the time
 	const websocketUrl =
 		import.meta.env.VITE_REACT_APP_WEBSOCKET_URL || "ws://10.0.0.66";
-	// const websocketUrl = "wss://10.0.0.66";
-	console.log(websocketUrl);
-	const socketRef = useRef(new WebSocket(`${websocketUrl}/${port}`)); //chanage this all the time
+	const urlAndPort =
+		import.meta.env.VITE_DEVELOPMENT === "true"
+			? `${websocketUrl}:${port}`
+			: `${websocketUrl}/${port}`;
+	const socketRef = useRef(new WebSocket(urlAndPort)); //chanage this all the time
 	// const socketRef = useRef(new WebSocket(`https://playquest.online/wss/${port}`)); //chanage this all the ti
 	const socket = socketRef.current;
 	//only for debugging
