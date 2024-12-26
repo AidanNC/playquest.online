@@ -68,6 +68,26 @@ const MiniMainContainer = styled.div<{
 	margin-bottom: 2px;
 `;
 
+function getDisplaySuitAndColor(suit: string): [JSX.Element, string] {
+	let color = "#f5f5c1";
+	let displaySuit: JSX.Element = <BsFillSuitClubFill color="black" />;
+	if (suit === "D") {
+		color = "#f505f1";
+		displaySuit = <BsFillSuitDiamondFill color={color} />;
+	} else if (suit === "H") {
+		color = "#ff3b68";
+		displaySuit = <BsFillHeartFill color={color} />;
+	} else if (suit === "S") {
+		color = "#00c4cf";
+		displaySuit = <BsFillSuitSpadeFill color={color} />;
+	} else if (suit === "C") {
+		color = "#05f525";
+		color = "#88f26b";
+		color = "#77d45d";
+		displaySuit = <BsFillSuitClubFill color={color} />;
+	}
+	return [displaySuit, color];
+}
 interface CardElementProps {
 	card: Card;
 	id?: number;
@@ -159,5 +179,16 @@ export function FaceDownCard({ onClick = null }: FaceDownCardProps) {
 		>
 			<>?</>
 		</MainContainer>
+	);
+}
+export function MiniSuitCard({ card }: CardElementProps) {
+	const [displaySuit, color]: [JSX.Element, string] = getDisplaySuitAndColor(card.getNameAndSuit().suit);
+	return (
+		<div
+		>
+			<MiniMainContainer $color={color}>
+				{displaySuit}
+			</MiniMainContainer>
+		</div>
 	);
 }

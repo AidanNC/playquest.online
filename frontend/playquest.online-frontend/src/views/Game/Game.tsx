@@ -64,6 +64,16 @@ const MobileOpps = styled.div`
 	height: 66svh; //second number is how high the hand extends above the player display
 `;
 
+const TopBar = styled.div`
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	width: 100%;
+	p{
+	margin: 0px;
+		width: 25%;
+	}
+`;
 function sleep(ms: number) {
 	return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -73,12 +83,14 @@ type GameProps = {
 	sendAction: (action: number) => void;
 	requestNextState: () => void;
 	metaInfo: { playerNames: string[]; imageStrings: string[] };
+	ping: number;
 };
 export default function Game({
 	sendAction,
 	playerInfo,
 	requestNextState,
 	metaInfo,
+	ping,
 }: GameProps) {
 	// const [canvasDrawer, setCanvasDrawer] = useState<CanvasDrawer | null>(null);
 	const [showScoreBoard, setShowScoreBoard] = useState(false);
@@ -285,7 +297,7 @@ export default function Game({
 		sendAction(bet);
 	};
 	const playCard = (cardIndex: number) => {
-		// console.log("player plays card: ", cardIndex);
+		//we don't want clicking on a card to send an action if the player hasn't bet yet
 		if (playerInfo.playerBet !== -1) {
 			sendAction(cardIndex);
 		}
@@ -317,17 +329,19 @@ export default function Game({
 					}}
 				/>
 			)}
-			<button
-				style={{
-					width: "200px",
-					marginLeft: "auto",
-					marginRight: "auto",
-					marginTop: "5px",
-				}}
-				onClick={() => setShowScoreBoard(true)}
-			>
-				Show Scoreboard
-			</button>
+			<TopBar>
+				<p className="whiteFont">Ping: {ping}</p>
+				<button
+					style={{
+						// width: "200px",
+						marginLeft: "10px",
+						marginTop: "5px",
+					}}
+					onClick={() => setShowScoreBoard(true)}
+				>
+					Scoreboard
+				</button>
+			</TopBar>
 			{playerInfo && showScoreBoard && (
 				<AllRoundScoreboardModal
 					isOpen={showScoreBoard}

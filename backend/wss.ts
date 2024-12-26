@@ -30,6 +30,14 @@ export default function HostGame(port: number, maxPlayers: number,portFreed:()=>
 	const game = new Game(MAX_PLAYERS);
 	game.startRound(10, 0);
 
+	const streamLinedSendInfo = (client: WebSocket)=>{
+		if (playerCount === MAX_PLAYERS) {
+			getAndSendInfo(client);
+		}else{
+			sendMetaInfo(client);
+		}
+	}
+
 	const getAndSendInfo = (client: WebSocket) => {
 		const gameInfo = game.generateInfo(sockets.indexOf(client));
 		const metaInfo = {
@@ -40,8 +48,8 @@ export default function HostGame(port: number, maxPlayers: number,portFreed:()=>
 			playerInfo: gameInfo,
 			metaInfo: metaInfo,
 		});
-		console.log("sending");
-		console.log(gameInfo !== -1 ? gameInfo.timeStep : "no info");
+		// console.log("sending");
+		// console.log(gameInfo !== -1 ? gameInfo.timeStep : "no info");
 		client.send(message);
 	};
 	const sendMetaInfo = (client: WebSocket) => {
@@ -52,7 +60,7 @@ export default function HostGame(port: number, maxPlayers: number,portFreed:()=>
 		const message = JSON.stringify({
 			metaInfo: metaInfo,
 		});
-		console.log("sending metainfo");
+		// console.log("sending metainfo");
 		client.send(message);
 	};
 
@@ -60,8 +68,17 @@ export default function HostGame(port: number, maxPlayers: number,portFreed:()=>
 		ws.on("error", console.error);
 
 		ws.on("message", function message(data) {
-			console.log(data.toString());
+			// console.log(data.toString());
 			const jsonData = JSON.parse(data.toString());
+			//handle pings
+			if(jsonData.ping !== undefined && jsonData.id !== undefined && playerIDs.includes(jsonData.id) ){
+				const pingMessage = JSON.stringify({
+					ping: true,
+					sentTime: jsonData.sentTime,
+				});
+				ws.send(pingMessage);
+				streamLinedSendInfo(ws);
+			}
 			if (jsonData.join !== undefined && jsonData.id !== undefined) {
 				//player isn't in the game and there is room, let them join
 				if (playerCount < MAX_PLAYERS && !playerIDs.includes(jsonData.id)) {

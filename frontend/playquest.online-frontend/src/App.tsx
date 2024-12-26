@@ -23,10 +23,9 @@ function App() {
 			? `${websocketUrl}:${port}`
 			: `${websocketUrl}/${port}`;
 	const socketRef = useRef(new WebSocket(urlAndPort)); //chanage this all the time
-	// const socketRef = useRef(new WebSocket(`https://playquest.online/wss/${port}`)); //chanage this all the ti
+	
 	const socket = socketRef.current;
-	//only for debugging
-	// const socket = new WebSocket(`ws://10.0.0.66:${port}`)
+	
 	const randomID = () => {
 		return Math.floor(Math.random() * 1000000).toString();
 	};
@@ -38,14 +37,46 @@ function App() {
 		playerNames: [],
 		imageStrings: [],
 	});
+	const [ping, setPing] = useState(-1);
+	const lastServerCommunication = useRef<number>(-1);
+	const latestTimeStep = useRef<number>(-1);
+	
 	const [stateList, setStateList] = useState<PlayerInfo[]>([]);
 
+	useEffect(() => {
+		const interval = setInterval(() => {
+			const now = Date.now();
+			const message = JSON.stringify({
+				ping: true,
+				sentTime: now,
+				id: clientID.current,
+			});
+			socket.send(message);
+			//check to see if we haven't heard from the server in a while
+			if(lastServerCommunication.current !== -1 && now - lastServerCommunication.current > 5000){
+				console.log("lost connection to server");
+				setPing(-1);
+				
+			}
+		}, 1000);
+		return () => clearInterval(interval);
+	}, []);
+
+	function handleSetPlayerInfo(info: PlayerInfo) {
+		if(info.timeStep > latestTimeStep.current){
+			setPlayerInfo(info);
+			latestTimeStep.current = info.timeStep;
+		}else{
+			console.log("already updated this state timestep");
+		}
+		
+	}
 	function updateStateList(info: PlayerInfo) {
 		console.log("updating state list ");
 		console.log(stateList.length);
 		console.log(info.timeStep);
 		if (stateList.length === 0) {
-			setPlayerInfo(info);
+			handleSetPlayerInfo(info);
 		} else if (info.timeStep !== stateList[stateList.length - 1].timeStep) {
 			//don't add to list if we already received this state
 			setStateList((prevStateList) => [...prevStateList, info]);
@@ -57,13 +88,14 @@ function App() {
 			const info = stateList[0];
 			setStateList([...stateList].slice(1)); // remove the first element
 			if (info) {
-				setPlayerInfo(info);
+				handleSetPlayerInfo(info);
 			}
 		}
 	}
 
 	function handleMessage(event: MessageEvent) {
 		// console.log("Message from server ", event.data);
+		lastServerCommunication.current = Date.now(); //update the last time we heard from the server
 		const data = JSON.parse(event.data);
 		if (data.playerInfo !== undefined) {
 			const info: PlayerInfo = deserializePlayerInfo(data.playerInfo);
@@ -73,6 +105,11 @@ function App() {
 		}
 		if (data.metaInfo !== undefined) {
 			setMetaInfo(data.metaInfo);
+		}
+		if(data.ping !== undefined){
+			const now = Date.now();
+			const ping = now - data.sentTime;
+			setPing(ping);
 		}
 	}
 
@@ -126,6 +163,7 @@ function App() {
 					playerInfo={playerInfo}
 					metaInfo={metaInfo}
 					requestNextState={nextState}
+					ping={ping}
 				/>
 			)}
 			{playerInfo === -1 && (
