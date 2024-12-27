@@ -22,6 +22,15 @@ const PlayerCountButton = styled.button`
 		border: 2px solid var(--white);
 	}
 `;
+const JoinForm = styled.form`
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+	gap: 10px;
+	input {
+		width: 100px;
+	}
+`;
 
 export default function MainPage() {
 	const [playerCount, setPlayerCount] = useState(3);
@@ -48,7 +57,7 @@ export default function MainPage() {
 		<MainContainer>
 			<h1 className="whiteFont">Quest Online</h1>
 
-			{!hosting  &&
+			{!hosting && (
 				<button
 					onClick={() => {
 						setHosting(true);
@@ -57,7 +66,7 @@ export default function MainPage() {
 				>
 					Create Game
 				</button>
-			}
+			)}
 			{hosting && <p className="whiteFont">Number of players</p>}
 			{hosting && (
 				<PlayerCountRow>
@@ -82,35 +91,39 @@ export default function MainPage() {
 				</PlayerCountRow>
 			)}
 			{hosting && <button onClick={handleCreate}>Create</button>}
-			{hosting && port !== -1 && <p className="whiteFont">Your room code is : {port}</p>}
-			<button
-				onClick={() => {
-					if(port !== -1){
-						handleJoin(port);
-					}
-					setJoining(true);
-					setHosting(false);
-				}}
-			>
-				Join
-			</button>
-			{joining && <p className="whiteFont">Enter Room Code</p>}
-			{joining && (
-				<input
-					type="number"
-					onChange={(e) => {
-						setRoomCode(parseInt(e.target.value));
-					}}
-				/>
+			{hosting && port !== -1 && (
+				<p className="whiteFont">Your room code is : {port}</p>
 			)}
-			{joining && (
+			{!joining && (
 				<button
 					onClick={() => {
+						if (port !== -1) {
+							handleJoin(port);
+						}
+						setJoining(true);
+						setHosting(false);
+					}}
+				>
+					Join
+				</button>
+			)}
+			{joining && (
+				<JoinForm
+					onSubmit={(form) => {
+						form.preventDefault();
 						handleJoin(roomCode);
 					}}
 				>
-					Go!
-				</button>
+					<p className="whiteFont">Enter Room Code</p>
+					<input
+						type="number"
+						name="roomCode"
+						onChange={(e) => {
+							setRoomCode(parseInt(e.target.value));
+						}}
+					/>
+					<button type="submit">Go!</button>
+				</JoinForm>
 			)}
 		</MainContainer>
 	);

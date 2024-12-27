@@ -60,7 +60,7 @@ const CompleteContainer = styled.div`
 		display: flex;
 	}
 `;
-const BetHolder = styled.div`
+const BetHolder = styled.form`
 	margin-left: 100px;
 	@media (max-width: ${MobileWidth}) {
 		margin-left: 0px;
@@ -150,7 +150,13 @@ export default function PlayerDisplay({
 			</AnimatedCard>
 			{playerInfo.playerBet === -1 && playerInfo.active && (
 				// magic number
-				<BetHolder>
+				<BetHolder
+				onSubmit={(form)=>{
+					form.preventDefault();
+					if (bet !== null) {
+						makeBet(bet);
+					}
+				}}>
 					<p>Place bet:</p>
 					<input
 						type="number"
@@ -158,11 +164,7 @@ export default function PlayerDisplay({
 						onChange={(e) => setBet(parseInt(e.target.value))}
 					></input>
 					<button
-						onClick={() => {
-							if (bet !== null) {
-								makeBet(bet);
-							}
-						}}
+						type="submit"
 					>
 						Submit
 					</button>
