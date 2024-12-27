@@ -2,18 +2,30 @@ import styled from "styled-components";
 import ModalContainer from "../../components/ModalContainer";
 
 const MainContainer = styled.div`
-	// display: flex;
+	display: flex;
+	flex-direction: column;
+	// align-items: center;
 	gap: 20px;
 	padding: 20px;
 	height: 70svh;
+	// width: 50%;
 	text-align: center;
 `;
 
 const ScoreRow = styled.div`
 	display: flex;
 	gap: 20px;
-	justify-content: space-around;
+	justify-content: space-evenly;
 	text-align: center;
+
+`;
+
+const RowAndLine = styled.div`
+	max-width: fit-content;
+	align-items: stretch;
+	flex-direction: column;
+	width: auto;
+
 `;
 
 const ScorePiece = styled.div`
@@ -48,9 +60,14 @@ const ScorePiece = styled.div`
 `;
 
 const LineDivider = styled.hr`
+	// width: 100%;
 	width: 100%;
 	border: none;
-    border-top: 2px solid var(--main-dark);
+	border-top: 2px solid var(--main-dark);
+	// align-self: center;
+	// flex: 1;
+	// flex-grow: 1;
+	// flex-shrink: 1;
 `;
 type ViewTricksModalProps = {
 	playerNames: string[];
@@ -94,15 +111,15 @@ export default function AllRoundScoreboardModal({
 		return "incorrect";
 	}
 	function getRoundLabel(round: number): number {
-		if (round <= 9){
-			return 10-round;
-		}
-		else{
-			return round - 10+2;
+		if (round <= 9) {
+			return 10 - round;
+		} else {
+			return round - 10 + 2;
 		}
 	}
 	const headerRow = (
 		<ScoreRow>
+			<p></p>
 			{playerNames.map((name, index) => {
 				return <p key={index}>{name}</p>;
 			})}
@@ -124,7 +141,7 @@ export default function AllRoundScoreboardModal({
 				<p>{getRoundLabel(i)}</p>
 				{bets.map((bet, index) => {
 					return (
-						<div key={index+100}>
+						<div key={index + 100}>
 							<ScorePiece>
 								<p
 									className={
@@ -140,14 +157,21 @@ export default function AllRoundScoreboardModal({
 				})}
 			</ScoreRow>
 		);
-		rows.push(<LineDivider key={i+200}/>);
-		rows.push(row);
 
+		// rows.push(<LineDivider key={i + 200} />);
+		// rows.push(row);
+		rows.push(
+			<RowAndLine key={i + 200}>
+				<LineDivider />
+				{row}
+			</RowAndLine>
+		);
 	}
 
 	return (
 		<ModalContainer isOpen={isOpen} onClose={onClose}>
-			<MainContainer>{headerRow}
+			<MainContainer>
+				{headerRow}
 				{rows}
 			</MainContainer>
 		</ModalContainer>
