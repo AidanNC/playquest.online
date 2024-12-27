@@ -38,7 +38,7 @@ export default function TrickAndTrump({ trump, round, startingHandSize}: Props) 
 			<div style={{display: "flex", alignItems:"center", marginLeft :"5px"}}>
 					{startingHandSize}{" "}
 					{round < 9 && <FaAngleDoubleDown />}
-					{round > 11 && <FaAngleDoubleUp/>}
+					{round > 10 && <FaAngleDoubleUp/>}
 				</div>
 			{window.innerWidth <= MobileWidthInt ? (
 				<MiniTrumpCards card={trump} />

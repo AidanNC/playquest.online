@@ -122,6 +122,7 @@ export default function PlayerDisplay({
 				key={index}
 				onClick={() => playCard(index)}
 				highlight={
+					playerInfo.playerBet !== -1 &&
 					validPLays.includes(index) &&
 					playerInfo.active &&
 					!playerInfo.playedCard &&
