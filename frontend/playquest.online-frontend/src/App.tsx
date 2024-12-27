@@ -22,9 +22,9 @@ function App() {
 			? `${websocketUrl}:${port}`
 			: `${websocketUrl}/${port}`;
 
-	const socketRef = useRef<WebSocket>(); 
+	const socketRef = useRef<WebSocket>();
 	useEffect(() => {
-		socketRef.current = new WebSocket(urlAndPort)
+		socketRef.current = new WebSocket(urlAndPort);
 		socketRef.current.addEventListener("open", () => {
 			console.log("Connected to server");
 			const message = JSON.stringify({
@@ -39,16 +39,17 @@ function App() {
 		socketRef.current.addEventListener("message", handleMessage);
 		console.log("Adding event listener");
 
-		return () => socketRef.current && socketRef.current.removeEventListener("message", handleMessage);
+		return () =>
+			socketRef.current &&
+			socketRef.current.removeEventListener("message", handleMessage);
 	}, []);
 	function sendMessage(message: string) {
 		if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
 			socketRef.current.send(message);
-		}else{
+		} else {
 			console.log("socket not connected");
 		}
 	}
-	
 
 	// const socket = socketRef.current;
 
@@ -66,8 +67,10 @@ function App() {
 	const [ping, setPing] = useState(-1);
 	const lastServerCommunication = useRef<number>(-1);
 	const latestTimeStep = useRef<number>(-1);
+	const readyForNextState = useRef<boolean>(true);
 
-	const [stateList, setStateList] = useState<PlayerInfo[]>([]);
+	
+	const stateListRef = useRef<PlayerInfo[]>([]);
 
 	useEffect(() => {
 		const interval = setInterval(() => {
@@ -100,24 +103,32 @@ function App() {
 		}
 	}
 	function updateStateList(info: PlayerInfo) {
-		console.log("updating state list ");
-		console.log(stateList.length);
-		console.log(info.timeStep);
-		if (stateList.length === 0) {
-			handleSetPlayerInfo(info);
-		} else if (info.timeStep !== stateList[stateList.length - 1].timeStep) {
-			//don't add to list if we already received this state
-			setStateList((prevStateList) => [...prevStateList, info]);
+		if (latestTimeStep.current === -1) {
+			stateListRef.current = [...stateListRef.current, info];
+			nextState();
+		}
+		if (
+			(stateListRef.current.length === 0 &&
+				info.timeStep > latestTimeStep.current) || //
+			(stateListRef.current.length > 0 &&
+				stateListRef.current[stateListRef.current.length - 1].timeStep <
+					info.timeStep)
+		) {
+			stateListRef.current = [...stateListRef.current, info];
+		}
+		//we should immediately process the next state if we are ready for it 
+		if (readyForNextState.current) {
+			nextState();
 		}
 	}
 
 	function nextState() {
-		if (stateList.length > 0) {
-			const info = stateList[0];
-			setStateList([...stateList].slice(1)); // remove the first element
-			if (info) {
-				handleSetPlayerInfo(info);
-			}
+		if (stateListRef.current.length > 0) {
+			handleSetPlayerInfo(stateListRef.current[0]);
+			stateListRef.current = stateListRef.current.slice(1);
+			readyForNextState.current = false;
+		} else {
+			readyForNextState.current = true;
 		}
 	}
 
@@ -127,7 +138,7 @@ function App() {
 		const data = JSON.parse(event.data);
 		if (data.playerInfo !== undefined) {
 			const info: PlayerInfo = deserializePlayerInfo(data.playerInfo);
-			console.log(info);
+			// console.log(info);
 			// setPlayerInfo(info);
 			updateStateList(info);
 		}
@@ -160,7 +171,6 @@ function App() {
 		// // });
 		// socket.addEventListener("message", handleMessage);
 		// console.log("Adding event listener");
-
 		// return () => socket.removeEventListener("message", handleMessage);
 	}, []);
 
@@ -170,14 +180,14 @@ function App() {
 		// playGame(3, 10, 1000, updateStateList);
 
 		if (autoPlay) {
-			const info = GetWholeGameInfo(5);
-			setStateList(info);
+			// const info = GetWholeGameInfo(5);
+			// setStateList(info);
 		}
 	}, []);
 
 	return (
 		<>
-			{autoPlay && <button onClick={nextState}>Next State</button>}
+			{autoPlay  && <button onClick={nextState}>Next State</button>}
 			{/* {playerInfo !== -1 && <GameComponent playerInfo={playerInfo}/>} */}
 			{playerInfo !== -1 && (
 				<GameComponent

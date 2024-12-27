@@ -1,7 +1,10 @@
-import CardComponent, {FaceDownCard} from "../../components/CardComponent.tsx";
+import CardComponent, {
+	FaceDownCard,
+} from "../../components/CardComponent.tsx";
 import Card, { SUITS, VALUES } from "../../../../../gameEngine/Card.ts";
 import styled from "styled-components";
 import MiniTrick from "../../components/MiniTrick.tsx";
+import { useState } from "react";
 
 const CardContainer = styled.div`
 	margin-left: 50px;
@@ -26,6 +29,8 @@ export default function CardTests() {
 		rows.push(row);
 	}
 
+	const [digits, setDigits] = useState<number[]>([]);
+
 	return (
 		<div>
 			<CardContainer>
@@ -39,6 +44,7 @@ export default function CardTests() {
 			</CardContainer>
 			<div style={{ display: "flex" }}>
 				<MiniTrick
+					onClick={() => console.log("do nothing")}
 					trick={[
 						new Card("S", 10),
 						new Card("S", 5),
@@ -48,6 +54,7 @@ export default function CardTests() {
 					]}
 				/>
 				<MiniTrick
+					onClick={() => console.log("do nothing")}
 					trick={[
 						new Card("C", 10),
 						new Card("C", 5),
@@ -58,6 +65,11 @@ export default function CardTests() {
 				/>
 			</div>
 			<FaceDownCard onClick={null} />
+
+			<button onClick={() => setDigits((prevlist) => [...prevlist, 1])}>
+				State Increaase{" "}
+			</button>
+			<p className="whiteFont">{digits}</p>
 		</div>
 	);
 }

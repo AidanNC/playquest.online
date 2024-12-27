@@ -185,6 +185,7 @@ export function FaceDownCard({ onClick = null }: FaceDownCardProps) {
 		<MainContainer
 			$hover={false}
 			$color={color}
+			$highlight={false}
 			onClick={() => {
 				if (onClick) {
 					onClick();

@@ -185,6 +185,7 @@ export default function Game({
 		// await sleep(1000);
 		setCurrentPlayerInfo(playerInfo);
 		requestNextState();
+		console.log("requesting next state");
 	}
 	async function processActions(actions: GameAction[]) {
 		// await sleep(1000);

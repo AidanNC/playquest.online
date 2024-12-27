@@ -34,6 +34,8 @@ const JoinForm = styled.form`
 
 export default function MainPage() {
 	const [playerCount, setPlayerCount] = useState(3);
+	const [botCount, setBotCount] = useState(0);
+	const [useBots, setUseBots] = useState(false);
 	const [hosting, setHosting] = useState(false);
 	const [joining, setJoining] = useState(false);
 	const [roomCode, setRoomCode] = useState(0);
@@ -41,7 +43,7 @@ export default function MainPage() {
 	const navigate = useNavigate();
 
 	async function handleCreate() {
-		const res = await createGame(playerCount);
+		const res = await createGame(playerCount, botCount);
 		console.log(res);
 		if (res.port) {
 			setPort(res.port);
@@ -62,6 +64,8 @@ export default function MainPage() {
 					onClick={() => {
 						setHosting(true);
 						setJoining(false);
+						setUseBots(false);
+						setBotCount(0);
 					}}
 				>
 					Create Game
@@ -88,6 +92,29 @@ export default function MainPage() {
 					>
 						5
 					</PlayerCountButton>
+				</PlayerCountRow>
+			)}
+			{/* to choose how many bots you play with */}
+			{useBots ? (
+				hosting && <p className="whiteFont">Number of bots</p>
+			) : (
+				hosting && <button onClick={() => setUseBots(true)}>Play with bots?</button>
+			)}
+			{hosting && useBots && (
+				<PlayerCountRow>
+					{Array.from({ length: playerCount }, (_, i) => i).map((i) => {
+						return (
+							<PlayerCountButton
+								className={botCount === i ? "selected" : ""}
+								onClick={() => {
+									setBotCount(i);
+									setUseBots(i !== 0); //if bot count is not 0, then use bots
+								}}
+							>
+								{i}
+							</PlayerCountButton>
+						);
+					})}
 				</PlayerCountRow>
 			)}
 			{hosting && <button onClick={handleCreate}>Create</button>}
