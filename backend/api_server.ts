@@ -25,7 +25,10 @@ function portFreed(port:number){
 
 app.get("/createGame", (req, res) => {
 	const playerCount = Number(req.query.numPlayers);
+	const botCount = Number(req.query.botCount);
+	
 	console.log(`Creating game with ${playerCount} players`);
+	console.log(`Creating game with ${botCount} bots`);
 
 	if (playerCount < 2 || playerCount > 5) {
 		res.status(400).send({ message: "Invalid number of players" });
@@ -33,7 +36,11 @@ app.get("/createGame", (req, res) => {
 	} else if (numGames >= maxGames) {
 		res.status(400).send({ message: "Maximum number of games reached" });
 		return;
-	} else {
+	}else if(botCount < 0 || botCount > playerCount - 1){
+		//check for number of bots being valid
+		res.status(400).send({message: "Invalid number of bots"});
+
+	}else {
 		numGames++;
 		// res.send({ message: "Game created", port: ++basePort });
 		const wsport = availablePorts.shift();
@@ -41,7 +48,7 @@ app.get("/createGame", (req, res) => {
 			return;
 		}
 		res.send({ message: "Game created", port: basePort+wsport });
-		HostGame(basePort+wsport, playerCount, ()=>{portFreed(wsport)});
+		HostGame(basePort+wsport, playerCount, botCount, ()=>{portFreed(wsport)});
 	}
 });
 

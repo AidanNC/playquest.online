@@ -1,7 +1,7 @@
 import WebSocket, { WebSocketServer } from "ws";
 import Game from "../gameEngine/GameManager";
 
-export default function HostGame(port: number, maxPlayers: number,portFreed:()=>void) {
+export default function HostGame(port: number, maxPlayers: number, botCount: number, portFreed:()=>void) {
 	const wss = new WebSocketServer({ port: port });
 	const tenMinutes = 600000;
 	const tenHours = 36000000;
@@ -24,8 +24,37 @@ export default function HostGame(port: number, maxPlayers: number,portFreed:()=>
 	const playerIDs: string[] = [];
 	const playerNames: string[] = [];
 	const imageStrings: string[] = [];
-	const sockets: WebSocket[] = [];
+	const sockets: (WebSocket|null)[] = [];
 
+	//initialize the bots:
+	for(let i = 0; i < botCount; i++){
+		playerCount++;
+		playerIDs.push("bot0ge"+i);
+		playerNames.push("bot0ge"+i);
+		imageStrings.push("stone")
+		sockets.push(null);
+	}
+	function sleep(ms: number) {
+		return new Promise((resolve) => setTimeout(resolve, ms));
+	}
+	const makeBotPlays = async ()=>{
+		console.log("Making bot plays");
+		console.log(game.activePlayer);
+		console.log(botCount);
+		while(game.activePlayer < botCount){//bot count is 1 indexed, pID is 0 indexed
+			console.log(playerNames[game.activePlayer] + " is playing");
+			game.clearActionQueue(); //make sure the action queue is cleared
+			game.processAction(
+				game.activePlayer,
+				game.getRandomPlay(game.activePlayer)
+			);
+			await sleep(1000);
+			//send out the info the the players
+			sockets.forEach(function each(client) {
+				getAndSendInfo(client);
+			});
+		}
+	}
 	//basic gameplay
 	const game = new Game(MAX_PLAYERS);
 	game.startRound(10, 0);
@@ -38,7 +67,10 @@ export default function HostGame(port: number, maxPlayers: number,portFreed:()=>
 		}
 	}
 
-	const getAndSendInfo = (client: WebSocket) => {
+	function getAndSendInfo(client: WebSocket|null){
+		if(client === null){
+			return;
+		}
 		const gameInfo = game.generateInfo(sockets.indexOf(client));
 		const metaInfo = {
 			playerNames: playerNames,
@@ -52,7 +84,10 @@ export default function HostGame(port: number, maxPlayers: number,portFreed:()=>
 		// console.log(gameInfo !== -1 ? gameInfo.timeStep : "no info");
 		client.send(message);
 	};
-	const sendMetaInfo = (client: WebSocket) => {
+	const sendMetaInfo = (client: WebSocket|null) => {
+		if(client === null){
+			return;
+		}
 		const metaInfo = {
 			playerNames: playerNames,
 			imageStrings: imageStrings,
@@ -90,6 +125,7 @@ export default function HostGame(port: number, maxPlayers: number,portFreed:()=>
 					imageStrings.push(jsonData.imageString);
 					if (playerCount === MAX_PLAYERS) {
 						// getAndSendInfo(ws);
+						makeBotPlays();//now that everyone has joined have the bots play
 						sockets.forEach(function each(client) {
 							getAndSendInfo(client);
 						});
@@ -121,7 +157,8 @@ export default function HostGame(port: number, maxPlayers: number,portFreed:()=>
 					sockets.forEach(function each(client) {
 						getAndSendInfo(client);
 					});
-					// game.clearActionQueue();
+					//after the player has played, lets check if the bots should play 
+					makeBotPlays();
 				}
 			}
 		});

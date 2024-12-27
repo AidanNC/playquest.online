@@ -193,6 +193,9 @@ class Game {
 	}
 
 	getRandomPlay(playerIndex: number): number {
+		if(this.bets[playerIndex] === -1){
+			return this.getRandomBet(playerIndex);
+		}
 		const validPlays = this.getValidPlays(playerIndex);
 		return validPlays[Math.floor(Math.random() * validPlays.length)];
 	}
