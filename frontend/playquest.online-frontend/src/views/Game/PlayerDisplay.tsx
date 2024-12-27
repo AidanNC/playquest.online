@@ -190,6 +190,7 @@ export default function PlayerDisplay({
 					scoreIncrease={scoreIncrease}
 					bet={playerInfo.playerBet}
 					wonTricks={wonTricks}
+					isDealer={playerInfo.dealerIndex === playerInfo.pID}
 				/>
 				<div>
 					<HandRack>

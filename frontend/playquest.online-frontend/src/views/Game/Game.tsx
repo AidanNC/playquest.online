@@ -171,6 +171,7 @@ export default function Game({
 				scoreIncrease={scoreIncreases[opponent.pID]}
 				finalTrick={finalTrick}
 				finalTrickWinner={finalTrickWinner}
+				isDealer={currentPlayerInfo.dealerIndex === opponent.pID}
 			/>
 		);
 	});

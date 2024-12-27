@@ -38,6 +38,7 @@ type Props = {
 	scoreIncrease: number | null;
 	finalTrick: Card[] | null;
 	finalTrickWinner: number;
+	isDealer: boolean;
 };
 
 export default function OpponentDisplay({
@@ -50,6 +51,7 @@ export default function OpponentDisplay({
 	scoreIncrease,
 	finalTrick,
 	finalTrickWinner,
+	isDealer,
 }: Props) {
 	function cardDisplay() {
 		if(opponentInfo.roundOfOneCard){
@@ -81,6 +83,7 @@ export default function OpponentDisplay({
 					scoreIncrease={scoreIncrease}
 					bet={opponentInfo.bet}
 					wonTricks={wonTricks}
+					isDealer={isDealer}
 				/>
 			</MainContainer>
 

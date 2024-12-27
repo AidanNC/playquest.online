@@ -26,6 +26,7 @@ const animation = css`
 	${gradientAnimation} 2s ease infinite;
 `;
 const MainContainer = styled.div<{ $active: boolean }>`
+	position: relative;
 	height: 130px;
 	width: 320px;
 	display: flex;
@@ -35,11 +36,13 @@ const MainContainer = styled.div<{ $active: boolean }>`
 	z-index: 1; //so that the won tricks dislay behind the more important content
 	${(props) =>
 		props.$active
-			? css`border: 3px solid #ee00ff; 
-			filter: drop-shadow(0px 0px 6px #ee00ff); 
-			background: linear-gradient(130deg, #ee00ff, var(--main-yellow));
-			background-size: 200% 200%;
-			animation: ${animation};`
+			? css`
+					border: 3px solid #ee00ff;
+					filter: drop-shadow(0px 0px 6px #ee00ff);
+					background: linear-gradient(130deg, #ee00ff, var(--main-yellow));
+					background-size: 200% 200%;
+					animation: ${animation};
+			  `
 			: `border: 3px solid var(--blue-border);`} //#6f51f0
 	// border: 3px solid ${(props) => (props.$active ? "#ee00ff" : "#6f51f0")};
 	margin-right: 20px;
@@ -107,6 +110,21 @@ const TrickDisplay = styled.div`
 		margin: 0px;
 	}
 `;
+const DealerCircle = styled.div`
+	height: 30px;
+	width: 30px;
+	border-radius: 50%;
+	background-color: var(--main-yellow);
+	border: 2px solid var(--main-dark);
+	font-size: 20px;
+	font-color: var(--white);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+`;
 type ProfilePictureProps = {
 	imageString: string;
 	active: boolean;
@@ -115,6 +133,7 @@ type ProfilePictureProps = {
 	scoreIncrease: number | null;
 	bet: number;
 	wonTricks: Card[][];
+	isDealer: boolean;
 };
 export default function ProfilePicture({
 	imageString,
@@ -124,6 +143,7 @@ export default function ProfilePicture({
 	scoreIncrease,
 	bet,
 	wonTricks,
+	isDealer,
 }: ProfilePictureProps) {
 	const [showModal, setShowModal] = useState(false);
 	const startColor = "#15001c";
@@ -226,6 +246,7 @@ export default function ProfilePicture({
 							<span style={{ color: trickColor }}>{wonTricks.length}</span>
 						</p>
 					</InfoDisplay>
+					{isDealer ? <DealerCircle>D</DealerCircle> : null}
 				</MainContainer>
 			</TrickAndMainContainer>
 		</div>
