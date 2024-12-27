@@ -69,8 +69,9 @@ const TopBar = styled.div`
 	justify-content: flex-start;
 	align-items: center;
 	width: 100%;
-	p{
-	margin: 0px;
+	color: var(--white);
+	p {
+		margin: 0px;
 		width: 25%;
 	}
 `;
@@ -434,7 +435,7 @@ export default function Game({
 				{justPlayedCard ? <CardComponent card={justPlayedCard} /> : null}
 			</AnimatedCard> */}
 
-			<TrickAndTrump trump={currentPlayerInfo.trumpCard} />
+			<TrickAndTrump trump={currentPlayerInfo.trumpCard} round={currentPlayerInfo.round} startingHandSize={currentPlayerInfo.startingHandSize}/>
 
 			<PlayerHolder>
 				<div ref={playerDOM}>
