@@ -98,6 +98,7 @@ type GameProps = {
 	scoreIncrease: number | null;
 	finalTrick: Card[] | null;
 	finalTrickWinner: number;
+	validPLays: number[];
 };
 
 export default function PlayerDisplay({
@@ -111,6 +112,7 @@ export default function PlayerDisplay({
 	scoreIncrease,
 	finalTrick,
 	finalTrickWinner,
+	validPLays,
 }: GameProps) {
 	const hand = playerInfo.hand.map((card, index) => {
 		return (
@@ -119,6 +121,12 @@ export default function PlayerDisplay({
 				id={index}
 				key={index}
 				onClick={() => playCard(index)}
+				highlight={
+					validPLays.includes(index) &&
+					playerInfo.active &&
+					!playerInfo.playedCard &&
+					!justPlayedCard
+				}
 			/>
 		);
 	});
@@ -151,23 +159,25 @@ export default function PlayerDisplay({
 			{playerInfo.playerBet === -1 && playerInfo.active && (
 				// magic number
 				<BetHolder
-				onSubmit={(form)=>{
-					form.preventDefault();
-					if (bet !== null) {
-						makeBet(bet);
-					}
-				}}>
-					<p>Place bet:</p>
+					onSubmit={(form) => {
+						form.preventDefault();
+						if (bet !== null) {
+							makeBet(bet);
+						}
+					}}
+				>
+					{bet === playerInfo.invalidBet ? (
+						<p style={{ color: "red" }}>Invalid Bet</p>
+					) : (
+						<p>Place bet:</p>
+					)}
 					<input
 						type="number"
 						value={bet !== null ? bet : ""}
 						onChange={(e) => setBet(parseInt(e.target.value))}
 					></input>
-					<button
-						type="submit"
-					>
-						Submit
-					</button>
+
+					<button type="submit">Submit</button>
 				</BetHolder>
 			)}
 			<MainContainer>

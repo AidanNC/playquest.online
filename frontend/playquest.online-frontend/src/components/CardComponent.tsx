@@ -12,6 +12,7 @@ import { MobileWidth } from "../MediaQueryConstants.ts";
 const MainContainer = styled.div<{
 	$color: string;
 	$hover: boolean;
+	$highlight: boolean;
 }>`
 	height: 80px;
 	width: 60px;
@@ -22,7 +23,12 @@ const MainContainer = styled.div<{
 	// drop-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 	// filter: drop-shadow(0 0 0.3rem crimson);
 	// filter: drop-shadow(0px 0px 6px ${(props) => props.$color});
-	filter: drop-shadow(0px 0px 2px #f5f5c1);
+	filter: ${(props) =>
+		props.$highlight
+			? `drop-shadow(0px 0px 4px var(--main-yellow));
+			border: 1px solid var(--main-yellow);
+			`
+			: `drop-shadow(0px 0px 2px #f5f5c1);`}
 	//#f2f21d
 
 	border-radius: 5px;
@@ -98,6 +104,7 @@ interface CardElementProps {
 	id?: number;
 	onClick?: () => void;
 	mini?: boolean;
+	highlight?: boolean;
 }
 
 export default function CardComponent({
@@ -105,6 +112,7 @@ export default function CardComponent({
 	id,
 	onClick,
 	mini,
+	highlight = false,
 }: CardElementProps) {
 	let color = "#f5f5c1";
 	let displaySuit: JSX.Element = <BsFillSuitClubFill color="black" />;
@@ -156,6 +164,7 @@ export default function CardComponent({
 					}}
 					$color={color}
 					$hover={hover}
+					$highlight={highlight}
 				>
 					<>
 						{displaySuit}

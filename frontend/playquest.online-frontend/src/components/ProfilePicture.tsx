@@ -37,7 +37,7 @@ const MainContainer = styled.div<{ $active: boolean }>`
 		props.$active
 			? css`border: 3px solid #ee00ff; 
 			filter: drop-shadow(0px 0px 6px #ee00ff); 
-			background: linear-gradient(130deg, #ee00ff, #fcf403);
+			background: linear-gradient(130deg, #ee00ff, var(--main-yellow));
 			background-size: 200% 200%;
 			animation: ${animation};`
 			: `border: 3px solid var(--blue-border);`} //#6f51f0

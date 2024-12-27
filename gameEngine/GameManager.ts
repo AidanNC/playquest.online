@@ -356,6 +356,8 @@ class Game {
 				startingHandSize: this.handSize,
 				dealerIndex: this.dealerIndex,
 				isRoundOfOne: this.round === 10,
+				validPlays: this.getValidPlays(playerIndex), 
+				invalidBet: this.getInvalidBet(playerIndex),
 			};
 			//clear the action queue after we have generated a state
 			// this.gameActionQueue = []; //no ! don't clear after we have generated the state, should only clear once we move to another state

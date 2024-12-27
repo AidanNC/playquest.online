@@ -22,6 +22,8 @@ export default interface PlayerInfo {
 	round: number;
 	dealerIndex: number;
 	isRoundOfOne: boolean;
+	validPlays: number[];
+	invalidBet: number;
 }
 
 export interface OpponentInfo {
@@ -76,6 +78,9 @@ export const deserializePlayerInfo = (data: any): PlayerInfo => {
 	const dealerIndex: number = data.dealerIndex;
 
 	const isRoundOfOne: boolean = data.isRoundOfOne;
+
+	const validPlays: number[] = data.validPlays;
+	const invalidBet: number = data.invalidBet;
 	return {
 		hand,
 		trumpCard,
@@ -96,6 +101,8 @@ export const deserializePlayerInfo = (data: any): PlayerInfo => {
 		round,
 		dealerIndex,
 		isRoundOfOne,
+		validPlays,
+		invalidBet,
 	};
 };
 

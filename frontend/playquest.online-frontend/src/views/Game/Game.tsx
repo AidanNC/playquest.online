@@ -295,12 +295,21 @@ export default function Game({
 
 	const makeBet = (bet: number) => {
 		// console.log("player makes bet: ", bet);
-		sendAction(bet);
+		if (bet === currentPlayerInfo.invalidBet) {
+			alert("You can't bet " + bet );
+		} else {
+			sendAction(bet);
+		}
 	};
 	const playCard = (cardIndex: number) => {
 		//we don't want clicking on a card to send an action if the player hasn't bet yet
-		if (playerInfo.playerBet !== -1) {
-			sendAction(cardIndex);
+		if (playerInfo.playerBet !== -1 ) {
+			if(currentPlayerInfo.validPlays.includes(cardIndex)){
+				sendAction(cardIndex);
+			}else{
+				console.log("wrong suit");
+				alert("Wrong suit, play a " + currentPlayerInfo.currTrick[0].suit); //there willa lways be a card in the trick if you made an invalid play
+			}			
 		}
 	};
 	return (
@@ -435,7 +444,11 @@ export default function Game({
 				{justPlayedCard ? <CardComponent card={justPlayedCard} /> : null}
 			</AnimatedCard> */}
 
-			<TrickAndTrump trump={currentPlayerInfo.trumpCard} round={currentPlayerInfo.round} startingHandSize={currentPlayerInfo.startingHandSize}/>
+			<TrickAndTrump
+				trump={currentPlayerInfo.trumpCard}
+				round={currentPlayerInfo.round}
+				startingHandSize={currentPlayerInfo.startingHandSize}
+			/>
 
 			<PlayerHolder>
 				<div ref={playerDOM}>
@@ -456,6 +469,7 @@ export default function Game({
 						scoreIncrease={scoreIncreases[playerInfo.pID]}
 						finalTrick={finalTrick}
 						finalTrickWinner={finalTrickWinner}
+						validPLays={currentPlayerInfo.validPlays}
 					/>
 				</div>
 			</PlayerHolder>
