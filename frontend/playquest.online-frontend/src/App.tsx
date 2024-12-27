@@ -180,8 +180,8 @@ function App() {
 		// playGame(3, 10, 1000, updateStateList);
 
 		if (autoPlay) {
-			// const info = GetWholeGameInfo(5);
-			// setStateList(info);
+			const info = GetWholeGameInfo(5);
+			stateListRef.current = info;
 		}
 	}, []);
 
