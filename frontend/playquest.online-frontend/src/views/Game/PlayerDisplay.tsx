@@ -157,30 +157,33 @@ export default function PlayerDisplay({
 			<AnimatedCard $x={coords.x} $y={coords.y}>
 				{cardDisplay()}
 			</AnimatedCard>
-			{playerInfo.playerBet === -1 && playerInfo.active && (
-				// magic number
-				<BetHolder
-					onSubmit={(form) => {
-						form.preventDefault();
-						if (bet !== null) {
-							makeBet(bet);
-						}
-					}}
-				>
-					{bet === playerInfo.invalidBet ? (
-						<p style={{ color: "red" }}>Invalid Bet</p>
-					) : (
-						<p>Place bet:</p>
-					)}
-					<input
-						type="number"
-						value={bet !== null ? bet : ""}
-						onChange={(e) => setBet(parseInt(e.target.value))}
-					></input>
+			{playerInfo.playerBet === -1 &&
+				playerInfo.active &&
+				10 === visibleCardNumber &&  //the visible card number is automatically set to 10 when the dealing is done
+				hand.length > 0 && ( //otherwise the bet screen will show up before the deal starts
+					// magic number
+					<BetHolder
+						onSubmit={(form) => {
+							form.preventDefault();
+							if (bet !== null) {
+								makeBet(bet);
+							}
+						}}
+					>
+						{bet === playerInfo.invalidBet ? (
+							<p style={{ color: "red" }}>Invalid Bet</p>
+						) : (
+							<p>Place bet:</p>
+						)}
+						<input
+							type="number"
+							value={bet !== null ? bet : ""}
+							onChange={(e) => setBet(parseInt(e.target.value))}
+						></input>
 
-					<button type="submit">Submit</button>
-				</BetHolder>
-			)}
+						<button type="submit">Submit</button>
+					</BetHolder>
+				)}
 			<MainContainer>
 				<ProfilePicture
 					imageString={imageString.current}
