@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { createGame } from "../../utils/backend";
@@ -40,6 +40,7 @@ export default function MainPage() {
 	const [joining, setJoining] = useState(false);
 	const [roomCode, setRoomCode] = useState(0);
 	const [port, setPort] = useState(-1);
+	const joinRef = useRef(null);
 	const navigate = useNavigate();
 
 	async function handleCreate() {
@@ -54,6 +55,11 @@ export default function MainPage() {
 		localStorage.setItem("port", port.toString());
 		navigate("/GuestAccount");
 	}
+	useEffect(() => {
+		if (joining && joinRef.current) {
+		  joinRef.current.focus();
+		}
+	  }, [joining]);
 
 	return (
 		<MainContainer>
@@ -145,6 +151,7 @@ export default function MainPage() {
 					<input
 						type="number"
 						name="roomCode"
+						ref={joinRef}
 						onChange={(e) => {
 							setRoomCode(parseInt(e.target.value));
 						}}
