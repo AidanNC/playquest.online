@@ -219,7 +219,7 @@ export default function PlayerDisplay({
 					<BetActionBar
 						invalidBet={playerInfo.invalidBet}
 						makeBet={makeBet}
-						handSize={playerInfo.startingHandSize}
+						handSize={hand.length > 0 ? hand.length : 1}
 					/>
 				)}
 			<MainContainer>
