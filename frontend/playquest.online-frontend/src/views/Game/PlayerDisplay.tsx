@@ -192,7 +192,7 @@ export default function PlayerDisplay({
 			{playerInfo.playerBet === -1 &&
 				playerInfo.active &&
 				10 === visibleCardNumber && //the visible card number is automatically set to 10 when the dealing is done
-				hand.length > 0 && ( //otherwise the bet screen will show up before the deal starts
+				(hand.length > 0 || playerInfo.isRoundOfOne) && ( //otherwise the bet screen will show up before the deal starts
 					// magic number
 					// <BetHolder
 					// 	onSubmit={(form) => {
@@ -219,7 +219,7 @@ export default function PlayerDisplay({
 					<BetActionBar
 						invalidBet={playerInfo.invalidBet}
 						makeBet={makeBet}
-						handSize={hand.length > 0 ? hand.length : 1}
+						handSize={playerInfo.startingHandSize}
 					/>
 				)}
 			<MainContainer>
