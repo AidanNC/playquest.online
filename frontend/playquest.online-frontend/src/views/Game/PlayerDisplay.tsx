@@ -5,7 +5,7 @@ import CardComponent, {
 import Card from "../../../../../gameEngine/Card.ts";
 import ProfilePicture from "../../components/ProfilePicture.tsx";
 import styled from "styled-components";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { MobileWidth } from "../../MediaQueryConstants.ts";
 
 const MainContainer = styled.div`
@@ -98,7 +98,7 @@ type GameProps = {
 	scoreIncrease: number | null;
 	finalTrick: Card[] | null;
 	finalTrickWinner: number;
-	validPLays: number[];
+	validPlays: number[];
 };
 
 export default function PlayerDisplay({
@@ -112,7 +112,7 @@ export default function PlayerDisplay({
 	scoreIncrease,
 	finalTrick,
 	finalTrickWinner,
-	validPLays,
+	validPlays,
 }: GameProps) {
 	const hand = playerInfo.hand.map((card, index) => {
 		return (
@@ -123,7 +123,7 @@ export default function PlayerDisplay({
 				onClick={() => playCard(index)}
 				highlight={
 					playerInfo.playerBet !== -1 &&
-					validPLays.includes(index) &&
+					validPlays.includes(index) &&
 					playerInfo.active &&
 					!playerInfo.playedCard &&
 					!justPlayedCard
@@ -131,10 +131,15 @@ export default function PlayerDisplay({
 			/>
 		);
 	});
+	useEffect(() => {
+		if (handRackRef.current) {
+		  handRackRef.current.scrollLeft = handRackRef.current.scrollWidth;
+		}
+	  }, [visibleCardNumber]);
 	const [bet, setBet] = useState<number | null>(null);
 	const name = useRef(localStorage.getItem("userName") || "Guest");
 	const imageString = useRef(localStorage.getItem("imageString") || "none");
-
+	const handRackRef = useRef<HTMLDivElement>(null);
 	function cardDisplay() {
 		return playerInfo.playedCard ? (
 			<CardComponent card={playerInfo.playedCard} />
@@ -159,7 +164,7 @@ export default function PlayerDisplay({
 			</AnimatedCard>
 			{playerInfo.playerBet === -1 &&
 				playerInfo.active &&
-				10 === visibleCardNumber &&  //the visible card number is automatically set to 10 when the dealing is done
+				10 === visibleCardNumber && //the visible card number is automatically set to 10 when the dealing is done
 				hand.length > 0 && ( //otherwise the bet screen will show up before the deal starts
 					// magic number
 					<BetHolder
@@ -196,7 +201,7 @@ export default function PlayerDisplay({
 					isDealer={playerInfo.dealerIndex === playerInfo.pID}
 				/>
 				<div>
-					<HandRack>
+					<HandRack ref={handRackRef}>
 						{playerInfo.isRoundOfOne
 							? !playerInfo.playedCard && (
 									<FaceDownCard onClick={() => playCard(0)} />
