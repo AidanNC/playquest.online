@@ -60,12 +60,38 @@ const CompleteContainer = styled.div`
 		display: flex;
 	}
 `;
-const BetHolder = styled.form`
+// const BetHolder = styled.form`
+// 	margin-left: 100px;
+// 	@media (max-width: ${MobileWidth}) {
+// 		margin-left: 0px;
+// 		background: #9d44fc;
+// 		width: 40vw;
+// 		left: 2vw;
+// 		padding: 2px;
+// 		height: calc(15svh - 20px);
+// 		padding-left: 10px;
+// 		border-radius: 10px;
+// 		border: 3px solid var(--main-pink);
+// 		position: absolute;
+// 		display: flex;
+// 		flex-direction: column;
+// 		align-items: center;
+// 		gap: 5px;
+// 		z-index: 100;
+// 		input {
+// 			width: 50%;
+// 		}
+// 		p {
+// 			margin: 0;
+// 		}
+// 	}
+// `;
+const BetHolder = styled.div`
 	margin-left: 100px;
 	@media (max-width: ${MobileWidth}) {
 		margin-left: 0px;
 		background: #9d44fc;
-		width: 40vw;
+		width: 80vw;
 		left: 2vw;
 		padding: 2px;
 		height: calc(15svh - 20px);
@@ -74,7 +100,8 @@ const BetHolder = styled.form`
 		border: 3px solid var(--main-pink);
 		position: absolute;
 		display: flex;
-		flex-direction: column;
+		// flex-direction: column;
+		flex-wrap: wrap;
 		align-items: center;
 		gap: 5px;
 		z-index: 100;
@@ -133,9 +160,9 @@ export default function PlayerDisplay({
 	});
 	useEffect(() => {
 		if (handRackRef.current) {
-		  handRackRef.current.scrollLeft = handRackRef.current.scrollWidth;
+			handRackRef.current.scrollLeft = handRackRef.current.scrollWidth;
 		}
-	  }, [visibleCardNumber]);
+	}, [visibleCardNumber]);
 	const [bet, setBet] = useState<number | null>(null);
 	const name = useRef(localStorage.getItem("userName") || "Guest");
 	const imageString = useRef(localStorage.getItem("imageString") || "none");
@@ -167,27 +194,33 @@ export default function PlayerDisplay({
 				10 === visibleCardNumber && //the visible card number is automatically set to 10 when the dealing is done
 				hand.length > 0 && ( //otherwise the bet screen will show up before the deal starts
 					// magic number
-					<BetHolder
-						onSubmit={(form) => {
-							form.preventDefault();
-							if (bet !== null) {
-								makeBet(bet);
-							}
-						}}
-					>
-						{bet === playerInfo.invalidBet ? (
-							<p style={{ color: "red" }}>Invalid Bet</p>
-						) : (
-							<p>Place bet:</p>
-						)}
-						<input
-							type="number"
-							value={bet !== null ? bet : ""}
-							onChange={(e) => setBet(parseInt(e.target.value))}
-						></input>
+					// <BetHolder
+					// 	onSubmit={(form) => {
+					// 		form.preventDefault();
+					// 		if (bet !== null) {
+					// 			makeBet(bet);
+					// 		}
+					// 	}}
+					// >
+					// 	{bet === playerInfo.invalidBet ? (
+					// 		<p style={{ color: "red" }}>Invalid Bet</p>
+					// 	) : (
+					// 		<p>Place bet:</p>
+					// 	)}
+					// 	<input
+					// 		type="number"
+					// 		value={bet !== null ? bet : ""}
+					// 		onChange={(e) => setBet(parseInt(e.target.value))}
+					// 	></input>
 
-						<button type="submit">Submit</button>
-					</BetHolder>
+					// 	<button type="submit">Submit</button>
+					// </BetHolder>
+
+					<BetActionBar
+						invalidBet={playerInfo.invalidBet}
+						makeBet={makeBet}
+						handSize={hand.length}
+					/>
 				)}
 			<MainContainer>
 				<ProfilePicture
@@ -211,5 +244,59 @@ export default function PlayerDisplay({
 				</div>
 			</MainContainer>
 		</CompleteContainer>
+	);
+}
+
+const BetButton = styled.button`
+	&.selected {
+		border: 2px solid var(--main-dark);
+		background: var(--main-yellow);
+	}
+	&.invalid {
+		background: red;
+		color: red;
+	}
+	&.notPossible {
+		background: grey;
+	}
+`;
+
+function BetActionBar({
+	invalidBet,
+	makeBet,
+	handSize,
+}: {
+	invalidBet: number;
+	makeBet: (bet: number) => void;
+	handSize: number;
+}) {
+	const [bet, setBet] = useState<number>(-1);
+	return (
+		<BetHolder>
+			{Array.from({ length: 10 }, (_, i) => i + 1).map((i) => {
+				return (
+					<BetButton
+						key={i}
+						className={
+							i > handSize
+								? "notPossible"
+								: i === invalidBet
+								? "invalid"
+								: i === bet
+								? "selected"
+								: ""
+						}
+						onClick={() => {
+							if (i <= handSize) {
+								setBet(i);
+							}
+						}}
+					>
+						{i}
+					</BetButton>
+				);
+			})}
+			<button onClick={() => makeBet(bet)}>Submit</button>
+		</BetHolder>
 	);
 }

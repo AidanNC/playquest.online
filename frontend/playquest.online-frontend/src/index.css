@@ -23,6 +23,7 @@
   --breakpoint-mobile: 700px; 
   --blue-border: #6f51f0;
   --main-yellow: #fcf403;
+  
 }
 .whiteFont {
   color: #ffffff;
@@ -53,6 +54,7 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
   color: #15001c;
+  -webkit-tap-highlight-color: transparent;
 }
 button:hover {
   border-color: #d400d4;
