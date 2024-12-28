@@ -163,7 +163,7 @@ export default function PlayerDisplay({
 			handRackRef.current.scrollLeft = handRackRef.current.scrollWidth;
 		}
 	}, [visibleCardNumber]);
-	const [bet, setBet] = useState<number | null>(null);
+	// const [bet, setBet] = useState<number | null>(null);
 	const name = useRef(localStorage.getItem("userName") || "Guest");
 	const imageString = useRef(localStorage.getItem("imageString") || "none");
 	const handRackRef = useRef<HTMLDivElement>(null);
