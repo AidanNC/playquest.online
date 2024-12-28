@@ -40,7 +40,7 @@ export default function MainPage() {
 	const [joining, setJoining] = useState(false);
 	const [roomCode, setRoomCode] = useState(0);
 	const [port, setPort] = useState(-1);
-	const joinRef = useRef(null);
+	const joinRef = useRef<HTMLInputElement>(null);
 	const navigate = useNavigate();
 
 	async function handleCreate() {
