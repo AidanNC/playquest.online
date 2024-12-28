@@ -253,7 +253,7 @@ const BetButton = styled.button`
 		background: var(--main-yellow);
 	}
 	&.invalid {
-		background: red;
+		background: grey;
 		color: red;
 	}
 	&.notPossible {
@@ -273,7 +273,7 @@ function BetActionBar({
 	const [bet, setBet] = useState<number>(-1);
 	return (
 		<BetHolder>
-			{Array.from({ length: 10 }, (_, i) => i + 1).map((i) => {
+			{Array.from({ length: 11 }, (_, i) => i ).map((i) => {
 				return (
 					<BetButton
 						key={i}
@@ -296,7 +296,7 @@ function BetActionBar({
 					</BetButton>
 				);
 			})}
-			<button onClick={() => makeBet(bet)}>Submit</button>
+			<button onClick={() => makeBet(bet)}>Bet</button>
 		</BetHolder>
 	);
 }

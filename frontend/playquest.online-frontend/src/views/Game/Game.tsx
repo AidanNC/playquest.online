@@ -334,10 +334,6 @@ export default function Game({
 						console.log("index: ", index);
 						console.log("value: ", value);
 						if (index === currentPlayerInfo.pID) {
-							// this is because the orbi
-							// if (currentPlayerInfo.dealerIndex !== currentPlayerInfo.pID) {
-							// 	value += 1;
-							// }
 							setVisibleCardNumber(value);
 						}
 					}}

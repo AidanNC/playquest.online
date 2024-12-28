@@ -236,7 +236,7 @@ export default function ProfilePicture({
 							)}
 						</p>
 						<p className="bet">
-							Bet: <span style={{ color: betColor }}>{bet > -1 ? bet : 0}</span>
+							Bet: <span style={{ color: betColor }}>{bet > -1 ? bet : ""}</span>
 						</p>
 						<p
 							className="tricks"
