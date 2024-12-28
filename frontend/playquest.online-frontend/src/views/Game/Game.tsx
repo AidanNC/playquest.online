@@ -255,11 +255,9 @@ export default function Game({
 			setVisibleCardNumber(0);
 			setPlayDealAnimation(true);
 			const waitDuration =
-				(currentPlayerInfo.startingHandSize *
-					(1 + currentPlayerInfo.opponents.length) *
-					MOVE_DURATION *
-					2) /
-				3;
+				currentPlayerInfo.startingHandSize *
+				(1 + currentPlayerInfo.opponents.length) *
+				MOVE_DURATION;
 			await sleep(waitDuration);
 			setPlayDealAnimation(false);
 			setVisibleCardNumber(10);
@@ -298,20 +296,20 @@ export default function Game({
 	const makeBet = (bet: number) => {
 		// console.log("player makes bet: ", bet);
 		if (bet === currentPlayerInfo.invalidBet) {
-			alert("You can't bet " + bet );
+			alert("You can't bet " + bet);
 		} else {
 			sendAction(bet);
 		}
 	};
 	const playCard = (cardIndex: number) => {
 		//we don't want clicking on a card to send an action if the player hasn't bet yet
-		if (playerInfo.playerBet !== -1 ) {
-			if(currentPlayerInfo.validPlays.includes(cardIndex)){
+		if (playerInfo.playerBet !== -1) {
+			if (currentPlayerInfo.validPlays.includes(cardIndex)) {
 				sendAction(cardIndex);
-			}else{
+			} else {
 				console.log("wrong suit");
 				alert("Wrong suit, play a " + currentPlayerInfo.currTrick[0].suit); //there willa lways be a card in the trick if you made an invalid play
-			}			
+			}
 		}
 	};
 	return (
@@ -323,7 +321,7 @@ export default function Game({
 						(1 + currentPlayerInfo.opponents.length)
 					}
 					coordinates={getDealerTargetCoords()}
-					dealerIndex={
+					dealerPosition={
 						//this cooked math needs to be looked at again and explained for future me
 						(currentPlayerInfo.dealerIndex +
 							1 +
@@ -331,11 +329,15 @@ export default function Game({
 							currentPlayerInfo.pID) %
 						(1 + currentPlayerInfo.opponents.length)
 					}
+					dealerIndex={currentPlayerInfo.dealerIndex}
 					incrementCard={(index: number, value: number) => {
+						console.log("index: ", index);
+						console.log("value: ", value);
 						if (index === currentPlayerInfo.pID) {
-							if (currentPlayerInfo.dealerIndex !== currentPlayerInfo.pID) {
-								value += 1;
-							}
+							// this is because the orbi
+							// if (currentPlayerInfo.dealerIndex !== currentPlayerInfo.pID) {
+							// 	value += 1;
+							// }
 							setVisibleCardNumber(value);
 						}
 					}}
@@ -471,7 +473,7 @@ export default function Game({
 						scoreIncrease={scoreIncreases[playerInfo.pID]}
 						finalTrick={finalTrick}
 						finalTrickWinner={finalTrickWinner}
-						validPLays={currentPlayerInfo.validPlays}
+						validPlays={currentPlayerInfo.validPlays}
 					/>
 				</div>
 			</PlayerHolder>
