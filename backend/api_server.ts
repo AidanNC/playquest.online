@@ -1,10 +1,12 @@
 import express from "express";
 import cors from "cors"; 
 import HostGame from "./wss";
+import * as db_methods from "./db_methods.ts";
+
+//set up the server
 const app = express();
 const port = 4000;
 let basePort = 8000;
-
 const maxGames = 20;
 let numGames = 0;
 
