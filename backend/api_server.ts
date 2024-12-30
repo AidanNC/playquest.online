@@ -72,20 +72,37 @@ app.post("/login", async (req, res) => {
 		res.status(400).send({ message: "User not found" }); //should change to generic message
 		//should tell them to login
 		return;
+	}else{
+		const passhash = user.passhash;
+		const isValid = await verifyPassword(password, passhash);
+		if (!isValid) {
+			res.status(401).send({ message: "Invalid password" }); //should change to generic message
+			return;
+		}
+		//now we know the user exists and has provided the right password
+		const token = await generateToken(username);
+		res.cookie("token", token, {
+			httpOnly: true,
+			secure: false,
+			sameSite: "strict",
+		}); //set secure to tru in production
+		res.json({ message: "Login Success" });
 	}
-	const passhash = user.passhash;
-	const isValid = await verifyPassword(password, passhash);
-	if (!isValid) {
-		res.status(401).send({ message: "Invalid password" }); //should change to generic message
+});
+
+app.post("/register", async (req, res) => {
+	const { username, password, email } = req.body;
+	const user = await db_methods.getUserByUsername(username);
+	if (user !== undefined) {
+		res.status(400).send({ message: "User already registered" }); //should change to generic message
+		//should tell them to login
+		return;
+	}else{
+		const passhash = await hashPassword(password);
+		await db_methods.insertUser(username, passhash, email);
+		res.json({ message: "Registration Success" });
 	}
-	//now we know the user exists and has provided the right password
-	const token = await generateToken(username);
-	res.cookie("token", token, {
-		httpOnly: true,
-		secure: false,
-		sameSite: "strict",
-	}); //set secure to tru in production
-	res.json({ message: "Login Success" });
+	
 });
 
 app.listen(port, () => {
