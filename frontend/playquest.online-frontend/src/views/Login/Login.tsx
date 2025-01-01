@@ -1,6 +1,6 @@
 import { useState } from "react";
 import styled from "styled-components";
-import { login, register } from "../../utils/backend.ts";
+import { login, register, testCookies } from "../../utils/backend.ts";
 
 const MainContainer = styled.main`
 	height: 100vh;
@@ -108,6 +108,7 @@ export default function Login() {
 				)}
 				<button type="submit">{registering? "Register" : "Login"}</button>
 			</Form>
+			<button onClick={testCookies}>Test Cookies</button>
 		</MainContainer>
 	);
 }

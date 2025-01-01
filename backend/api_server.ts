@@ -20,8 +20,9 @@ let numGames = 0;
 const availablePorts: number[] = Array.from({ length: 20 }, (_, i) => i + 1);
 
 const corsOptions = {
-	origin: "*", // Allow all origins for testing purposes. Change this to your frontend domain in production.
+	origin: "http://10.0.0.66:5173", // Allow all origins for testing purposes. Change this to your frontend domain in production.
 	optionsSuccessStatus: 200, // Some legacy browsers (IE11, various SmartTVs) choke on 204
+	credentials: true,
 };
 // Use the cors middleware
 app.use(cors(corsOptions));
@@ -35,6 +36,8 @@ function portFreed(port: number) {
 }
 
 app.get("/createGame", (req, res) => {
+	console.log("api cookies");
+	console.log("Cookies:", req.cookies);
 	const playerCount = Number(req.query.numPlayers);
 	const botCount = Number(req.query.botCount);
 
@@ -59,6 +62,9 @@ app.get("/createGame", (req, res) => {
 			return;
 		}
 		res.send({ message: "Game created", port: basePort + wsport });
+		console.log(`Game on port ${basePort + wsport} has started`);
+		console.log(`Number of games: ${numGames}`);
+		console.log("Available ports: ", availablePorts);
 		HostGame(basePort + wsport, playerCount, botCount, () => {
 			portFreed(wsport);
 		});
@@ -84,9 +90,11 @@ app.post("/login", async (req, res) => {
 		res.cookie("token", token, {
 			httpOnly: true,
 			secure: false,
-			sameSite: "strict",
+			sameSite: "lax",
+			expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7), //expires in 7 days
 		}); //set secure to tru in production
 		res.json({ message: "Login Success" });
+		console.log(username + " has logged in");
 	}
 });
 
@@ -103,6 +111,13 @@ app.post("/register", async (req, res) => {
 		res.json({ message: "Registration Success" });
 	}
 	
+});
+
+
+app.post("/testCookies", async (req, res) => {
+	console.log("test cookies");
+	console.log("Cookies:", req.cookies);
+	res.json({messge: "cookies ogged"})
 });
 
 app.listen(port, () => {

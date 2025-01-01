@@ -1,13 +1,11 @@
 import WebSocket, { WebSocketServer } from "ws";
 import Game from "../gameEngine/GameManager";
-import cookie from "cookie";
 
 export default function HostGame(
 	port: number,
 	maxPlayers: number,
 	botCount: number,
-	portFreed: () => void,
-	verifyToken: (token: string) => [string, string] , 
+	portFreed: () => void
 ) {
 	const wss = new WebSocketServer({ port: port });
 	const tenMinutes = 600000;
@@ -25,21 +23,13 @@ export default function HostGame(
 
 	console.log(`Starting WSS Server! Port: ${port}`);
 	let activePlayerCount = 0;
-	let playerCount = 0;
 	const MAX_PLAYERS = maxPlayers;
 
-	const playerIDs: string[] = [];
-	const playerNames: string[] = [];
-	const imageStrings: string[] = [];
-	const sockets: (WebSocket | null)[] = [];
+	const playerInfo = new PlayerInfoHolder();
 
 	//initialize the bots:
 	for (let i = 0; i < botCount; i++) {
-		playerCount++;
-		playerIDs.push("bot0ge" + i);
-		playerNames.push("bot0ge" + i);
-		imageStrings.push("stone");
-		sockets.push(null);
+		playerInfo.addPlayer("bot0ge" + i, "bot0ge" + i, "stone", i, null);
 	}
 	function sleep(ms: number) {
 		return new Promise((resolve) => setTimeout(resolve, ms));
@@ -50,7 +40,7 @@ export default function HostGame(
 		console.log(botCount);
 		while (game.activePlayer < botCount) {
 			//bot count is 1 indexed, pID is 0 indexed
-			console.log(playerNames[game.activePlayer] + " is playing");
+			console.log(playerInfo.getNameBy_gameID(game.activePlayer) + " is playing");
 			game.clearActionQueue(); //make sure the action queue is cleared
 			game.processAction(
 				game.activePlayer,
@@ -58,7 +48,7 @@ export default function HostGame(
 			);
 			await sleep(1000);
 			//send out the info the the players
-			sockets.forEach(function each(client) {
+			playerInfo.getSockets().forEach(function each(client) {
 				getAndSendInfo(client);
 			});
 		}
@@ -68,7 +58,7 @@ export default function HostGame(
 	game.startRound(10, 0);
 
 	const streamLinedSendInfo = (client: WebSocket) => {
-		if (playerCount === MAX_PLAYERS) {
+		if (playerInfo.getPlayerCount() === MAX_PLAYERS) {
 			getAndSendInfo(client);
 		} else {
 			sendMetaInfo(client);
@@ -79,11 +69,8 @@ export default function HostGame(
 		if (client === null) {
 			return;
 		}
-		const gameInfo = game.generateInfo(sockets.indexOf(client));
-		const metaInfo = {
-			playerNames: playerNames,
-			imageStrings: imageStrings,
-		};
+		const gameInfo = game.generateInfo(playerInfo.getGameID_ws(client));
+		const metaInfo = playerInfo.getMetaInfo();
 		const message = JSON.stringify({
 			playerInfo: gameInfo,
 			metaInfo: metaInfo,
@@ -96,10 +83,7 @@ export default function HostGame(
 		if (client === null) {
 			return;
 		}
-		const metaInfo = {
-			playerNames: playerNames,
-			imageStrings: imageStrings,
-		};
+		const metaInfo = playerInfo.getMetaInfo();
 		const message = JSON.stringify({
 			metaInfo: metaInfo,
 		});
@@ -107,11 +91,8 @@ export default function HostGame(
 		client.send(message);
 	};
 
-	wss.on("connection", function connection(ws,req) {
+	wss.on("connection", function connection(ws) {
 		ws.on("error", console.error);
-		const cookies = cookie.parse(req.headers.cookie || '');
-		console.log("wss cookies");
-    	console.log('Cookies:', cookies);
 
 		ws.on("message", function message(data) {
 			// console.log(data.toString());
@@ -120,7 +101,7 @@ export default function HostGame(
 			if (
 				jsonData.ping !== undefined &&
 				jsonData.id !== undefined &&
-				playerIDs.includes(jsonData.id)
+				playerInfo.getPlayerIDs().includes(jsonData.id)
 			) {
 				const pingMessage = JSON.stringify({
 					ping: true,
@@ -131,45 +112,40 @@ export default function HostGame(
 			}
 			if (jsonData.join !== undefined && jsonData.id !== undefined) {
 				//player isn't in the game and there is room, let them join
-				if (playerCount < MAX_PLAYERS && !playerIDs.includes(jsonData.id)) {
-					playerCount++;
+				if (playerInfo.getPlayerCount() < MAX_PLAYERS && !playerInfo.getPlayerIDs().includes(jsonData.id)) {
 					activePlayerCount++;
-					sockets.push(ws);
-					playerIDs.push(jsonData.id);
-					playerNames.push(jsonData.name); //just assume these fields are populated
-					imageStrings.push(jsonData.imageString);
-					if (playerCount === MAX_PLAYERS) {
+					playerInfo.addPlayer(jsonData.id, jsonData.name, jsonData.imageString, playerInfo.getPlayerCount() - 1, ws);
+					if (playerInfo.getPlayerCount() === MAX_PLAYERS) {
 						// getAndSendInfo(ws);
 						makeBotPlays(); //now that everyone has joined have the bots play
-						sockets.forEach(function each(client) {
+						playerInfo.getSockets().forEach(function each(client) {
 							getAndSendInfo(client);
 						});
 					}
 					//update the other players on the opponents info
-					sockets.forEach(function each(client) {
+					playerInfo.getSockets().forEach(function each(client) {
 						sendMetaInfo(client);
 					});
-				} else if (playerIDs.includes(jsonData.id)) {
-					const pindex = playerIDs.indexOf(jsonData.id);
-					sockets[pindex] = ws;
+				} else if (playerInfo.getPlayerIDs().includes(jsonData.id)) {
+					playerInfo.setWsByPlayerID(jsonData.id, ws);
 					activePlayerCount++;
 					console.log(`Player ${jsonData.name} reconnected!`);
 					sendMetaInfo(ws);
-					if (playerCount === MAX_PLAYERS) {
-						console.log(playerCount);
+					if (playerInfo.getPlayerCount() === MAX_PLAYERS) {
+						// console.log(playerCount);
 						getAndSendInfo(ws);
 					}
 				} else {
 					console.log("Game full, join rejected!");
-					console.log(playerIDs);
+					console.log(playerInfo.getPlayerIDs());
 				}
 			}
-			if (jsonData.action !== undefined && playerIDs.includes(jsonData.id)) {
+			if (jsonData.action !== undefined && playerInfo.getPlayerIDs().includes(jsonData.id)) {
 				game.clearActionQueue();
-				const playerIndex = sockets.indexOf(ws);
-				const result = game.processAction(playerIndex, jsonData.action);
+				const playerGameID = playerInfo.getGameID_ws(ws);
+				const result = game.processAction(playerGameID, jsonData.action);
 				if (result === 1) {
-					sockets.forEach(function each(client) {
+					playerInfo.getSockets().forEach(function each(client) {
 						getAndSendInfo(client);
 					});
 					//after the player has played, lets check if the bots should play
@@ -178,8 +154,8 @@ export default function HostGame(
 			}
 		});
 		ws.on("close", function close() {
-			const index = sockets.indexOf(ws);
-			console.log(`Player ${playerNames[index]} disconnected!`);
+			const playerName = playerInfo.getNameBy_ws(ws);
+			console.log(`Player ${playerName} disconnected!`);
 			activePlayerCount--;
 			if (activePlayerCount === 0) {
 				console.log("No players left, closing game!");
@@ -187,4 +163,60 @@ export default function HostGame(
 			}
 		});
 	});
+}
+
+function Host1Game(maxPlayers: number, botCount: number) {
+	
+}
+
+class PlayerInfoHolder {
+	playerIDs: string[] = [];
+	playerNames: string[] = [];
+	imageStrings: string[] = [];
+	gameIDs: number[] = [];
+	sockets: (WebSocket | null)[] = [];
+	playerCount: number = 0;
+
+	constructor(){}
+
+	addPlayer(playerID: string, playerName: string, imageString: string, gameID: number, ws: WebSocket|null){
+		this.playerIDs.push(playerID);
+		this.playerNames.push(playerName);
+		this.imageStrings.push(imageString);
+		this.gameIDs.push(gameID);
+		this.sockets.push(ws);
+		this.playerCount++;
+	}
+
+	getGameID_playerID(playerID: string){
+		return this.gameIDs[this.playerIDs.indexOf(playerID)];
+	}
+
+	getGameID_ws(ws: WebSocket){
+		return this.gameIDs[this.sockets.indexOf(ws)];
+	}
+	getNameBy_gameID(gameID: number){
+		return this.playerNames[this.gameIDs.indexOf(gameID)];
+	}
+	getNameBy_ws(ws: WebSocket){
+		return this.playerNames[this.sockets.indexOf(ws)];
+	}
+	getSockets(){
+		return this.sockets;
+	}
+	getMetaInfo(){
+		return {
+			playerNames: this.playerNames,
+			imageStrings: this.imageStrings,
+		}
+	}
+	getPlayerIDs(){
+		return this.playerIDs;
+	}
+	setWsByPlayerID(playerID: string, ws: WebSocket){
+		this.sockets[this.playerIDs.indexOf(playerID)] = ws;
+	}
+	getPlayerCount(){
+		return this.playerCount;
+	}
 }
