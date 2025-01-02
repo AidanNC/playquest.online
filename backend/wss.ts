@@ -7,7 +7,7 @@ export default function HostGame(
 	maxPlayers: number,
 	botCount: number,
 	portFreed: () => void,
-	verifyToken: (token: string) => [string, string] , 
+	verifyToken: (token: string) => [string, string] | undefined
 ) {
 	const wss = new WebSocketServer({ port: port });
 	const tenMinutes = 600000;
@@ -107,20 +107,47 @@ export default function HostGame(
 		client.send(message);
 	};
 
-	wss.on("connection", function connection(ws,req) {
+	wss.on("connection", function connection(ws, req) {
 		ws.on("error", console.error);
-		const cookies = cookie.parse(req.headers.cookie || '');
+		const cookies = cookie.parse(req.headers.cookie || "");
 		console.log("wss cookies");
-    	console.log('Cookies:', cookies);
+		console.log("Cookies:", cookies);
+		let playerID: string;
+		const token = cookies.token;
+
+		if (token) {
+			const user = verifyToken(token);
+			if (user && !playerIDs.includes(user[1])) {
+				playerIDs.push(user[1]);
+				playerID = user[1];
+				playerNames.push(user[0]);
+				sockets.push(ws);
+				imageStrings.push("beanbag");
+				playerCount++;
+				console.log("a verified user has connected");
+				if (playerCount === MAX_PLAYERS) {
+					// getAndSendInfo(ws);
+					makeBotPlays(); //now that everyone has joined have the bots play
+					sockets.forEach(function each(client) {
+						getAndSendInfo(client);
+					});
+				}
+			}
+			if(user && playerIDs.includes(user[1])){
+				playerID = user[1];
+				console.log("a verified user has reconnected");
+			}
+		}
 
 		ws.on("message", function message(data) {
 			// console.log(data.toString());
 			const jsonData = JSON.parse(data.toString());
+			playerID = playerID ? playerID : jsonData.id;
 			//handle pings
 			if (
 				jsonData.ping !== undefined &&
-				jsonData.id !== undefined &&
-				playerIDs.includes(jsonData.id)
+				playerID !== undefined &&
+				playerIDs.includes(playerID)
 			) {
 				const pingMessage = JSON.stringify({
 					ping: true,
@@ -129,13 +156,13 @@ export default function HostGame(
 				ws.send(pingMessage);
 				streamLinedSendInfo(ws);
 			}
-			if (jsonData.join !== undefined && jsonData.id !== undefined) {
+			if (jsonData.join !== undefined && playerID !== undefined) {
 				//player isn't in the game and there is room, let them join
-				if (playerCount < MAX_PLAYERS && !playerIDs.includes(jsonData.id)) {
+				if (playerCount < MAX_PLAYERS && !playerIDs.includes(playerID)) {
 					playerCount++;
 					activePlayerCount++;
 					sockets.push(ws);
-					playerIDs.push(jsonData.id);
+					playerIDs.push(playerID);
 					playerNames.push(jsonData.name); //just assume these fields are populated
 					imageStrings.push(jsonData.imageString);
 					if (playerCount === MAX_PLAYERS) {
@@ -149,8 +176,8 @@ export default function HostGame(
 					sockets.forEach(function each(client) {
 						sendMetaInfo(client);
 					});
-				} else if (playerIDs.includes(jsonData.id)) {
-					const pindex = playerIDs.indexOf(jsonData.id);
+				} else if (playerIDs.includes(playerID)) {
+					const pindex = playerIDs.indexOf(playerID);
 					sockets[pindex] = ws;
 					activePlayerCount++;
 					console.log(`Player ${jsonData.name} reconnected!`);
@@ -164,7 +191,7 @@ export default function HostGame(
 					console.log(playerIDs);
 				}
 			}
-			if (jsonData.action !== undefined && playerIDs.includes(jsonData.id)) {
+			if (jsonData.action !== undefined && playerIDs.includes(playerID)) {
 				game.clearActionQueue();
 				const playerIndex = sockets.indexOf(ws);
 				const result = game.processAction(playerIndex, jsonData.action);

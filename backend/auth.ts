@@ -24,18 +24,25 @@ export async function verifyPassword(password: string, passHash: string) {
 }
 
 //generate the token
-export async function generateToken(username: string) {
-	return jwt.sign({ username: username, accessLevel: "user" }, secretKey, {
+export async function generateToken(username: string, inGameID: string ) {
+	return jwt.sign({ username: username, inGameID: inGameID, accessLevel: "user" }, secretKey, {
 		expiresIn: "15d",
 	});
 }
 
-export function verifyToken(token: string) {
-	return jwt.verify(token, secretKey, (err, decoded) => {
-		if (err) {
-			console.log(err);
-		} else {
-			return decoded;
-		}
-	});
+export function verifyToken(token: string): JwtPayload | undefined {
+	try {
+		return jwt.verify(token, secretKey) as JwtPayload;
+	}catch (err) {
+		console.log(err);
+		return undefined;
+	}
+	// return jwt.verify(token, secretKey, (err, decoded) => {
+	// 	if (err) {
+	// 		console.log(err);
+	// 		return undefined;
+	// 	} else {
+	// 		return decoded;
+	// 	}
+	// });
 }

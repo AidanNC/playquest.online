@@ -19,17 +19,23 @@ async function createTable() {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       username TEXT NOT NULL,
       passhash TEXT NOT NULL,
-      email TEXT NOT NULL
+      email TEXT NOT NULL,
+	  inGameID TEXT NOT NULL,
     )
   `);
 }
 
+function randomID(username: string): string {
+	const random = Math.floor(Math.random() * 1000000);
+	return username + random.toString();
+}
 // Insert a user
 async function insertUser(username: string, passhash: string, email: string) {
+	const inGameID = randomID(username);
 	const db = await openDb();
 	await db.run(
-		"INSERT INTO users (username, passhash, email) VALUES (?, ?, ?)",
-		[username, passhash, email]
+		"INSERT INTO users (username, passhash, email, inGameID) VALUES (?, ?, ?, ?)",
+		[username, passhash, email, inGameID]
 	);
 }
 
@@ -47,7 +53,7 @@ async function getUserById(id: number) {
 
 async function getUserByUsername(
 	username: string
-): Promise<{ id: number; username: string; passhash: string; email: string }|undefined> {
+): Promise<{ id: number; username: string; passhash: string; email: string; inGameID: string}|undefined> {
 	const db = await openDb();
 	return db.get("SELECT * FROM USERS WHERE username = ?", [username]);
 }
