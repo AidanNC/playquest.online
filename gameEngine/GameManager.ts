@@ -4,6 +4,7 @@ import Deck from "./Deck";
 import Card, { Suit } from "./Card";
 import PlayerInfo, { OpponentInfo } from "./PlayerInfo";
 import GameActionMachine, { GameAction } from "./GameAction";
+import {GameRecorder, Naive_GameRecorder, Naive_GameState } from "./GameRecorder";
 
 class Game {
 	playerCount: number;
@@ -26,6 +27,8 @@ class Game {
 	gameOver: boolean = false;
 	timeStep: number = 0;
 	gameActionQueue: GameAction[] = [];
+	naive_gameRecorder: Naive_GameRecorder;
+	gameRecorder: GameRecorder;
 	constructor(playerCount: number) {
 		if (playerCount < 2 || playerCount > 6) {
 			throw new Error(
@@ -67,6 +70,13 @@ class Game {
 			}
 		}
 		if (result === 1) {
+			//record the action in our game recorder
+			if(this.naive_gameRecorder){
+				this.naive_gameRecorder.addAction(action);
+			}
+			if(this.gameRecorder){
+				this.gameRecorder.addAction(action);
+			}
 			//check to see if the round is over:
 			let roundOver = false;
 			if (
@@ -145,6 +155,18 @@ class Game {
 			this.handSize
 		);
 		this.gameActionQueue.push(gameActionDeal);
+
+		//initialize the game recorder oradd a new state
+		if(this.naive_gameRecorder){
+			this.naive_gameRecorder.newRound(this.round, this.hands, this.dealerIndex, this.trumpCard);
+		}else{
+			this.naive_gameRecorder = new Naive_GameRecorder(this.playerCount, this.hands, this.dealerIndex, this.trumpCard);
+		}
+		if(!this.gameRecorder){
+			this.gameRecorder = new GameRecorder(this.playerCount, this.handSize, this.dealerIndex);
+		}
+		this.gameRecorder.startRound(this.trumpCard, this.hands);
+		
 	}
 	//sorts the hands in ascending order, spades, hearts, diamonds, clubs
 	sortHands() {
@@ -367,6 +389,12 @@ class Game {
 			return returner;
 		}
 		return -1;
+	}
+	getNaiveGameRecorder(){
+		return this.naive_gameRecorder;
+	}
+	getGameRecorder(){
+		return this.gameRecorder;
 	}
 	printState(verbose = false) {
 		console.log(

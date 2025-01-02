@@ -66,6 +66,15 @@ import GameActionMachine from "./GameAction";
 
 
 const game = new Game(3);
-game.startRound(10, 0);
+// game.startRound(10, 0);
+GetWholeGameInfo(10, game);
 
-const info = GetWholeGameInfo(3, game);
+// game.getNaiveGameRecorder().stateList.forEach((state) => {console.log(state)});
+
+console.log(game.getGameRecorder().toString());
+// game.getGameRecorder().pprint();
+// game.getGameRecorder().readableMeaning().forEach((str) => console.log(str));
+
+// const info = GetWholeGameInfo(3, game);
+
+
