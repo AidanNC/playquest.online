@@ -39,6 +39,11 @@ class Card {
 			return SUITS.indexOf(this.suit) - SUITS.indexOf(card.suit);
 		}
 	}
+	getNumericValue(){
+		//spades -> hearts -> clubs -> diamonds
+		//so 2 of spades has value 0
+		return (SUITS.indexOf(this.suit) * 13) + (this.value - 2);
+	}
 }
 
 //make sure to update backendimports/Card.ts if change this
