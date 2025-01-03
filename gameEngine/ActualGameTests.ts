@@ -2,6 +2,7 @@ import { GetWholeGameInfo } from "./GameTest";
 import Game from "./GameManager";
 import PlayerInfo, {deserializePlayerInfo} from "./PlayerInfo";
 import GameActionMachine from "./GameAction";
+import fs from 'fs';
 
 // const info = GetWholeGameInfo(3);
 
@@ -72,6 +73,16 @@ GetWholeGameInfo(10, game);
 // game.getNaiveGameRecorder().stateList.forEach((state) => {console.log(state)});
 
 console.log(game.getGameRecorder().toString());
+
+const record = game.getGameRecorder().toString();
+const filePath = './gameRecord.txt';
+fs.writeFile(filePath, record, (err) => {
+	if (err) {
+	  console.error('Error writing to file:', err);
+	} else {
+	  console.log('String saved to file successfully.');
+	}
+  });
 // game.getGameRecorder().pprint();
 // game.getGameRecorder().readableMeaning().forEach((str) => console.log(str));
 

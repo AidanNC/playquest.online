@@ -1,6 +1,7 @@
 import WebSocket, { WebSocketServer } from "ws";
 import Game from "../gameEngine/GameManager";
 import cookie from "cookie";
+import { SaveGame } from "./stats/utils";
 
 export default function HostGame(
 	port: number,
@@ -9,6 +10,16 @@ export default function HostGame(
 	portFreed: () => void,
 	verifyToken: (token: string) => [string, string] | undefined
 ) {
+	let finishedGame = false;
+	function finishGame(game){
+		if(finishedGame){
+			return;
+		}
+		console.log("WSS GAME OVER");
+		console.log("SAVING GAME");
+		finishedGame = true;
+		SaveGame(playerIDs, game);
+	}
 	const wss = new WebSocketServer({ port: port });
 	const tenMinutes = 600000;
 	const tenHours = 36000000;
@@ -56,6 +67,9 @@ export default function HostGame(
 				game.activePlayer,
 				game.getRandomPlay(game.activePlayer)
 			);
+			if (game.gameOver) {
+				finishGame(game);
+			}
 			await sleep(1000);
 			//send out the info the the players
 			sockets.forEach(function each(client) {
@@ -199,6 +213,9 @@ export default function HostGame(
 				game.clearActionQueue();
 				const playerIndex = sockets.indexOf(ws);
 				const result = game.processAction(playerIndex, jsonData.action);
+				if(game.gameOver){
+					finishGame(game);
+				}
 				if (result === 1) {
 					sockets.forEach(function each(client) {
 						getAndSendInfo(client);

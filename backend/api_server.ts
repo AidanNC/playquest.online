@@ -79,7 +79,7 @@ app.get("/createGame", (req, res) => {
 					return undefined;
 				}
 				return [result.username, result.inGameID];
-			}
+			},
 		);
 	}
 });
