@@ -24,7 +24,7 @@ await db_methods.init();
 const availablePorts: number[] = Array.from({ length: 20 }, (_, i) => i + 1);
 
 const corsOptions = {
-	origin: process.env.DEVELOPMENT==="TRUE" ? "http://10.0.0.66:5173" : "https://playquest.online",
+	origin: process.env.DEVELOPMENT=== "TRUE" ? "http://10.0.0.66:5173" : "https://playquest.online",
 	// origin: "http://10.0.0.66:5173", // Allow all origins for testing purposes. Change this to your frontend domain in production.
 	optionsSuccessStatus: 200, // Some legacy browsers (IE11, various SmartTVs) choke on 204
 	credentials: true,

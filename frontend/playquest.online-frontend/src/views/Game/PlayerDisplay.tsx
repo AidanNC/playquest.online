@@ -37,9 +37,9 @@ const HandRack = styled.div`
 		// max-width: 80vw;
 		// min-width: 60vw;
 		width: 80vw;
-
-		border: 1px solid var(--main-pink);
+		border: 2px solid var(--main-pink);
 		border-radius: 6px;
+		background: var(--main-dark)
 	}
 `;
 const AnimatedCard = styled.div<{ $x: number; $y: number }>`
@@ -91,7 +91,7 @@ const BetHolder = styled.div`
 	@media (max-width: ${MobileWidth}) {
 		margin-left: 0px;
 		background: #9d44fc;
-		width: 80vw;
+		width: 90vw;
 		left: 2vw;
 		padding: 2px;
 		height: calc(15svh - 20px);
@@ -273,7 +273,7 @@ function BetActionBar({
 	const [bet, setBet] = useState<number>(-1);
 	return (
 		<BetHolder>
-			{Array.from({ length: 11 }, (_, i) => i ).map((i) => {
+			{Array.from({ length: 11 }, (_, i) => i).map((i) => {
 				return (
 					<BetButton
 						key={i}

@@ -13,6 +13,11 @@ const MainContainer = styled.div`
 	align-items: center;
 	gap: 30px;
 	font-size: 20px;
+	height: 100svh;
+	overflow: auto;
+	p {
+		margin: 0px;
+	}
 `;
 
 const PlayerCountRow = styled.div`

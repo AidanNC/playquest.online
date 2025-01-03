@@ -1,12 +1,13 @@
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  background-color: #242424;
-  background-color: #15001c;
-  color: #15001c;
-  /* color: #ffffff; */
-  
-  user-select: none;
-  /* line-height: 1.5;
+	font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+	background-color: #242424;
+	background-color: #15001c;
+	/* background-color: #464646; */
+	color: #15001c;
+	/* color: #ffffff; */
+
+	user-select: none;
+	/* line-height: 1.5;
   font-weight: 400;
 
   color-scheme: light dark;
@@ -17,70 +18,94 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale; */
-  --main-dark:#15001c;
-  --main-pink: #ee00ff;
-  --white: #ffffff;
-  --breakpoint-mobile: 700px; 
-  --blue-border: #6f51f0;
-  --main-yellow: #fcf403;
-  
+	--main-dark: #15001c;
+	--main-pink: #ee00ff;
+	--white: #ffffff;
+	--breakpoint-mobile: 700px;
+	--blue-border: #6f51f0;
+	--main-yellow: #fcf403;
+  --p1: 20px;
+  --p2: 25px;
+  --p3: 30px;
+  --p4: 25px;
+  --main-shadow: 1px 2px 0.2rem var(--main-dark);
 }
 .whiteFont {
-  color: #ffffff;
+	color: #ffffff;
 }
 @font-face {
-  font-family: 'Inter';
-  src: url('./assets/fonts/Doto/static/Doto-ExtraBold.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
+	font-family: "Inter";
+	src: url("./assets/fonts/Doto/static/Doto-ExtraBold.ttf") format("truetype");
+	font-weight: normal;
+	font-style: normal;
 }
 body {
-  margin: 0;
-  color: inherit;
-  overflow: hidden;
-  /* display: flex;
+	margin: 0;
+	color: inherit;
+	overflow: hidden;
+	/* display: flex;
   place-items: center;
   min-width: 320px;
   min-height: 100vh; */
 }
+
+@keyframes buttonBorder {
+	0% {
+		border-radius:  var(--p1) var(--p2) var(--p3) var(--p4);
+	}
+	25% {
+		border-radius:  var(--p4) var(--p1) var(--p2) var(--p3);
+	}
+	50% {
+		border-radius:  var(--p3) var(--p4) var(--p1) var(--p2);
+	}
+	75% {
+		border-radius:  var(--p2) var(--p3) var(--p4) var(--p1);
+	}
+	100% {
+		border-radius:  var(--p1) var(--p2) var(--p3) var(--p4);
+	}
+}
 button {
-  border-radius: 16px;
-  border: 2px solid transparent;
-  padding: 0.3em 1em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: var(--main-pink);
-  cursor: pointer;
-  transition: border-color 0.25s;
-  color: #15001c;
-  -webkit-tap-highlight-color: transparent;
+	/* border-radius: 16px; */
+  animation: buttonBorder 5s infinite;
+	border: 1px solid var(--main-dark);
+	padding: 0.3em 1em;
+	font-size: 1em;
+	font-weight: 500;
+	font-family: inherit;
+	background-color: var(--main-pink);
+	cursor: pointer;
+	transition: border-color 0.25s;
+	color: #15001c;
+	-webkit-tap-highlight-color: transparent;
+  /* box-shadow: var(--main-shadow); */
 }
 button:hover {
-  border-color: var(--main-yellow);
-  /* background-color: #d400d4; */
+	border-color: var(--main-yellow);
+	/* background-color: #d400d4; */
 }
 input {
-  border-radius: 16px;
-  border: 2px solid transparent;
-  padding: 0.3em 1em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: var(--main-pink);
-  cursor: pointer;
-  transition: border-color 0.25s;
-  color: #15001c;
+	border-radius: 16px;
+	border: 2px solid transparent;
+	padding: 0.3em 1em;
+	font-size: 1em;
+	font-weight: 500;
+	font-family: inherit;
+	background-color: var(--main-pink);
+	cursor: pointer;
+	transition: border-color 0.25s;
+	color: #15001c;
 }
 input:focus {
-  border-color: #d400d4;
-  outline: #d400d4
-  /* background-color: #d400d4; */
+	border-color: #d400d4;
+	outline: #d400d4;
+	/* background-color: #d400d4; */
 }
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+	-webkit-appearance: none;
+	margin: 0;
 }
 
 /* 

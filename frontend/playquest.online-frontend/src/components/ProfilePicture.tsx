@@ -26,6 +26,7 @@ const animation = css`
 	${gradientAnimation} 2s ease infinite;
 `;
 const MainContainer = styled.div<{ $active: boolean }>`
+	box-shadow: var(--main-shadow);
 	position: relative;
 	height: 130px;
 	width: 320px;
@@ -39,7 +40,11 @@ const MainContainer = styled.div<{ $active: boolean }>`
 			? css`
 					border: 3px solid var(--main-pink);
 					filter: drop-shadow(0px 0px 6px var(--main-pink));
-					background: linear-gradient(130deg, var(--main-pink), var(--main-yellow));
+					background: linear-gradient(
+						130deg,
+						var(--main-pink),
+						var(--main-yellow)
+					);
 					background-size: 200% 200%;
 					animation: ${animation};
 			  `
@@ -110,20 +115,39 @@ const TrickDisplay = styled.div`
 		margin: 0px;
 	}
 `;
+const borderAnimation = keyframes`
+	0% {
+    	border-radius: 30% 40% 50% 50%;
+	}	
+	25% {
+    	border-radius: 50% 30% 40% 70%;
+  	}
+	50% {
+		border-radius: 60% 50% 30% 20%;
+ 	}
+	75% {
+		border-radius: 40% 50% 50% 30%;
+  	}	
+	100% {
+     	border-radius: 30% 40% 50% 50%;
+  	}
+`;
 const DealerCircle = styled.div`
 	height: 30px;
 	width: 30px;
 	border-radius: 50%;
 	background-color: var(--main-yellow);
-	border: 2px solid var(--main-dark);
+	// border: 2px solid var(--main-dark);
 	font-size: 20px;
 	font-color: var(--white);
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	position: absolute;
-	left: 0px;
-	top: 0px;
+	left: 5px;
+	top: 5px;
+	animation: ${borderAnimation} 6s linear infinite;
+	filter: drop-shadow(0px 0px 6px var(--main-pink));
 `;
 type ProfilePictureProps = {
 	imageString: string;
@@ -236,7 +260,8 @@ export default function ProfilePicture({
 							)}
 						</p>
 						<p className="bet">
-							Bet: <span style={{ color: betColor }}>{bet > -1 ? bet : ""}</span>
+							Bet:{" "}
+							<span style={{ color: betColor }}>{bet > -1 ? bet : ""}</span>
 						</p>
 						<p
 							className="tricks"
