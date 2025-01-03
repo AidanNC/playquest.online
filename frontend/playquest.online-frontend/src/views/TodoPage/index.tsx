@@ -37,6 +37,12 @@ export default function TodoModal() {
 	const numcols = 20;
 	const numrows = 20;
 	const rows = [];
+	const colors = ["#1e83c7",
+		"#e67529",
+		"#29e639",
+		"#6229e6",
+		"#87181c"
+	]
 	// const colors = ["red", "green", "green"];
 
 	// for (let i = 0; i < numrows; i++) {
@@ -55,7 +61,8 @@ export default function TodoModal() {
 			row.push(
 				<Tile
 					key={`${i}-${j}`}
-					$color={(j + i) % 2 === 0 ? "red" : "#1e83c7"}
+					$color={(j + i) % 2 === 0 ? colors[4] : colors[3]}
+					// $color={colors[Math.floor(Math.random() * colors.length)]}
 					$delay={Math.random() * 6}
 				/>
 			);
@@ -75,21 +82,23 @@ export default function TodoModal() {
 
 const angle = 45;
 
+const maxOpacity = 0.8;
+const minOpacity = 0.3;
 const opacityAnimation = keyframes`
 	0% {
-    	opacity: 0.2
+    	opacity: ${minOpacity}
 	}	
 	25% {
-    	opacity: 0.4
+    	opacity: ${(maxOpacity-minOpacity)/2 + minOpacity}
   	}
 	50% {
-		opacity: 0.6
+		opacity: ${maxOpacity}
  	}
 	75% {
-		opacity: 0.4
+		opacity:${(maxOpacity-minOpacity)/2 + minOpacity}
   	}	
 	100% {
-     	opacity: 0.2
+     	opacity: ${minOpacity}
   	}
 `;
 
@@ -102,8 +111,8 @@ const Tile = styled.div.attrs<{ $color: string; $delay: number }>((props) => ({
 	height: 8rem;
 	width: 15rem;
 	opacity: 0.2;
-	outline: 1px solid black;
-	animation: ${opacityAnimation} 6s linear infinite;
+	// outline: 1px solid black;
+	animation: ${opacityAnimation} 8s linear infinite;
 `;
 const Row = styled.div`
 	display; flex;

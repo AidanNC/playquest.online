@@ -50,6 +50,20 @@ const MainContainer = styled.div<{
 		margin-bottom: 2px;
 	}
 `;
+const MainContainerShadow = styled.div`
+	height: 80px;
+	width: 60px;
+	position: absolute;
+	top: 8px;
+	left: 10px;
+	border-radius: 5px;
+	// z-index: -1;
+	background-color: var(--main-dark);
+	opacity: 0.5;
+`;
+const ShadowContainer = styled.div`
+	position: relative;
+`;
 const MiniMainContainer = styled.div<{
 	$color: string;
 }>`
@@ -155,22 +169,25 @@ export default function CardComponent({
 					<>{name}</>
 				</MiniMainContainer>
 			) : (
-				<MainContainer
-					id={"card" + id}
-					onClick={() => {
-						if (onClick !== undefined) {
-							onClick();
-						}
-					}}
-					$color={color}
-					$hover={hover}
-					$highlight={highlight}
-				>
-					<>
-						{displaySuit}
-						{name}
-					</>
-				</MainContainer>
+				<ShadowContainer>
+					<MainContainerShadow />
+					<MainContainer
+						id={"card" + id}
+						onClick={() => {
+							if (onClick !== undefined) {
+								onClick();
+							}
+						}}
+						$color={color}
+						$hover={hover}
+						$highlight={highlight}
+					>
+						<>
+							{displaySuit}
+							{name}
+						</>
+					</MainContainer>
+				</ShadowContainer>
 			)}
 		</div>
 	);
