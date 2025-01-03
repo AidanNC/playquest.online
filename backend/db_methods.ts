@@ -1,6 +1,12 @@
 import sqlite3 from "sqlite3";
 import { open } from "sqlite";
 
+
+async function init(){
+	await createTable();
+	await createGameTable();
+	await CreatePlayerGameTable();
+}
 // Open a database connection
 async function openDb() {
 	return open({
@@ -166,5 +172,6 @@ export {
 	InsertPlayerGame,
 	getGameByDate,
 	getUserByInGameID,
-	getPlayerGame
+	getPlayerGame,
+	init,
 };

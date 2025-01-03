@@ -19,6 +19,8 @@ let basePort = 8000;
 const maxGames = 20;
 let numGames = 0;
 
+await db_methods.init();
+
 const availablePorts: number[] = Array.from({ length: 20 }, (_, i) => i + 1);
 
 const corsOptions = {
