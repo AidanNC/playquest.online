@@ -10,9 +10,6 @@ export default function HostGame(
 	portFreed: () => void,
 	verifyToken: (token: string) => [string, string] | undefined
 ) {
-	const Tgame = new Game(5);
-	Tgame.startRound(10, 0);
-	SaveGame(["bot0ge0", "bot0ge1", "bot0ge2", "bot0ge3", "bot0ge4"], Tgame);
 	let finishedGame = false;
 	function finishGame(game: Game, playerIDs: string[]) {
 		if(finishedGame){

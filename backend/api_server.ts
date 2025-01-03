@@ -3,6 +3,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import HostGame from "./wss";
 import * as db_methods from "./db_methods.ts";
+import dotenv from "dotenv";
 import {
 	hashPassword,
 	verifyPassword,
@@ -10,6 +11,7 @@ import {
 	verifyToken,
 } from "./auth.ts";
 
+dotenv.config();
 //set up the server
 const app = express();
 const port = 4000;
@@ -20,7 +22,8 @@ let numGames = 0;
 const availablePorts: number[] = Array.from({ length: 20 }, (_, i) => i + 1);
 
 const corsOptions = {
-	origin: "http://10.0.0.66:5173", // Allow all origins for testing purposes. Change this to your frontend domain in production.
+	origin: process.env.DEVELOPMENT==="TRUE" ? "http://10.0.0.66:5173" : "https://playquest.online",
+	// origin: "http://10.0.0.66:5173", // Allow all origins for testing purposes. Change this to your frontend domain in production.
 	optionsSuccessStatus: 200, // Some legacy browsers (IE11, various SmartTVs) choke on 204
 	credentials: true,
 };
@@ -103,7 +106,7 @@ app.post("/login", async (req, res) => {
 		const token = await generateToken(username, inGameID);
 		res.cookie("token", token, {
 			httpOnly: true,
-			secure: false,
+			secure: process.env.DEVELOPMENT==="TRUE" ? false : true,
 			sameSite: "lax",
 			expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7), //expires in 7 days
 		}); //set secure to tru in production
