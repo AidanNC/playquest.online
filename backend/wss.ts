@@ -10,8 +10,11 @@ export default function HostGame(
 	portFreed: () => void,
 	verifyToken: (token: string) => [string, string] | undefined
 ) {
+	const Tgame = new Game(5);
+	Tgame.startRound(10, 0);
+	SaveGame(["bot0ge0", "bot0ge1", "bot0ge2", "bot0ge3", "bot0ge4"], Tgame);
 	let finishedGame = false;
-	function finishGame(game){
+	function finishGame(game: Game, playerIDs: string[]) {
 		if(finishedGame){
 			return;
 		}
@@ -68,7 +71,7 @@ export default function HostGame(
 				game.getRandomPlay(game.activePlayer)
 			);
 			if (game.gameOver) {
-				finishGame(game);
+				finishGame(game, playerIDs);
 			}
 			await sleep(1000);
 			//send out the info the the players
@@ -214,7 +217,7 @@ export default function HostGame(
 				const playerIndex = sockets.indexOf(ws);
 				const result = game.processAction(playerIndex, jsonData.action);
 				if(game.gameOver){
-					finishGame(game);
+					finishGame(game, playerIDs);
 				}
 				if (result === 1) {
 					sockets.forEach(function each(client) {

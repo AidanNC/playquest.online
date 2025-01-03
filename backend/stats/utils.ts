@@ -7,10 +7,6 @@ export async function SaveGame(inGameIDs: string[], game: Game){
 		console.error("Game is not over");
 		return;
 	}
-	console.log("getUsers");
-	const users = await db_methods.getUsers();
-	console.log(users);
-	console.log("overridding and saving game even though its not over");
 	const now = Date.now();
 	const gameLocation = './gameLogs/' + now + '.txt'; 
 	await db_methods.InsertGame(now, gameLocation ); 
@@ -27,6 +23,8 @@ export async function SaveGame(inGameIDs: string[], game: Game){
 	}
 	//save the actual game 
 	const record = game.getGameRecorder().toString();
+	console.log("game record: ");
+	console.log(record);
 	fs.writeFile(gameLocation, record, (err) => {
 		if (err) {
 		  console.error('Error writing game record to file:', err);
