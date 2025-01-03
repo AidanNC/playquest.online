@@ -179,6 +179,10 @@ export default function HostGame(
 				} else if (playerIDs.includes(playerID)) {
 					const pindex = playerIDs.indexOf(playerID);
 					sockets[pindex] = ws;
+					console.log(jsonData.imageString);
+					if(jsonData.imageString !== undefined){
+						imageStrings[pindex] = jsonData.imageString;
+					}
 					activePlayerCount++;
 					console.log(`Player ${jsonData.name} reconnected!`);
 					sendMetaInfo(ws);

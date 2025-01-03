@@ -3,6 +3,8 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { createGame } from "../../utils/backend";
+import LoggedInStatus from "../../components/LoggedInStatus";
+import { isLoggedIn } from "../../utils/utils";
 
 const MainContainer = styled.div`
 	display: flex;
@@ -51,20 +53,24 @@ export default function MainPage() {
 			// handleJoin(res.port);
 		}
 	}
-	function handleJoin(port: number) {
+	async function handleJoin(port: number) {
 		localStorage.setItem("port", port.toString());
-		navigate("/GuestAccount");
+		if (await isLoggedIn()) {
+			navigate("/App");
+		} else {
+			navigate("/GuestAccount");
+		}
 	}
 	useEffect(() => {
 		if (joining && joinRef.current) {
-		  joinRef.current.focus();
+			joinRef.current.focus();
 		}
-	  }, [joining]);
+	}, [joining]);
 
 	return (
 		<MainContainer>
 			<h1 className="whiteFont">Quest Online</h1>
-
+			<LoggedInStatus />
 			{!hosting && (
 				<button
 					onClick={() => {
@@ -101,11 +107,11 @@ export default function MainPage() {
 				</PlayerCountRow>
 			)}
 			{/* to choose how many bots you play with */}
-			{useBots ? (
-				hosting && <p className="whiteFont">Number of bots</p>
-			) : (
-				hosting && <button onClick={() => setUseBots(true)}>Play with bots?</button>
-			)}
+			{useBots
+				? hosting && <p className="whiteFont">Number of bots</p>
+				: hosting && (
+						<button onClick={() => setUseBots(true)}>Play with bots?</button>
+				  )}
 			{hosting && useBots && (
 				<PlayerCountRow>
 					{Array.from({ length: playerCount }, (_, i) => i).map((i) => {

@@ -89,6 +89,59 @@ export async function register(
 		}
 	}
 }
+export async function CheckLoggedIn() {
+	const baseUrl = import.meta.env.VITE_API_URL;
+	// const url = `/api/createGame?numPlayers=${numPlayers}`
+	// const websocketUrl = `https://playquest.online/api`
+	const url = `${baseUrl}/testLoggedIn`;
+	try {
+		const response = await fetch(url, {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			credentials: "include",
+		});
+		if (!response.ok) {
+			throw new Error(`Response status: ${response.status}`);
+		}
+		const json = await response.json();
+		return json;
+	} catch (error) {
+		if (error instanceof Error) {
+			console.error(error.message);
+		} else {
+			console.error(String(error));
+		}
+	}
+}
+
+export async function Logout() {
+	const baseUrl = import.meta.env.VITE_API_URL;
+	// const url = `/api/createGame?numPlayers=${numPlayers}`
+	// const websocketUrl = `https://playquest.online/api`
+	const url = `${baseUrl}/logout`;
+	try {
+		const response = await fetch(url, {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			credentials: "include",
+		});
+		if (!response.ok) {
+			throw new Error(`Response status: ${response.status}`);
+		}
+		const json = await response.json();
+		return json;
+	} catch (error) {
+		if (error instanceof Error) {
+			console.error(error.message);
+		} else {
+			console.error(String(error));
+		}
+	}
+}
 
 export async function testCookies() {
 	const baseUrl = import.meta.env.VITE_API_URL;

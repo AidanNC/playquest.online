@@ -107,7 +107,7 @@ app.post("/login", async (req, res) => {
 			sameSite: "lax",
 			expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7), //expires in 7 days
 		}); //set secure to tru in production
-		res.json({ message: "Login Success" });
+		res.json({ message: "Login Success", success: true, username: username });
 		console.log(username + " has logged in");
 	}
 });
@@ -122,7 +122,36 @@ app.post("/register", async (req, res) => {
 	} else {
 		const passhash = await hashPassword(password);
 		await db_methods.insertUser(username, passhash, email);
-		res.json({ message: "Registration Success" });
+		res.json({ message: "Registration Success", success: true });
+	}
+});
+app.get("/logout", (req, res) => {
+	const token = req.cookies.token;
+	if (token) {
+		const result = verifyToken(token);
+		if (result) {
+			console.log(result.username + " has logged out");
+		}
+	}
+	res.clearCookie("token");
+	res.json({ message: "Logged out" });
+});
+app.get("/testLoggedIn", (req, res) => {
+	const token = req.cookies.token;
+	if (token === undefined) {
+		res.json({ message: "Not logged in", loggedIn: false });
+		return;
+	}
+	const result = verifyToken(token);
+	if (result === undefined) {
+		res.json({ message: "Not logged in", loggedIn: false });
+		return;
+	} else {
+		res.json({
+			message: "Logged in",
+			username: result.username,
+			loggedIn: true,
+		});
 	}
 });
 

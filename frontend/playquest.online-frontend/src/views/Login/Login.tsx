@@ -1,6 +1,7 @@
 import { useState } from "react";
 import styled from "styled-components";
 import { login, register, testCookies } from "../../utils/backend.ts";
+import { useNavigate } from "react-router-dom";
 
 const MainContainer = styled.main`
 	height: 100vh;
@@ -23,6 +24,7 @@ const Form = styled.form`
 `;
 
 export default function Login() {
+	const navigate = useNavigate();
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 	const [password2, setPassword2] = useState("");
@@ -45,6 +47,11 @@ export default function Login() {
 	};
 	const handleLogin = async () => {
 		const response = await login(username, password);
+		if(response.success){
+			localStorage.setItem("username", response.username);
+			localStorage.setItem("userName", response.username); //this is for displaying the name in game
+			navigate("/");
+		}
 		console.log(response);
 	};
 	const handleRegister = async () => {
@@ -77,6 +84,7 @@ export default function Login() {
 					
 				}}
 			>
+				{registering && <p>You won't be able to your username later!</p>}
 				<label>
 					Username:
 					<input type="text" value={username} onChange={handleUsernameChange} />

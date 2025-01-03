@@ -57,7 +57,7 @@ button {
   -webkit-tap-highlight-color: transparent;
 }
 button:hover {
-  border-color: #d400d4;
+  border-color: var(--main-yellow);
   /* background-color: #d400d4; */
 }
 input {

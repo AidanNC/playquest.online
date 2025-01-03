@@ -6,6 +6,7 @@ import CardTests from './views/StyleTests/CardTests.tsx'
 import GuestAccount from './views/GuestAccount/index.tsx'
 import MainPage from './views/HostJoin/index.tsx'
 import Login from './views/Login/Login.tsx'
+import Profile from './views/Profile/Profile.tsx'
 
 import {
   createBrowserRouter,
@@ -32,6 +33,10 @@ const router = createBrowserRouter([
   {
     path: '/Login',
     element: <Login/>
+  },
+  {
+    path: '/Profile',
+    element: <Profile/>
   }
 ])
 
