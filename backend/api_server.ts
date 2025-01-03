@@ -93,7 +93,7 @@ app.post("/login", async (req, res) => {
 	const { username, password } = req.body;
 	const user = await db_methods.getUserByUsername(username);
 	if (user === undefined) {
-		res.status(400).send({ message: "User not found" }); //should change to generic message
+		res.status(400).json({ message: "User not found/InvalidPassword",success: false  }); //should change to generic message
 		//should tell them to login
 		return;
 	} else {
@@ -101,7 +101,7 @@ app.post("/login", async (req, res) => {
 		const inGameID = user.inGameID;
 		const isValid = await verifyPassword(password, passhash);
 		if (!isValid) {
-			res.status(401).send({ message: "Invalid password" }); //should change to generic message
+			res.status(401).json({ message: "User not found/InvalidPassword",success: false }); //should change to generic message
 			return;
 		}
 		//now we know the user exists and has provided the right password
@@ -120,8 +120,8 @@ app.post("/login", async (req, res) => {
 app.post("/register", async (req, res) => {
 	const { username, password, email } = req.body;
 	const user = await db_methods.getUserByUsername(username);
-	if (user !== undefined) {
-		res.status(400).send({ message: "User already registered" }); //should change to generic message
+	if (user !== undefined || username.length < 3 || username.length > 13) {
+		res.status(400).json({ message: "User already registered" }); //should change to generic message
 		//should tell them to login
 		return;
 	} else {

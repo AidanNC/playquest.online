@@ -55,6 +55,7 @@ export async function login(username: string, password: string) {
 			console.error(String(error));
 		}
 	}
+	return { success: false };
 }
 
 export async function register(
@@ -88,6 +89,7 @@ export async function register(
 			console.error(String(error));
 		}
 	}
+	return { success: false };
 }
 export async function CheckLoggedIn() {
 	const baseUrl = import.meta.env.VITE_API_URL;
