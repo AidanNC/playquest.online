@@ -1,4 +1,3 @@
-import Game from "./GameManager";
 import Card from "./Card";
 
 //the game recorder class will just record thegame, something else should associate player indexes with the player who was playing
@@ -65,7 +64,7 @@ class GameRecorder {
 		let handSize = -1;
 		let prevHandSize = 100;
 		let actionCount = 0;
-		let dealerIndex = -1;
+		// let dealerIndex = -1;
 		for (let i = 0; i < strArr.length; i++) {
 			let str = strArr[i];
 			if (parseInt(str) > 89) {
@@ -87,7 +86,7 @@ class GameRecorder {
 					handSize = parseInt(str) + 1; //becuase we will be decrementing it immeitdaly after 
 				} else if (infoIndex === 2) {
 					str += "dealer index: ";
-					dealerIndex = parseInt(str);
+					// dealerIndex = parseInt(str);
 				} else if (infoIndex === nextRoundStart) { //this is where we decrement the handSize
 					currentRoundStart = nextRoundStart;
 					if (handSize > prevHandSize || handSize === 1) {
@@ -133,7 +132,7 @@ type Naive_GameState = {
 
 class Naive_GameRecorder {
 	stateList: Naive_GameState[] = [];
-	currentState: Naive_GameState;
+	currentState!: Naive_GameState;
 	playerCount: number;
 
 	constructor(
@@ -173,4 +172,5 @@ class Naive_GameRecorder {
 	}
 }
 
-export { GameRecorder, Naive_GameRecorder, Naive_GameState };
+export { GameRecorder, Naive_GameRecorder };
+export type { Naive_GameState };

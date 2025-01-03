@@ -4,7 +4,7 @@ import Deck from "./Deck";
 import Card, { Suit } from "./Card";
 import PlayerInfo, { OpponentInfo } from "./PlayerInfo";
 import GameActionMachine, { GameAction } from "./GameAction";
-import {GameRecorder, Naive_GameRecorder, Naive_GameState } from "./GameRecorder";
+import {GameRecorder, Naive_GameRecorder } from "./GameRecorder";
 
 class Game {
 	playerCount: number;
@@ -27,8 +27,8 @@ class Game {
 	gameOver: boolean = false;
 	timeStep: number = 0;
 	gameActionQueue: GameAction[] = [];
-	naive_gameRecorder: Naive_GameRecorder;
-	gameRecorder: GameRecorder;
+	naive_gameRecorder!: Naive_GameRecorder;
+	gameRecorder!: GameRecorder;
 	constructor(playerCount: number) {
 		if (playerCount < 2 || playerCount > 6) {
 			throw new Error(
