@@ -12,7 +12,8 @@ const gradientAnimation = keyframes`
   }
 `;
 const animation = css`
-	${gradientAnimation} 6s ease infinite;
+	${gradientAnimation} 6s linear infinite;
+	// animation-timing-function: steps(5, end);
 `;
 const MainContainer = styled.div`
 	position: absolute;
@@ -25,7 +26,6 @@ const FullScreen = styled.div`
 	position: absolute;
 	height: 200svh;
 	width: 100vw;
-	filter: drop-shadow(0px 0px 6px var(--main-pink));
 	background: linear-gradient(130deg, var(--main-pink), var(--main-yellow));
 	background-size: 200% 200%;
 	animation: ${animation};
@@ -34,7 +34,7 @@ const FullScreen = styled.div`
 
 export default function TodoModal() {
 
-	const numcols = 20;
+	const numcols = 10;
 	const numrows = 20;
 	const rows = [];
 	const colors = ["#1e83c7",
@@ -82,7 +82,7 @@ export default function TodoModal() {
 
 const angle = 45;
 
-const maxOpacity = 0.8;
+const maxOpacity = 0.6;
 const minOpacity = 0.3;
 const opacityAnimation = keyframes`
 	0% {
@@ -110,9 +110,9 @@ const Tile = styled.div.attrs<{ $color: string; $delay: number }>((props) => ({
 }))<{ $color: string; $delay: number }>`
 	height: 8rem;
 	width: 15rem;
-	opacity: 0.2;
+	opacity: 0.5;
 	// outline: 1px solid black;
-	animation: ${opacityAnimation} 8s linear infinite;
+	animation: ${opacityAnimation} 6s linear infinite;
 `;
 const Row = styled.div`
 	display; flex;
