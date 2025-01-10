@@ -1,5 +1,5 @@
 import styled, { css, keyframes } from "styled-components";
-import { useEffect, useState } from "react";
+// import { useEffect, useState } from "react";
 const gradientAnimation = keyframes`
   0% {
     background-position:0% 50%;
@@ -26,7 +26,7 @@ const FullScreen = styled.div`
 	position: absolute;
 	height: 200svh;
 	width: 100vw;
-	background: linear-gradient(130deg, var(--main-pink), var(--main-yellow));
+	// background: linear-gradient(130deg, var(--main-pink), var(--main-yellow));
 	background-size: 200% 200%;
 	animation: ${animation};
 	overflow: hidden;
@@ -53,14 +53,14 @@ export default function TodoModal() {
 		const row = [];
 		for (let j = 0; j < numrows; j++) {
 			row.push(
-				// <Tile
-				// 	key={`${i}-${j}`}
-				// 	$color={(j + i) % 2 === 0 ? COLORS[4] : COLORS[3]}
-				// 	// $color={colors[Math.floor(Math.random() * colors.length)]}
-				// 	$delay={Math.random() * 6}
-				// 	$opacity={Math.random() / 2}
-				// />
-				<RandomTile key={`${i}-${j}`} />
+				<Tile
+					key={`${i}-${j}`}
+					$color={(j + i) % 2 === 0 ? COLORS[4] : COLORS[3]}
+					// $color={colors[Math.floor(Math.random() * colors.length)]}
+					$delay={Math.random() * 6}
+					$opacity={1}
+				/>
+				// <RandomTile key={`${i}-${j}`} />
 			);
 		}
 		rows.push(<Row key={`${i}-`}>{row}</Row>);
@@ -130,22 +130,22 @@ const TileContainer = styled.div`
 	top: -50%;
 `;
 
-function RandomTile() {
-	const [color, setColor] = useState<string>("#000000");
-	const [opacity, setOpacity] = useState<number>(0.5);
+// function RandomTile() {
+// 	const [color, setColor] = useState<string>("#000000");
+// 	const [opacity, setOpacity] = useState<number>(0.5);
 
-	function randomize() {
-		setColor(COLORS[Math.floor(Math.random() * COLORS.length)]);
-		// setDelay(Math.random() * 6);
-		setOpacity(Math.random() / 2);
-	}
+// 	function randomize() {
+// 		setColor(COLORS[Math.floor(Math.random() * COLORS.length)]);
+// 		// setDelay(Math.random() * 6);
+// 		setOpacity(Math.random() / 2);
+// 	}
 
-	useEffect(() => {
-		randomize();
-		// const interval = setInterval(() => {
-		// 	randomize();
-		// }, Math.random() * 10000 + 10000);
-		// return () => clearInterval(interval);
-	}, []);
-	return <Tile $color={color} $delay={0} $opacity={opacity} />;
-}
+// 	useEffect(() => {
+// 		randomize();
+// 		// const interval = setInterval(() => {
+// 		// 	randomize();
+// 		// }, Math.random() * 10000 + 10000);
+// 		// return () => clearInterval(interval);
+// 	}, []);
+// 	return <Tile $color={color} $delay={0} $opacity={opacity} />;
+// }
