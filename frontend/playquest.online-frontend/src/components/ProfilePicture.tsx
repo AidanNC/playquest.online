@@ -39,14 +39,15 @@ const MainContainer = styled.div<{ $active: boolean }>`
 		props.$active
 			? css`
 					border: 3px solid var(--main-pink);
-					filter: drop-shadow(0px 0px 6px var(--main-pink));
+					
 					background: linear-gradient(
 						130deg,
 						var(--main-pink),
 						var(--main-yellow)
 					);
-					background-size: 200% 200%;
-					animation: ${animation};
+					filter: drop-shadow(0px 0px 6px var(--main-pink));
+					// background-size: 200% 200%;
+					// animation: ${animation};
 			  `
 			: `border: 3px solid var(--blue-border);`} //#6f51f0
 	// border: 3px solid ${(props) => (props.$active ? "#ee00ff" : "#6f51f0")};
@@ -146,8 +147,9 @@ const DealerCircle = styled.div`
 	position: absolute;
 	left: 5px;
 	top: 5px;
-	animation: ${borderAnimation} 6s linear infinite;
-	filter: drop-shadow(0px 0px 6px var(--main-pink));
+	// border-radius: 60% 50% 30% 20%;
+	// animation: ${borderAnimation} 6s linear infinite;
+	// filter: drop-shadow(0px 0px 6px var(--main-pink));
 `;
 type ProfilePictureProps = {
 	imageString: string;

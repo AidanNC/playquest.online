@@ -13,20 +13,16 @@ const gradientAnimation = keyframes`
 `;
 const animation = css`
 	${gradientAnimation} 6s linear infinite;
-	// animation-timing-function: steps(5, end);
+	animation-timing-function: steps(5, end);
 `;
-const MainContainer = styled.div`
+const FullScreen = styled.div`
 	position: absolute;
 	top: 0;
 	left: 0;
 	z-index: -1;
-	// overflow: hidden;
-`;
-const FullScreen = styled.div`
-	position: absolute;
 	height: 200svh;
 	width: 100vw;
-	// background: linear-gradient(130deg, var(--main-pink), var(--main-yellow));
+	background: linear-gradient(130deg, var(--main-pink), var(--main-yellow));
 	background-size: 200% 200%;
 	animation: ${animation};
 	overflow: hidden;
@@ -58,7 +54,7 @@ export default function TodoModal() {
 					$color={(j + i) % 2 === 0 ? COLORS[4] : COLORS[3]}
 					// $color={colors[Math.floor(Math.random() * colors.length)]}
 					$delay={Math.random() * 6}
-					$opacity={1}
+					$opacity={Math.random() / 2}
 				/>
 				// <RandomTile key={`${i}-${j}`} />
 			);
@@ -67,11 +63,9 @@ export default function TodoModal() {
 	}
 
 	return (
-		<MainContainer>
-			<FullScreen>
-				<TileContainer>{rows}</TileContainer>
-			</FullScreen>
-		</MainContainer>
+		<FullScreen>
+			<TileContainer>{rows}</TileContainer>
+		</FullScreen>
 	);
 }
 
@@ -113,6 +107,7 @@ const Tile = styled.div.attrs<{
 	opacity: 0.5;
 	// outline: 1px solid black;
 	// animation: ${opacityAnimation} 6s linear infinite;
+	// animination-timing-function: steps(5, end);
 	// transition: opacity 5s, background-color 5s;
 `;
 const Row = styled.div`

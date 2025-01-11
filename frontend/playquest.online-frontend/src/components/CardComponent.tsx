@@ -23,12 +23,17 @@ const MainContainer = styled.div<{
 	// drop-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 	// filter: drop-shadow(0 0 0.3rem crimson);
 	// filter: drop-shadow(0px 0px 6px ${(props) => props.$color});
-	filter: ${(props) =>
+	${(props) =>
 		props.$highlight
-			? `drop-shadow(0px 0px 4px var(--main-yellow));
+			? 
+			`
+			// filter: drop-shadow(0px 0px 4px var(--main-yellow));
 			border: 1px solid var(--main-yellow);
 			`
-			: `drop-shadow(0px 0px 2px #f5f5c1);`}
+			: `
+			// filter: drop-shadow(0px 0px 2px #f5f5c1);
+			`
+		}
 	//#f2f21d
 
 	border-radius: 5px;
@@ -57,7 +62,7 @@ const MainContainerShadow = styled.div`
 	top: 8px;
 	left: 10px;
 	border-radius: 5px;
-	// z-index: -1;
+	z-index: -1;
 	background-color: var(--main-dark);
 	opacity: 0.5;
 `;

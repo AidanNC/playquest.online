@@ -68,7 +68,9 @@ body {
 }
 button {
 	/* border-radius: 16px; */
-  animation: buttonBorder 5s infinite;
+  	/* animation: buttonBorder 5s infinite;
+	animation-timing-function: steps(5, end); */
+	border-radius: 30px;
 	border: 1px solid var(--main-dark);
 	padding: 0.3em 1em;
 	font-size: 1em;
