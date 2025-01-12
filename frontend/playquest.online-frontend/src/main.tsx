@@ -7,7 +7,7 @@ import GuestAccount from "./views/GuestAccount/index.tsx";
 import MainPage from "./views/HostJoin/index.tsx";
 import Login from "./views/Login/Login.tsx";
 import Profile from "./views/Profile/Profile.tsx";
-import TodoModal from "./views/TodoPage/index.tsx";
+// import TodoModal from "./views/TodoPage/index.tsx";
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
