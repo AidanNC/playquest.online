@@ -129,9 +129,10 @@ export default function HostGame(
 		let playerID: string;
 		const token = cookies.token;
 
+		//they are a verified user who has logged in
 		if (token) {
 			const user = verifyToken(token);
-			if (user && !playerIDs.includes(user[1])) {
+			if (user && !playerIDs.includes(user[1]) && playerCount < MAX_PLAYERS){ //very important to check if we have space && playerCount < MAX_PLAYERS
 				playerIDs.push(user[1]);
 				playerID = user[1];
 				playerNames.push(user[0]);
@@ -148,7 +149,7 @@ export default function HostGame(
 				}
 			}
 			if(user && playerIDs.includes(user[1])){
-				playerID = user[1];
+				playerID = user[1]; //doesn't do anything? 
 				console.log("a verified user has reconnected");
 			}
 		}
