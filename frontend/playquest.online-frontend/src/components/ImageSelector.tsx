@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { useState } from "react";
 import { MobileWidth } from "../MediaQueryConstants";
 
-
 const Row = styled.div`
 	display: flex;
 	gap: 20px;
@@ -12,7 +11,10 @@ const Row = styled.div`
 const ImageGrid = styled.div`
 	display: flex;
 	gap: 20px;
-	flex-direction: column;
+	@media (min-width: ${MobileWidth} ) {
+		flex-direction: column;
+		overflow: auto;
+	}
 	@media (max-width: ${MobileWidth}) {
 		flex-direction: row;
 		max-width: 95vw;
@@ -29,9 +31,9 @@ const SelectIndicator = styled.div`
 
 type ImageSelectorProps = {
 	propSetImage: (imageString: string) => void;
-}
+};
 
-export default function ImageSelector({propSetImage}: ImageSelectorProps) {
+export default function ImageSelector({ propSetImage }: ImageSelectorProps) {
 	const imageGrid = [];
 	const savedImageString = localStorage.getItem("imageString");
 	const [selected, setSelected] = useState(
@@ -40,20 +42,25 @@ export default function ImageSelector({propSetImage}: ImageSelectorProps) {
 	function handleSetImage(image: string) {
 		propSetImage(image);
 	}
-	for (let i = 0; i < imageNames.length / 5; i++) {
+	const rowNum = 10;
+	const columnNum = 10;
+	for (let i = 0; i < imageNames.length / columnNum; i++) {
 		const row = [];
 
-		for (let j = 0; j < 5; j++) {
-			const image = imageNames[i * 5 + j];
+		for (let j = 0; j < rowNum; j++) {
+			const image = imageNames[i * rowNum + j];
 			row.push(
 				<SelectIndicator
 					key={j}
 					onClick={() => {
-						setSelected(i * 5 + j);
+						setSelected(i * rowNum + j);
 						handleSetImage(image);
 					}}
 				>
-					<ProfileImage selected={i * 5 + j === selected} imageString={image} />
+					<ProfileImage
+						selected={i * rowNum + j === selected}
+						imageString={image}
+					/>
 				</SelectIndicator>
 			);
 		}
@@ -62,9 +69,8 @@ export default function ImageSelector({propSetImage}: ImageSelectorProps) {
 
 	return (
 		<div>
-				<p className="whiteFont">Choose a profile image!</p>
-				<ImageGrid>{imageGrid}</ImageGrid>
-			
+			<p className="whiteFont">Choose a profile image!</p>
+			<ImageGrid>{imageGrid}</ImageGrid>
 		</div>
 	);
 }

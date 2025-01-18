@@ -21,6 +21,24 @@ import swag from "../assets/img/profile_pictures/swag.jpg";
 import tentacle from "../assets/img/profile_pictures/tentacle.jpg";
 import wise from "../assets/img/profile_pictures/wise.jpg";
 import yawn from "../assets/img/profile_pictures/yawn.jpg";
+import awoo from "../assets/img/profile_pictures/awoo.jpg";
+import boog from "../assets/img/profile_pictures/boog.jpg";
+import boring from "../assets/img/profile_pictures/boring.jpg";
+import brain from "../assets/img/profile_pictures/brain.jpg";
+import dorp from "../assets/img/profile_pictures/dorp.jpg";
+import fierce from "../assets/img/profile_pictures/fierce.jpg";
+import gnome from "../assets/img/profile_pictures/gnome.jpg";
+import grama from "../assets/img/profile_pictures/grama.jpg";
+import hat from "../assets/img/profile_pictures/hat.jpg";
+import longsnout from "../assets/img/profile_pictures/longsnout.jpg";
+import nails from "../assets/img/profile_pictures/nails.jpg";
+import sleepylick from "../assets/img/profile_pictures/sleepylick.jpg";
+import slickedback from "../assets/img/profile_pictures/slickedback.jpg";
+import snooter from "../assets/img/profile_pictures/snooter.jpg";
+import teeth from "../assets/img/profile_pictures/teeth.jpg";
+import tunnel from "../assets/img/profile_pictures/tunnel.jpg";
+import yawn2 from "../assets/img/profile_pictures/yawn2.jpg";
+import yummy from "../assets/img/profile_pictures/yummy.jpg";
 
 const images = [
 	beanbag,
@@ -43,6 +61,24 @@ const images = [
 	tentacle,
 	wise,
 	yawn,
+	awoo,
+	boog,
+	boring,
+	brain,
+	dorp,
+	fierce,
+	gnome,
+	grama,
+	hat,
+	longsnout,
+	nails,
+	sleepylick,
+	slickedback,
+	snooter,
+	teeth,
+	tunnel,
+	yawn2,
+	yummy,
 ];
 export const imageNames = [
 	"beanbag",
@@ -65,6 +101,24 @@ export const imageNames = [
 	"tentacle",
 	"wise",
 	"yawn",
+	"awoo",
+	"boog",
+	"boring",
+	"brain",
+	"dorp",
+	"fierce",
+	"gnome",
+	"grama",
+	"hat",
+	"longsnout",
+	"nails",
+	"sleepylick",
+	"slickedback",
+	"snooter",
+	"teeth",
+	"tunnel",
+	"yawn2",
+	"yummy",
 ];
 
 const ProfileIcon = styled.div`
