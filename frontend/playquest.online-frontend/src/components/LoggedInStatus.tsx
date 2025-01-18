@@ -23,6 +23,12 @@ export default function LoggedInStatus() {
 			localStorage.setItem("username", result.username);
 			localStorage.setItem("userName", result.username); // this is for displaying in the game
 			setUsername(result.username);
+		}else if(localStorage.getItem("username") !== null){
+			//we check to see if username (all lowercase) is in local storage, which means that we think we are logged in 
+			localStorage.removeItem("username");
+			localStorage.removeItem("userName");
+			localStorage.removeItem("imageString");
+			setUsername("");
 		}
 	}
 
