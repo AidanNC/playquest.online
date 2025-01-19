@@ -26,8 +26,9 @@ const notes = [
 	"- Added patch notes!",
 	"- Fixed bug displaying incorrect login status.",
 	"- Fixed bug allowing too many users to join a game causing it to crash.",
-	"- Added new profile picture options.",
-	"- Make modals centered on all devices."
+	"- Added new profile picture options, try them out!",
+	"- Make modals centered on all devices.",
+	"- Added basic stats to profile page, check it out!"
 ]
 const patchNumber = 0.1;
 export default function PatchNotes() {
