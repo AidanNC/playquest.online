@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { createGame } from "../../utils/backend";
 import LoggedInStatus from "../../components/LoggedInStatus";
 import { isLoggedIn } from "../../utils/utils";
+import PatchNotes from "../../components/PatchNotes";
 
 const MainContainer = styled.div`
 	display: flex;
@@ -74,6 +75,7 @@ export default function MainPage() {
 
 	return (
 		<MainContainer>
+			<PatchNotes />
 			<h1 className="whiteFont">Quest Online</h1>
 			<LoggedInStatus />
 			{!hosting && (

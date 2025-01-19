@@ -2,20 +2,26 @@ import { ReactNode, useRef, useEffect } from "react";
 import styled from "styled-components";
 import { MobileWidth } from "../MediaQueryConstants";
 
-const MainContainer = styled.div`
+const ModalPositioner = styled.div`
 	position: absolute;
 	top: 10%;
-	left: 40%;
 	z-index: 100;
-	border-radius: 4px;
-	background-color: #9d44fc;
-	padding-top: 1rem;
-	border: 2px solid #ee00ff;
+	width: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 	@media (max-width: ${MobileWidth}) {
 		top: 5svh;
 		left: 5vw;
 		width: 90vw;
 	}
+`;
+const MainContainer = styled.div`
+	position: relative;
+	border-radius: 4px;
+	background-color: #9d44fc;
+	padding-top: 1rem;
+	border: 2px solid #ee00ff;
 `;
 
 const ContentContainer = styled.div`
@@ -53,11 +59,9 @@ export default function ModalContainer({
 	const mainRef = useRef<HTMLDivElement>(null);
 
 	const handleDocumentClick = (event: MouseEvent) => {
-		if (
-			mainRef.current && !mainRef.current.contains(event.target as Node)
-		) {
+		if (mainRef.current && !mainRef.current.contains(event.target as Node)) {
 			console.log("clicked outside");
-			if(isOpen) {
+			if (isOpen) {
 				onClose();
 			}
 			// onClose();
@@ -70,18 +74,20 @@ export default function ModalContainer({
 		// 	document.removeEventListener("click", handleDocumentClick);
 		// };
 		const timer = setTimeout(() => {
-            document.addEventListener("click", handleDocumentClick);
-        }, 0);
+			document.addEventListener("click", handleDocumentClick);
+		}, 0);
 
-        return () => {
-            clearTimeout(timer);
-            document.removeEventListener("click", handleDocumentClick);
-        };
+		return () => {
+			clearTimeout(timer);
+			document.removeEventListener("click", handleDocumentClick);
+		};
 	}, [isOpen]);
 	return (
-		<MainContainer ref={mainRef}>
-			<CloseButton onClick={onClose}>X</CloseButton>
-			<ContentContainer>{children}</ContentContainer>
-		</MainContainer>
+		<ModalPositioner>
+			<MainContainer ref={mainRef}>
+				<CloseButton onClick={onClose}>X</CloseButton>
+				<ContentContainer>{children}</ContentContainer>
+			</MainContainer>
+		</ModalPositioner>
 	);
 }
