@@ -158,7 +158,11 @@ async function deleteUser(id: number) {
 	await db.run("DELETE FROM users WHERE id = ?", [id]);
 }
 
+
+
+
 export {
+	openDb,
 	createTable,
 	insertUser,
 	getUsers,

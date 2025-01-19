@@ -29,11 +29,17 @@ class Game {
 	gameActionQueue: GameAction[] = [];
 	naive_gameRecorder!: Naive_GameRecorder;
 	gameRecorder!: GameRecorder;
-	constructor(playerCount: number) {
+	replayCardList!: Card[];
+	replayTrumpList!: Card[];
+	constructor(playerCount: number, replayCardList?: Card[], replayTrumpList?: Card[]) {
 		if (playerCount < 2 || playerCount > 6) {
 			throw new Error(
 				"Invalid player count. Count must be between 2 and 6 inclusive."
 			);
+		}
+		if(replayCardList && replayTrumpList){
+			this.replayCardList = replayCardList;
+			this.replayTrumpList = replayTrumpList;
 		}
 		this.playerCount = playerCount;
 		this.scores = Array(playerCount).fill(0); //everyone starts with 0 points
@@ -125,6 +131,13 @@ class Game {
 		this.deck = new Deck();
 		this.handSize = handSize;
 		this.trumpCard = this.deck.drawCard();
+		//for replaying the game
+		if(this.replayTrumpList){
+			const replayTrump = this.replayTrumpList.shift();
+			if(replayTrump){
+				this.trumpCard = replayTrump;
+			}
+		}
 		this.hands = Array(this.playerCount);
 		this.wonTricks = Array(this.playerCount);
 		for (let i = 0; i < this.playerCount; i++) {
@@ -132,6 +145,12 @@ class Game {
 			this.wonTricks[i] = [];
 			for (let j = 0; j < handSize; j++) {
 				this.hands[i].push(this.deck.drawCard());
+			}
+		}
+		//for replaying the game
+		if(this.replayCardList){
+			for(let i = 0; i < this.playerCount; i++){
+				this.hands[i] = this.replayCardList.splice(0, handSize);
 			}
 		}
 		//sort the hands

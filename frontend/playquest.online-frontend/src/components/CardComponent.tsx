@@ -17,7 +17,7 @@ const MainContainer = styled.div<{
 	height: 80px;
 	width: 60px;
 	background-color: #36014a;
-
+	border: 1px solid var(--main-dark);
 	// background-color: ${(props) => props.$color};
 	// border: 1px solid ${(props) => props.$color};
 	// drop-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
@@ -27,11 +27,10 @@ const MainContainer = styled.div<{
 		props.$highlight
 			? 
 			`
-			// filter: drop-shadow(0px 0px 4px var(--main-yellow));
 			border: 1px solid var(--main-yellow);
 			`
 			: `
-			// filter: drop-shadow(0px 0px 2px #f5f5c1);
+			border: 1px solid var(--main-dark);
 			`
 		}
 	//#f2f21d

@@ -1,5 +1,5 @@
 import Card from "./Card";
-
+import Game from "./GameManager";
 //the game recorder class will just record thegame, something else should associate player indexes with the player who was playing
 
 /*
@@ -49,13 +49,22 @@ class GameRecorder {
 			console.log(this.gameRecord.slice(i, i + 2));
 		}
 	}
-	readableMeaning() {
+	readableMeaning(){
+		return GameRecorder.getInfo(this.gameRecord).explanations;
+	}
+	static getInfo(gameString: string) {
 		//first parse into array of strings
+		const gameRecord =  gameString ;
 		const strArr: string[] = [];
-		for (let i = 0; i < this.gameRecord.length; i += 2) {
-			strArr.push(this.gameRecord.slice(i, i + 2));
+		for (let i = 0; i < gameRecord.length; i += 2) {
+			strArr.push(gameRecord.slice(i, i + 2));
 		}
 		const explanations: string[] = [];
+		//this is for replaying the game
+		const playerHands: Card[] = [];
+		const actions: number[] = [];
+		const trumpCards: Card[] = []; //--
+		let initialDealerIndex = -1; //--
 		// info index
 		let infoIndex = 0;
 		let nextRoundStart = 3;
@@ -83,11 +92,13 @@ class GameRecorder {
 				} else if (infoIndex === 1) {
 					str += "starting hand size: ";
 					// prevHandSize = handSize;
-					handSize = parseInt(str) + 1; //becuase we will be decrementing it immeitdaly after 
+					handSize = parseInt(str) + 1; //becuase we will be decrementing it immeitdaly after
 				} else if (infoIndex === 2) {
 					str += "dealer index: ";
+					initialDealerIndex = parseInt(str);
 					// dealerIndex = parseInt(str);
-				} else if (infoIndex === nextRoundStart) { //this is where we decrement the handSize
+				} else if (infoIndex === nextRoundStart) {
+					//this is where we decrement the handSize
 					currentRoundStart = nextRoundStart;
 					if (handSize > prevHandSize || handSize === 1) {
 						prevHandSize = handSize;
@@ -101,15 +112,17 @@ class GameRecorder {
 					nextRoundStart += numPlayers * (handSize + 1); // number of actions
 					nextRoundStart += numPlayers * handSize; //contents of the handds
 					nextRoundStart += 1; //trump card
+					trumpCards.push(Card.fromNumericValue(parseInt(str)));
 				} else if (infoIndex <= currentRoundStart + numPlayers * handSize) {
 					//this means we are looking at the hands
 					str +=
 						"player " +
 						Math.floor((infoIndex - currentRoundStart - 1) / handSize) +
 						" hand";
+					playerHands.push(Card.fromNumericValue(parseInt(str)));
 				} else {
 					str += "action " + actionCount++;
-
+					actions.push(parseInt(str));
 				}
 
 				//we parsed some game info so increment the info index
@@ -118,7 +131,26 @@ class GameRecorder {
 
 			explanations.push(str);
 		}
-		return explanations;
+		return {explanations, playerHands, actions, trumpCards, initialDealerIndex, numPlayers};
+	}
+	static replayGame(gameString: string){
+		//basic stats implementation
+		const info = this.getInfo(gameString);
+		const game = new Game(info.numPlayers, info.playerHands, info.trumpCards);
+		game.startRound(10, info.initialDealerIndex);
+		for(const action of info.actions){
+			game.processAction(game.activePlayer, action);
+		}
+		return game.scores;
+	}
+	static getHighScore(playerIndex: number, gameString: string): number{
+		const scores = GameRecorder.replayGame(gameString);
+		if(playerIndex < 0 || playerIndex >= scores.length){
+			console.error("player index out of range, returning -1");
+			return -1;
+		}else{
+			return scores[playerIndex];
+		}
 	}
 }
 

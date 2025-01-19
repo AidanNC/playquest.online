@@ -14,6 +14,11 @@ class Card {
 		this.value = value;
 		this.name = value <= 9 ? String(value) : ["T", "J", "Q", "K", "A"][value - 10];
 	}
+	static fromNumericValue(numericValue: number){
+		const suit = SUITS[Math.floor(numericValue / 13)];
+		const value = VALUES[numericValue % 13];
+		return new Card(suit, value);
+	}
 	getValueAndSuit() {
 		return { value: this.value, suit: this.suit };
 	}

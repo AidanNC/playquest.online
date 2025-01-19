@@ -10,6 +10,7 @@ import {
 	generateToken,
 	verifyToken,
 } from "./auth.ts";
+import { getStats } from "./stats/utils.ts";
 
 dotenv.config();
 //set up the server
@@ -159,11 +160,21 @@ app.get("/testLoggedIn", (req, res) => {
 		});
 	}
 });
+app.get("/stats", async (req, res) => {
+	const token = req.cookies.token;
+	const result = verifyToken(token);
+	if (result === undefined) {
+		res.status(401).json({ message: "Not logged in" });
+		return;
+	}
+	const stats = await getStats(result.username);
+	res.json(stats);
+});
 
 app.post("/testCookies", async (req, res) => {
 	console.log("test cookies");
 	console.log("Cookies:", req.cookies);
-	res.json({ messge: "cookies ogged" });
+	res.json({ message: "cookies logged" });
 });
 
 app.listen(port, () => {
