@@ -23,6 +23,9 @@ const NotificationContainer = styled.div`
 		box-shadow: 0px 0px 10px 0px var(--main-yellow);}
 `;
 const notes = [
+	"-Fix issue where the game will say you are disconnected but won't reconnect.",
+	"-Attempted to fix bug which allowed bots to occasionally decide the players move in bot games.",
+	"---------",
 	"- Added patch notes!",
 	"- Fixed bug displaying incorrect login status.",
 	"- Fixed bug allowing too many users to join a game causing it to crash.",
@@ -30,7 +33,7 @@ const notes = [
 	"- Make modals centered on all devices.",
 	"- Added basic stats to profile page, check it out!"
 ]
-const patchNumber = 0.1;
+const patchNumber = 0.2;
 export default function PatchNotes() {
 	const [isOpen, setIsOpen] = useState(false);
 

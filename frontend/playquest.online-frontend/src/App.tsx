@@ -23,7 +23,7 @@ function App() {
 			: `${websocketUrl}/${port}`;
 
 	const socketRef = useRef<WebSocket>();
-	useEffect(() => {
+	function openAndConnectSocket(){
 		socketRef.current = new WebSocket(urlAndPort);
 		socketRef.current.addEventListener("open", () => {
 			console.log("Connected to server");
@@ -38,6 +38,9 @@ function App() {
 		});
 		socketRef.current.addEventListener("message", handleMessage);
 		console.log("Adding event listener");
+	} 
+	useEffect(() => {
+		openAndConnectSocket();
 
 		return () =>
 			socketRef.current &&
@@ -88,6 +91,12 @@ function App() {
 				now - lastServerCommunication.current > 5000
 			) {
 				console.log("lost connection to server");
+				if(socketRef.current?.CLOSED){
+					console.log("socket closed");
+				}
+				console.log("trying to recoonect");
+				openAndConnectSocket();
+				
 				setPing(-1);
 			}
 		}, 1000);
