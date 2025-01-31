@@ -12,7 +12,7 @@ export default function HostGame(
 ) {
 	let finishedGame = false;
 	function finishGame(game: Game, playerIDs: string[]) {
-		if(finishedGame){
+		if (finishedGame) {
 			return;
 		}
 		console.log("WSS GAME OVER");
@@ -59,22 +59,24 @@ export default function HostGame(
 		console.log("Making bot plays");
 		console.log(game.activePlayer);
 		console.log(botCount);
-		while (game.activePlayer < botCount) {
+		for (let i = 0; i < botCount*2; i++) {//times 2 because all the bots may need to play twice in a row
 			//bot count is 1 indexed, pID is 0 indexed
-			console.log(playerNames[game.activePlayer] + " is playing");
-			game.clearActionQueue(); //make sure the action queue is cleared
-			game.processAction(
-				game.activePlayer,
-				game.getRandomPlay(game.activePlayer)
-			);
-			if (game.gameOver) {
-				finishGame(game, playerIDs);
+			if (game.activePlayer < botCount) {
+				console.log(playerNames[game.activePlayer] + " is playing");
+				game.clearActionQueue(); //make sure the action queue is cleared
+				game.processAction(
+					game.activePlayer,
+					game.getRandomPlay(game.activePlayer)
+				);
+				if (game.gameOver) {
+					finishGame(game, playerIDs);
+				}
+				await sleep(1000);
+				//send out the info the the players
+				sockets.forEach(function each(client) {
+					getAndSendInfo(client);
+				});
 			}
-			await sleep(1000);
-			//send out the info the the players
-			sockets.forEach(function each(client) {
-				getAndSendInfo(client);
-			});
 		}
 	};
 	//basic gameplay
@@ -132,7 +134,8 @@ export default function HostGame(
 		//they are a verified user who has logged in
 		if (token) {
 			const user = verifyToken(token);
-			if (user && !playerIDs.includes(user[1]) && playerCount < MAX_PLAYERS){ //very important to check if we have space && playerCount < MAX_PLAYERS
+			if (user && !playerIDs.includes(user[1]) && playerCount < MAX_PLAYERS) {
+				//very important to check if we have space && playerCount < MAX_PLAYERS
 				playerIDs.push(user[1]);
 				playerID = user[1];
 				playerNames.push(user[0]);
@@ -148,8 +151,8 @@ export default function HostGame(
 					});
 				}
 			}
-			if(user && playerIDs.includes(user[1])){
-				playerID = user[1]; //doesn't do anything? 
+			if (user && playerIDs.includes(user[1])) {
+				playerID = user[1]; //doesn't do anything?
 				console.log("a verified user has reconnected");
 			}
 		}
@@ -195,7 +198,7 @@ export default function HostGame(
 					const pindex = playerIDs.indexOf(playerID);
 					sockets[pindex] = ws;
 					console.log(jsonData.imageString);
-					if(jsonData.imageString !== undefined){
+					if (jsonData.imageString !== undefined) {
 						imageStrings[pindex] = jsonData.imageString;
 					}
 					activePlayerCount++;
@@ -214,7 +217,7 @@ export default function HostGame(
 				game.clearActionQueue();
 				const playerIndex = sockets.indexOf(ws);
 				const result = game.processAction(playerIndex, jsonData.action);
-				if(game.gameOver){
+				if (game.gameOver) {
 					finishGame(game, playerIDs);
 				}
 				if (result === 1) {
