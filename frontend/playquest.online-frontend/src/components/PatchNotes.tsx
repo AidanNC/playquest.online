@@ -23,6 +23,7 @@ const NotificationContainer = styled.div`
 		box-shadow: 0px 0px 10px 0px var(--main-yellow);}
 `;
 const notes = [
+	"-Won tricks modal will now display properly",
 	"-Fix issue where the game will say you are disconnected but won't reconnect.",
 	"-Attempted to fix bug which allowed bots to occasionally decide the players move in bot games.",
 	"---------",

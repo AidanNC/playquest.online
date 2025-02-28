@@ -1,6 +1,6 @@
 import { ReactNode, useRef, useEffect } from "react";
 import styled from "styled-components";
-import { MobileWidth } from "../MediaQueryConstants";
+// import { MobileWidth } from "../MediaQueryConstants";
 
 const ModalPositioner = styled.div`
 	position: absolute;
@@ -10,11 +10,10 @@ const ModalPositioner = styled.div`
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	@media (max-width: ${MobileWidth}) {
-		top: 5svh;
-		left: 5vw;
-		width: 90vw;
-	}
+	top: 5svh;
+	left: 5vw;
+	width: 90vw;
+	
 `;
 const MainContainer = styled.div`
 	position: relative;
