@@ -1,0 +1,17 @@
+{
+	"name": "PlayQuest",
+	"short_name": "Quest",
+	"description": "Play Quest with friends online!",
+	"icons": [
+	  {
+		"src": "icon_Q.png",
+		"sizes": "144x144",
+		"type": "image/png",
+		"purpose": "any"
+	  }
+	],
+	"start_url": "/",
+	"display": "fullscreen",
+	"theme_color": "#ee00ff",
+	"background_color": "#15001c"
+  }
